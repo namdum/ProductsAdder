@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:id="@+id/frame_2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:paddingHorizontal="@dimen/_16sdp"
+        android:background="@drawable/background_frame">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvBestPlaceForGear"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/h4"
+            android:text="@string/login_to_your_account"
+            android:gravity="start"
+            android:includeFontPadding="false"
+            android:textSize="@dimen/_18ssp"
+            android:textColor="@color/white"
+            android:layout_marginTop="@dimen/_12sdp"/>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvQuality"
+            android:textSize="@dimen/_14ssp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/sign_in_to_your_account"
+            android:fontFamily="@font/poppins_light"
+            android:layout_marginTop="@dimen/_4sdp"
+            android:textColor="@color/white"
+            android:layout_marginBottom="@dimen/_8sdp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/mainRelativeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/frame_2"
+        android:layout_margin="@dimen/_5sdp"
+        android:background="@color/white"
+        android:padding="@dimen/_8sdp"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/registerRelativelayout"
+            android:layout_width="match_parent"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textInputLayoutEmail"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:hint="Email"
+                android:padding="@dimen/_2sdp"
+                app:endIconMode="clear_text"
+                app:endIconTint="@color/g_gray500"
+                app:shapeAppearance="@style/Rounded">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/loginEmailEdit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins_light"
+                    android:inputType="textEmailAddress"
+                    android:textColor="@color/black"
+                    android:imeOptions="actionDone"
+                    android:padding="@dimen/_12sdp"
+                    android:textSize="@dimen/_12ssp"
+                    android:textStyle="bold" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textInputLayoutPassword"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textInputLayoutEmail"
+                android:layout_marginTop="@dimen/_13sdp"
+                android:hint="Password"
+                android:padding="@dimen/_1sdp"
+                app:endIconMode="password_toggle"
+                app:endIconTint="@color/g_gray500"
+                app:shapeAppearance="@style/Rounded">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/loginPasswordEdit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins_light"
+                    android:inputType="textPassword"
+                    android:imeOptions="actionDone"
+                    android:textColor="@color/black"
+                    android:padding="@dimen/_12sdp"
+                    android:textSize="@dimen/_12ssp"
+                    android:textStyle="bold" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </RelativeLayout>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/loginLoginBtn"
+            style="@style/blueButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/_8sdp"
+            android:text="@string/login"
+            android:textSize="@dimen/_13ssp"
+            android:layout_marginTop="@dimen/_25sdp" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/textview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_24sdp"
+            android:fontFamily="@font/poppins_thin"
+            android:gravity="center"
+            android:text="@string/dont_have_account_register"
+            android:textColor="@color/g_gray900"
+            android:textSize="@dimen/_9ssp" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/dontHaveAccount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins_thin"
+            android:gravity="center"
+            android:text="@string/register"
+            android:textColor="@color/g_blue"
+            android:textSize="@dimen/_9ssp"
+            android:textStyle="bold" />
+    </LinearLayout>
+</RelativeLayout>

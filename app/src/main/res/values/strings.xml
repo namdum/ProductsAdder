@@ -1,3 +1,36 @@
 <resources>
     <string name="app_name">ProductsAdder</string>
+    <string name="register_to_account">Register to your\naccount</string>
+    <string name="sign_up_to_your_account">Sign up to your Account</string>
+    <string name="login_to_your_account">Login to your\naccount</string>
+    <string name="sign_in_to_your_account">Sign in to your Account</string>
+    <string name="reset_password">Reset\npassword</string>
+    <string name="we_will_send_your_password_link_to_your_email">We will send your password link to your email</string>
+    <string name="dont_have_account_register">Don’t have an account ? Register</string>
+    <string name="bestPlace">The Best Place For \n New Gear</string>
+    <string name="quality">Get quality products online from \n our store</string>
+    <string name="register">Register</string>
+    <string name="start">Start</string>
+    <string name="login">Login</string>
+    <string name="loginHeader">"Log In "</string>
+    <string name="loginRegText">If you do not have an account. \n Please register</string>
+    <string name="loginForgotPass">Forgot Password ?</string>
+    <string name="facebook">Facebook</string>
+    <string name="google">Google</string>
+    <string name="registerHeader">Register</string>
+    <string name="registerLoginText">If you have an account. Please Log in.</string>
+    <string name="default_web_client_id" />
+    <string name="facebook_app_id">YOUR_APP_ID</string>
+    <string name="moneymakers">MoneyMakers</string>
+    <string name="or">OR</string>
+    <string name="password">Password</string>
+    <string name="email">Email</string>
+    <string name="last_name">Last Name</string>
+    <string name="first_name">First Name</string>
+    <string name="my_account">My Account</string>
+    <string name="_68_00">$68.00</string>
+    <string name="_136">$136</string>
+    <string name="_50_off">50% OFF</string>
+    <string name="added_to_cart">Added To Cart</string>
+    <string name="estre_euphoria_signature_sofa_royal_blue">Estre Euphoria Signature Sofa-Royal blue</string>
 </resources>
