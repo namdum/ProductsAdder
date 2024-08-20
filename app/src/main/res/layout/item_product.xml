@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/_5sdp"
+    android:background="@drawable/rounded_corner_background">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/productAppCompatTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:fontFamily="@font/poppins_thin"
+        android:padding="@dimen/_3sdp"
+        android:text="text"
+        android:textSize="@dimen/_15ssp" />
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/editText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_alignParentStart="true"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:fontFamily="@font/poppins_thin"
+        android:padding="@dimen/_3sdp"
+        android:textSize="@dimen/_15ssp"/>
+    
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/editbtn"
+        style="@style/blueButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/_5sdp"
+        android:layout_toStartOf="@id/deletebtn"
+        android:text="Edit" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/savebtn"
+        style="@style/blueButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_marginEnd="@dimen/_5sdp"
+        android:layout_toStartOf="@id/deletebtn"
+        android:text="Save" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/deletebtn"
+        style="@style/blueButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="@dimen/_5sdp"
+        android:text="Delete" />
+</RelativeLayout>

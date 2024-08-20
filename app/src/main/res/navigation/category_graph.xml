@@ -1,0 +1,36 @@
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation_graph"
+    app:startDestination="@id/FragmentCategory">
+
+    <fragment
+        android:id="@+id/FragmentCategory"
+        android:name="com.example.productsadder.CategoryFragment"
+        android:label="Your Current Fragment"
+        tools:layout="@layout/fragment_category">
+        <action
+            android:id="@+id/action_FragmentCategory_to_FragmentAddCategory"
+            app:destination="@id/FragmentAddCategory" />
+        <action
+            android:id="@+id/action_global_FragmentCategory"
+            app:destination="@id/FragmentCategory" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/FragmentAddCategory"
+        android:name="com.example.productsadder.AddCategoryFragment"
+        android:label="Fragment Add Category"
+        tools:layout="@layout/fragment_add_category" />
+
+    <fragment
+        android:id="@+id/FragmentProducts"
+        android:name="com.example.productsadder.ProductsFragment"
+        android:label="Fragment Products"
+        tools:layout="@layout/fragment_products">
+        <action
+            android:id="@+id/action_global_FragmentProducts"
+            app:destination="@id/FragmentProducts" />
+    </fragment>
+
+</navigation>
