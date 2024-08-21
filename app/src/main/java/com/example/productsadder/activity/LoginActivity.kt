@@ -1,4 +1,4 @@
-package com.example.productsadder
+package com.example.productsadder.activity
 
 import android.content.Intent
 import android.os.Bundle

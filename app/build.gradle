@@ -67,4 +67,11 @@ dependencies {
     implementation ("com.google.firebase:firebase-firestore-ktx:24.9.1")
     implementation ("com.google.firebase:firebase-storage:20.3.0")
     implementation("com.google.firebase:firebase-firestore:24.9.1")
+
+    //glide
+    implementation ("com.github.bumptech.glide:glide:4.12.0")
+    annotationProcessor ("com.github.bumptech.glide:compiler:4.12.0")
+
+    //circularButton
+    implementation ("br.com.simplepass:loading-button-android:1.1.1")
 }

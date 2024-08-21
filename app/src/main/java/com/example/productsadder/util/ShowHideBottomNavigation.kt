@@ -2,7 +2,7 @@ package com.example.productsadder.util
 
 import android.view.View
 import androidx.fragment.app.Fragment
-import com.example.productsadder.HomeActivity
+import com.example.productsadder.activity.HomeActivity
 import com.example.productsadder.R
 import com.google.android.material.bottomnavigation.BottomNavigationView
 

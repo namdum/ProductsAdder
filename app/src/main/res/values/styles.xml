@@ -7,7 +7,7 @@
 
     <style name="Rounded" parent="ShapeAppearance.MaterialComponents.SmallComponent">
         <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">15dp</item>
+        <item name="cornerSize">@dimen/_6sdp</item>
     </style>
 
     <style name="register">

@@ -2,10 +2,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:title="Category"
-        android:icon="@drawable/ic_home"
+        android:icon="@drawable/ic_menu"
         android:id="@+id/categoryFragment"/>
     <item
         android:title="Products"
-        android:icon="@drawable/ic_profile"
+        android:icon="@drawable/ic_product"
         android:id="@+id/productsFragment"/>
 </menu>

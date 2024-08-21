@@ -1,4 +1,4 @@
-package com.example.productsadder
+package com.example.productsadder.activity
 
 import android.content.Intent
 import android.os.Bundle
@@ -8,8 +8,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.productsadder.databinding.ActivityRegisterBinding
 import com.example.productsadder.util.Resource
-import com.example.productsadder.viewmodel.LoginViewModel
-import com.example.productsadder.viewmodel.LoginViewModelFactory
 import com.example.productsadder.viewmodel.RegisterViewModel
 import com.example.productsadder.viewmodel.RegisterViewModelFactory
 import com.google.firebase.auth.FirebaseAuth

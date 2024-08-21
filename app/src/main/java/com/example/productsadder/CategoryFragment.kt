@@ -1,5 +1,6 @@
 package com.example.productsadder
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -7,8 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.productsadder.activity.AddCategoryActivity
 import com.example.productsadder.adapter.CategoryAdapter
 import com.example.productsadder.databinding.FragmentCategoryBinding
 import com.example.productsadder.util.showBottomNavigationView
@@ -55,9 +56,8 @@ class CategoryFragment : Fragment(R.layout.fragment_category) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.floatingButton.setOnClickListener {
-            val navController = Navigation.findNavController(binding.root)
-            navController.navigate(R.id.action_FragmentCategory_to_FragmentAddCategory)
+        binding.categoryFloatingButton.setOnClickListener {
+            startActivity(Intent(requireContext(), AddCategoryActivity::class.java))
         }
     }
 
