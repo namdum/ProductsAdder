@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/white"
-    tools:context=".activity.AddProductActivity">
+    tools:context=".activity.EditeProductActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbar"
@@ -32,7 +32,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:fontFamily="@font/poppins_thin"
-                android:text="Add Product"
+                android:text="Edit Product"
                 android:textColor="@color/g_black16"
                 android:textSize="@dimen/_16ssp"
                 android:textStyle="bold" />

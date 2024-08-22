@@ -31,21 +31,23 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/editbtn"
-        android:src="@drawable/ic_edit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/_20sdp"
         android:layout_centerVertical="true"
-        android:layout_toStartOf="@id/deletebtn" />
+        android:layout_marginEnd="@dimen/_5sdp"
+        android:layout_toStartOf="@id/deletebtn"
+        android:padding="@dimen/_10sdp"
+        android:src="@drawable/ic_edit" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/deletebtn"
-        android:src="@drawable/ic_delete"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
-        android:layout_marginEnd="@dimen/_10sdp"/>
+        android:layout_marginEnd="@dimen/_10sdp"
+        android:padding="@dimen/_10sdp"
+        android:src="@drawable/ic_delete" />
 
     <View
         android:layout_marginTop="@dimen/_10sdp"

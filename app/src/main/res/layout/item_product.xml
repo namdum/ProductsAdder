@@ -6,56 +6,211 @@
     android:background="@drawable/rounded_corner_background">
 
     <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/productAppCompatTextView"
+        android:id="@+id/productNameTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
         android:layout_marginStart="@dimen/_10sdp"
         android:fontFamily="@font/poppins_thin"
-        android:padding="@dimen/_3sdp"
+        android:textColor="@color/black"
+        android:text="Product Name : "
+        android:textSize="@dimen/_12ssp" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/productName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:layout_toEndOf="@+id/productNameTextView"
+        android:fontFamily="@font/poppins_thin"
+        android:textColor="@color/black"
         android:text="text"
-        android:textSize="@dimen/_15ssp" />
+        android:textSize="@dimen/_12ssp" />
 
-    <androidx.appcompat.widget.AppCompatEditText
-        android:id="@+id/editText"
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/categoryTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:layout_alignParentStart="true"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
+        android:layout_below="@+id/productNameTextView"
         android:layout_marginStart="@dimen/_10sdp"
         android:fontFamily="@font/poppins_thin"
-        android:padding="@dimen/_3sdp"
-        android:textSize="@dimen/_15ssp"/>
-    
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/editbtn"
-        style="@style/blueButtonStyle"
+        android:textColor="@color/black"
+        android:text="Category : "
+        android:textSize="@dimen/_12ssp" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/category"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/_5sdp"
-        android:layout_toStartOf="@id/deletebtn"
-        android:text="Edit" />
+        android:layout_marginStart="@dimen/_10sdp"
+        android:layout_below="@+id/productName"
+        android:layout_toEndOf="@+id/categoryTextView"
+        android:fontFamily="@font/poppins_thin"
+        android:textColor="@color/black"
+        android:text="text"
+        android:textSize="@dimen/_12ssp" />
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/savebtn"
-        style="@style/blueButtonStyle"
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/descriptionTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:layout_marginEnd="@dimen/_5sdp"
-        android:layout_toStartOf="@id/deletebtn"
-        android:text="Save" />
+        android:layout_below="@+id/categoryTextView"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:fontFamily="@font/poppins_thin"
+        android:textColor="@color/black"
+        android:text="Description : "
+        android:textSize="@dimen/_12ssp" />
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/deletebtn"
-        style="@style/blueButtonStyle"
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:layout_below="@+id/category"
+        android:layout_toEndOf="@+id/descriptionTextView"
+        android:fontFamily="@font/poppins_thin"
+        android:textColor="@color/black"
+        android:text="text"
+        android:textSize="@dimen/_12ssp" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/priceTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/descriptionTextView"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:fontFamily="@font/poppins_thin"
+        android:textColor="@color/black"
+        android:text="Price : "
+        android:textSize="@dimen/_12ssp" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:layout_below="@+id/description"
+        android:layout_toEndOf="@+id/priceTextView"
+        android:fontFamily="@font/poppins_thin"
+        android:textColor="@color/black"
+        android:text="text"
+        android:textSize="@dimen/_12ssp" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/offerpercentageTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/priceTextView"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:fontFamily="@font/poppins_thin"
+        android:textColor="@color/black"
+        android:text="Offer Percentage : "
+        android:textSize="@dimen/_12ssp" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/offerpercentage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:layout_below="@+id/price"
+        android:layout_toEndOf="@+id/offerpercentageTextView"
+        android:fontFamily="@font/poppins_thin"
+        android:textColor="@color/black"
+        android:text="text"
+        android:textSize="@dimen/_12ssp" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/sizeTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/offerpercentageTextView"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:fontFamily="@font/poppins_thin"
+        android:textColor="@color/black"
+        android:text="Size : "
+        android:textSize="@dimen/_12ssp" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/size"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:layout_below="@+id/offerpercentage"
+        android:layout_toEndOf="@+id/sizeTextView"
+        android:fontFamily="@font/poppins_thin"
+        android:textColor="@color/black"
+        android:text="text"
+        android:textSize="@dimen/_12ssp" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/colorTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/sizeTextView"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:fontFamily="@font/poppins_thin"
+        android:textColor="@color/black"
+        android:text="Color : "
+        android:textSize="@dimen/_12ssp" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/color"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:layout_below="@+id/size"
+        android:layout_toEndOf="@+id/colorTextView"
+        android:fontFamily="@font/poppins_thin"
+        android:textColor="@color/black"
+        android:text="text"
+        android:textSize="@dimen/_12ssp" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/imagesTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/colorTextView"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:fontFamily="@font/poppins_thin"
+        android:textColor="@color/black"
+        android:text="Images : "
+        android:textSize="@dimen/_12ssp" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/images"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:layout_below="@+id/color"
+        android:layout_toEndOf="@+id/imagesTextView"
+        android:fontFamily="@font/poppins_thin"
+        android:textColor="@color/black"
+        android:text="text"
+        android:textSize="@dimen/_12ssp" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/editImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="@dimen/_5sdp"
+        android:layout_toStartOf="@id/deleteImageView"
+        android:padding="@dimen/_10sdp"
+        android:src="@drawable/ic_edit" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/deleteImageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:layout_marginEnd="@dimen/_5sdp"
-        android:text="Delete" />
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="@dimen/_10sdp"
+        android:padding="@dimen/_10sdp"
+        android:src="@drawable/ic_delete" />
+
+    <View
+        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_1sdp"
+        android:background="@color/g_gray500"
+        android:layout_below="@+id/images" />
 </RelativeLayout>

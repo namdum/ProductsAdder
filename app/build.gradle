@@ -37,6 +37,7 @@ android {
     }
 }
 
+
 dependencies {
 
     implementation libs.androidx.core.ktx
@@ -50,9 +51,6 @@ dependencies {
     androidTestImplementation libs.androidx.junit
     androidTestImplementation libs.androidx.espresso.core
 
-    implementation ("androidx.databinding:databinding-runtime:3.6.0")
-    kapt ("androidx.databinding:databinding-compiler:3.6.0")
-    implementation ("androidx.databinding:databinding-common:3.6.0")
     //Ssp Sdp
     implementation ("com.intuit.ssp:ssp-android:1.1.1")
     implementation ("com.intuit.sdp:sdp-android:1.1.1")
@@ -71,7 +69,10 @@ dependencies {
     //glide
     implementation ("com.github.bumptech.glide:glide:4.12.0")
     annotationProcessor ("com.github.bumptech.glide:compiler:4.12.0")
+//    implementation ("com.github.duanhong169:colorpicker:1.1.6")
 
-    //circularButton
-    implementation ("br.com.simplepass:loading-button-android:1.1.1")
+    //circular image
+    implementation ("de.hdodenhof:circleimageview:3.1.0")
+
+    implementation ("com.github.skydoves:colorpickerview:2.2.4")
 }
