@@ -68,7 +68,7 @@ class CategoryAdapter(val categories: MutableList<Category>) : RecyclerView.Adap
                 .addOnSuccessListener { querySnapshot ->
                     if (querySnapshot.documents.isNotEmpty()) {
                         val documentId = querySnapshot.documents[0].id
-                        firestore.collection("user").document(userId).collection("Category").document(documentId)
+                        firestore.collection("Category").document(documentId)
                             .delete()
                             .addOnSuccessListener {
                                 categories.removeAt(position)

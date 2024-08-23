@@ -89,43 +89,45 @@ class ProductViewModel(private val firestore: FirebaseFirestore, private val aut
     }
 
 
-//    fun editCategory(oldCategory: Category, newCategory: Category) {
-//        val validateInputs = validateInputs(newCategory)
-//
-//        if (validateInputs) {
-//            _editProduct.value = Resource.Loading()
-//            val firestore = FirebaseFirestore.getInstance()
-//            val userId = FirebaseAuth.getInstance().uid!!
-//
-//            firestore.collection("user").document(userId).collection("Category")
-//                .whereEqualTo("category", oldCategory.category)
-//                .get()
-//                .addOnSuccessListener { querySnapshot ->
-//                    Log.i("test", newCategory.toString())
-//                    if (querySnapshot.documents.isNotEmpty()) {
-//                        val document = querySnapshot.documents[0]
-//                        document.reference.update("image", newCategory.image,"category", newCategory.category )
-//                            .addOnSuccessListener {
-//                                _editProduct.value = Resource.Success(newCategory)
-//                                val currentCategories = _products.value.toMutableList()
-//                                val index = currentCategories.indexOf(oldCategory)
-//                                if (index != -1) {
-//                                    currentCategories[index] = newCategory
-//                                    _products.value = currentCategories
-//                                }
-//                            }
-//                            .addOnFailureListener { exception ->
-//                                _editProduct.value = Resource.Error(exception.message.toString())
-//                            }
-//                    } else {
-//                        _editProduct.value = Resource.Error("Category not found")
-//                    }
-//                }
-//                .addOnFailureListener { exception ->
-//                    _editProduct.value = Resource.Error(exception.message.toString())
-//                }
-//        } else {
-//            _editProduct.value = Resource.Error("Category fields are required")
-//        }
-//    }
+    fun editProduct(oldProduct: Product, newProduct: Product) {
+        val validateInputs = validateInputs(newProduct)
+
+        if (validateInputs) {
+            _editProduct.value = Resource.Loading()
+            val firestore = FirebaseFirestore.getInstance()
+
+            firestore.collection("Product")
+                .get()
+                .addOnSuccessListener { querySnapshot ->
+                    Log.i("test", newProduct.toString())
+                    if (querySnapshot.documents.isNotEmpty()) {
+                        val document = querySnapshot.documents[0]
+                        val productMap = hashMapOf(
+                            "name" to newProduct.name,
+                            "category" to newProduct.category,
+                            "description" to newProduct.description,
+                            "price" to newProduct.price,
+                            "offerPercentage" to newProduct.offerPercentage,
+                            "sizes" to newProduct.sizes,
+                            "colors" to newProduct.colors,
+                            "images" to newProduct.images
+                        )
+                        document.reference.update(productMap)
+                            .addOnSuccessListener {
+                                _editProduct.value = Resource.Success(newProduct)
+                            }
+                            .addOnFailureListener { exception ->
+                                _editProduct.value = Resource.Error(exception.message.toString())
+                            }
+                    } else {
+                        _editProduct.value = Resource.Error("Product not found")
+                    }
+                }
+                .addOnFailureListener { exception ->
+                    _editProduct.value = Resource.Error(exception.message.toString())
+                }
+        } else {
+            _editProduct.value = Resource.Error("Product fields are required")
+        }
+    }
 }

@@ -40,7 +40,7 @@ class AddProductActivity : AppCompatActivity() {
     private lateinit var imageAdapter: ImageAdapter
     private var selectedColors: MutableList<Int> = mutableListOf()
     private var selectedImages: MutableList<Uri> = mutableListOf()
-    private val uploadedImageUrls: MutableList<String> = mutableListOf()
+    private val uploadedImageString: MutableList<String> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,6 +72,7 @@ class AddProductActivity : AppCompatActivity() {
 //            startActivityForResult(Intent.createChooser(intent, "Select Picture"), 100);
             imagePickerLauncher.launch(intent)
             imageAdapter.updateImageUris(selectedImages)
+            imageAdapter.updateImageString(uploadedImageString)
         }
 
         binding.addColorImageView.setOnClickListener {
@@ -113,8 +114,7 @@ class AddProductActivity : AppCompatActivity() {
                 val size = sizeEditText.text.toString().trim().split(",").map { it.trim() }
                 val selectedCategory = binding.categoryEditText.selectedItem.toString()
 
-                val product = Product(name,
-                    selectedCategory, price, offerpercentage, description, size, selectedColors, uploadedImageUrls)
+                val product = Product(name, selectedCategory, price, offerpercentage, description, size, selectedColors, uploadedImageString)
                 viewModel.addProduct(product)
             }
         }
@@ -127,7 +127,7 @@ class AddProductActivity : AppCompatActivity() {
                     is Resource.Success -> {
                         binding.progressbarAddress.visibility = View.INVISIBLE
                         Toast.makeText(this@AddProductActivity, "Add Product", Toast.LENGTH_LONG).show()
-                        startActivity(Intent(this@AddProductActivity, ProductsFragment::class.java))
+                        finish()
                     }
 
                     is Resource.Error -> {
@@ -157,6 +157,7 @@ class AddProductActivity : AppCompatActivity() {
 
             imageUris.forEach { imageUri ->
                 selectedImages.add(imageUri!!)
+                Log.i("test","${selectedImages}")
                 uploadImageToFirebaseStorage(imageUri)
             }
             imageAdapter.imageUris = selectedImages
@@ -179,14 +180,14 @@ class AddProductActivity : AppCompatActivity() {
         }.addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 val downloadUrl = task.result
-                uploadedImageUrls.add(downloadUrl.toString())
+                uploadedImageString.add(downloadUrl.toString())
+                Log.i("test","$uploadedImageString")
             }
         }
     }
 
     private fun fetchCategories() {
         val firestore = FirebaseFirestore.getInstance()
-        val userId = FirebaseAuth.getInstance().uid!!
 
         firestore.collection("Category")
             .get()

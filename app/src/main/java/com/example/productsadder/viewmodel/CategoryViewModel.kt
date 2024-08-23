@@ -33,7 +33,6 @@ class CategoryViewModel(private val firestore: FirebaseFirestore, private val au
         if (validateInputs) {
             _editCategory.value = Resource.Loading()
             val firestore = FirebaseFirestore.getInstance()
-            val userId = FirebaseAuth.getInstance().uid!!
 
             firestore.collection("Category")
                 .whereEqualTo("category", oldCategory.category)

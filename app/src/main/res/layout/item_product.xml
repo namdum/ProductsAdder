@@ -6,35 +6,13 @@
     android:background="@drawable/rounded_corner_background">
 
     <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/productNameTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/_10sdp"
-        android:fontFamily="@font/poppins_thin"
-        android:textColor="@color/black"
-        android:text="Product Name : "
-        android:textSize="@dimen/_12ssp" />
-
-    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/productName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/_10sdp"
-        android:layout_toEndOf="@+id/productNameTextView"
         android:fontFamily="@font/poppins_thin"
         android:textColor="@color/black"
         android:text="text"
-        android:textSize="@dimen/_12ssp" />
-
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/categoryTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/productNameTextView"
-        android:layout_marginStart="@dimen/_10sdp"
-        android:fontFamily="@font/poppins_thin"
-        android:textColor="@color/black"
-        android:text="Category : "
         android:textSize="@dimen/_12ssp" />
 
     <androidx.appcompat.widget.AppCompatTextView
@@ -43,44 +21,9 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/_10sdp"
         android:layout_below="@+id/productName"
-        android:layout_toEndOf="@+id/categoryTextView"
         android:fontFamily="@font/poppins_thin"
         android:textColor="@color/black"
         android:text="text"
-        android:textSize="@dimen/_12ssp" />
-
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/descriptionTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/categoryTextView"
-        android:layout_marginStart="@dimen/_10sdp"
-        android:fontFamily="@font/poppins_thin"
-        android:textColor="@color/black"
-        android:text="Description : "
-        android:textSize="@dimen/_12ssp" />
-
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/description"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/_10sdp"
-        android:layout_below="@+id/category"
-        android:layout_toEndOf="@+id/descriptionTextView"
-        android:fontFamily="@font/poppins_thin"
-        android:textColor="@color/black"
-        android:text="text"
-        android:textSize="@dimen/_12ssp" />
-
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/priceTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/descriptionTextView"
-        android:layout_marginStart="@dimen/_10sdp"
-        android:fontFamily="@font/poppins_thin"
-        android:textColor="@color/black"
-        android:text="Price : "
         android:textSize="@dimen/_12ssp" />
 
     <androidx.appcompat.widget.AppCompatTextView
@@ -88,45 +31,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/_10sdp"
-        android:layout_below="@+id/description"
-        android:layout_toEndOf="@+id/priceTextView"
+        android:layout_below="@+id/category"
         android:fontFamily="@font/poppins_thin"
         android:textColor="@color/black"
         android:text="text"
-        android:textSize="@dimen/_12ssp" />
-
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/offerpercentageTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/priceTextView"
-        android:layout_marginStart="@dimen/_10sdp"
-        android:fontFamily="@font/poppins_thin"
-        android:textColor="@color/black"
-        android:text="Offer Percentage : "
-        android:textSize="@dimen/_12ssp" />
-
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/offerpercentage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/_10sdp"
-        android:layout_below="@+id/price"
-        android:layout_toEndOf="@+id/offerpercentageTextView"
-        android:fontFamily="@font/poppins_thin"
-        android:textColor="@color/black"
-        android:text="text"
-        android:textSize="@dimen/_12ssp" />
-
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/sizeTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/offerpercentageTextView"
-        android:layout_marginStart="@dimen/_10sdp"
-        android:fontFamily="@font/poppins_thin"
-        android:textColor="@color/black"
-        android:text="Size : "
         android:textSize="@dimen/_12ssp" />
 
     <androidx.appcompat.widget.AppCompatTextView
@@ -134,68 +42,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/_10sdp"
-        android:layout_below="@+id/offerpercentage"
-        android:layout_toEndOf="@+id/sizeTextView"
+        android:layout_below="@+id/price"
         android:fontFamily="@font/poppins_thin"
         android:textColor="@color/black"
         android:text="text"
         android:textSize="@dimen/_12ssp" />
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/colorTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/sizeTextView"
-        android:layout_marginStart="@dimen/_10sdp"
-        android:fontFamily="@font/poppins_thin"
-        android:textColor="@color/black"
-        android:text="Color : "
-        android:textSize="@dimen/_12ssp" />
-
-<!--    <androidx.appcompat.widget.AppCompatTextView-->
-<!--        android:id="@+id/color"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginStart="@dimen/_10sdp"-->
-<!--        android:layout_below="@+id/size"-->
-<!--        android:layout_toEndOf="@+id/colorTextView"-->
-<!--        android:fontFamily="@font/poppins_thin"-->
-<!--        android:textColor="@color/black"-->
-<!--        android:text="text"-->
-<!--        android:textSize="@dimen/_12ssp" />-->
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/color"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/_10sdp"
-        android:layout_below="@+id/size"
-        android:layout_toEndOf="@+id/colorTextView"
-        android:fontFamily="@font/poppins_thin"
-        android:textSize="@dimen/_10ssp"/>
-
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/imagesTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/colorTextView"
-        android:layout_marginStart="@dimen/_10sdp"
-        android:fontFamily="@font/poppins_thin"
-        android:textColor="@color/black"
-        android:text="Images : "
-        android:textSize="@dimen/_12ssp" />
-
-    <androidx.recyclerview.widget.RecyclerView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/images"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/_10sdp"
-        android:layout_below="@+id/color"
-        android:layout_toEndOf="@+id/imagesTextView"
-        android:fontFamily="@font/poppins_thin"
-        android:textColor="@color/black"
-        android:text="text"
-        android:textSize="@dimen/_12ssp" />
+        android:layout_width="@dimen/_70sdp"
+        android:layout_height="@dimen/_70sdp"
+        android:src="@drawable/chair"
+        android:scaleType="fitXY"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="@dimen/_30sdp"
+        android:layout_toStartOf="@+id/editImageView" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/editImageView"
@@ -222,5 +83,5 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/_1sdp"
         android:background="@color/g_gray500"
-        android:layout_below="@+id/images" />
+        android:layout_below="@+id/size" />
 </RelativeLayout>

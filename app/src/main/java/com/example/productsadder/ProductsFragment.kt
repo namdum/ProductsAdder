@@ -40,8 +40,6 @@ class ProductsFragment : Fragment(R.layout.fragment_products) {
         productAdapter = ProductAdapter(mutableListOf())
         recyclerView.adapter = productAdapter
 
-        viewModel.fetchProducts()
-
         lifecycleScope.launchWhenStarted {
             viewModel.products.collect { products ->
                 productAdapter.products.clear()
@@ -63,5 +61,6 @@ class ProductsFragment : Fragment(R.layout.fragment_products) {
     override fun onResume() {
         super.onResume()
         showBottomNavigationView()
+        viewModel.fetchProducts()
     }
 }
