@@ -37,16 +37,6 @@
                 android:textSize="@dimen/_16ssp"
                 android:textStyle="bold" />
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/addAppCompatButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/_10sdp"
-                android:scaleType="fitXY"
-                android:src="@drawable/ic_save"
-                android:layout_centerInParent="true"
-                android:layout_alignParentEnd="true" />
-
         </RelativeLayout>
 
     </com.google.android.material.appbar.AppBarLayout>
@@ -96,39 +86,27 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textInputLayoutCategory"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+        <androidx.appcompat.widget.AppCompatSpinner
+            android:id="@+id/categoryEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/textInputLayoutName"
-            android:layout_gravity="center"
-            android:hint="Category"
-            android:padding="@dimen/_2sdp"
-            app:endIconMode="clear_text"
-            app:endIconTint="@color/g_gray500"
-            app:shapeAppearance="@style/Rounded">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/categoryEditText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/poppins_light"
-                android:imeOptions="actionDone"
-                android:inputType="text"
-                android:padding="@dimen/_10sdp"
-                android:textColor="@color/black"
-                android:textSize="@dimen/_12ssp"
-                android:textStyle="bold" />
-
-        </com.google.android.material.textfield.TextInputLayout>
+            android:background="@drawable/spinner_border"
+            android:fontFamily="@font/poppins_light"
+            android:imeOptions="actionDone"
+            android:padding="@dimen/_11sdp"
+            android:prompt="@string/category_hint"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_12ssp"
+            android:layout_margin="@dimen/_3sdp"
+            android:textStyle="bold"
+            android:layout_below="@id/textInputLayoutName" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/textInputLayoutProductDescription"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/textInputLayoutCategory"
+            android:layout_below="@id/categoryEditText"
             android:layout_gravity="center"
             android:hint="Product Description"
             android:padding="@dimen/_2sdp"
@@ -279,23 +257,24 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/rvColors"
             android:layout_marginStart="@dimen/_5sdp"
-            android:layout_marginTop="@dimen/_30sdp"
+            android:layout_marginTop="@dimen/_10sdp"
             android:layout_toEndOf="@+id/addImageImageView"
             android:singleLine="true"
             android:textColor="@color/black"
             android:textSize="@dimen/_15ssp"/>
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/imageTextView"
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/addAppCompatButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/rvColors"
-            android:layout_marginStart="@dimen/_5sdp"
-            android:layout_marginTop="@dimen/_30sdp"
-            android:layout_toEndOf="@+id/addImageImageView"
-            android:singleLine="true"
-            android:textColor="@color/black"
-            android:textSize="@dimen/_15ssp"/>
+            style="@style/blueButtonStyle"
+            android:text="Add Product"
+            android:textSize="@dimen/_15ssp"
+            android:textStyle="bold"
+            android:layout_below="@id/addImageImageView"
+            android:layout_marginStart="@dimen/_7sdp"
+            android:layout_marginEnd="@dimen/_7sdp"
+            android:layout_marginTop="@dimen/_20sdp"/>
 
         <ProgressBar
             android:id="@+id/progressbarAddress"

@@ -35,7 +35,7 @@ class CategoryViewModel(private val firestore: FirebaseFirestore, private val au
             val firestore = FirebaseFirestore.getInstance()
             val userId = FirebaseAuth.getInstance().uid!!
 
-            firestore.collection("user").document(userId).collection("Category")
+            firestore.collection("Category")
                 .whereEqualTo("category", oldCategory.category)
                 .get()
                 .addOnSuccessListener { querySnapshot ->
@@ -72,7 +72,7 @@ class CategoryViewModel(private val firestore: FirebaseFirestore, private val au
 
         if (validateInputs) {
             viewModelScope.launch { _addNewCategory.emit(Resource.Loading()) }
-        firestore.collection("user").document(auth.uid!!).collection("Category").document()
+        firestore.collection("Category").document()
                 .set(category).addOnSuccessListener {
                     Log.i("test", category.toString())
                 viewModelScope.launch {
@@ -92,7 +92,7 @@ class CategoryViewModel(private val firestore: FirebaseFirestore, private val au
     }
 
     fun fetchCategories() {
-        firestore.collection("user").document(auth.uid!!).collection("Category")
+        firestore.collection("Category")
             .get().addOnSuccessListener { querySnapshot ->
                 val categories = querySnapshot.documents.map { document ->
                     Category(document.getString("image")!!,document.getString("category")!!)

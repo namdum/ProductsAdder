@@ -20,6 +20,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
 import java.util.UUID
 
@@ -77,7 +78,7 @@ class AddCategoryActivity : AppCompatActivity() {
             }
         }
 
-        lifecycleScope.launchWhenStarted {
+        lifecycleScope.launch {
             viewModel.addNewCategory.collectLatest {
                 when (it) {
                     is Resource.Loading -> {}
@@ -85,7 +86,7 @@ class AddCategoryActivity : AppCompatActivity() {
                     is Resource.Success -> {
                         binding.progressbarAddress.visibility = View.INVISIBLE
                         Toast.makeText(this@AddCategoryActivity, "Add Category", Toast.LENGTH_LONG).show()
-                        startActivity(Intent(this@AddCategoryActivity, CategoryFragment::class.java))
+                        finish()
                     }
 
                     is Resource.Error -> {
@@ -97,7 +98,7 @@ class AddCategoryActivity : AppCompatActivity() {
             }
         }
 
-        lifecycleScope.launchWhenStarted {
+        lifecycleScope.launch {
             viewModel.error.collectLatest {
                 Toast.makeText(this@AddCategoryActivity, it, Toast.LENGTH_SHORT).show()
             }

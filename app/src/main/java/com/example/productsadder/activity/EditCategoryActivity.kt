@@ -91,7 +91,7 @@ class EditCategoryActivity : AppCompatActivity() {
                     is Resource.Success -> {
                         binding.progressbarAddress.visibility = View.INVISIBLE
                         Toast.makeText(this@EditCategoryActivity,"Save Category", Toast.LENGTH_LONG).show()
-                        startActivity(Intent(this@EditCategoryActivity, CategoryFragment::class.java))
+                        finish()
                     }
 
                     is Resource.Error -> {

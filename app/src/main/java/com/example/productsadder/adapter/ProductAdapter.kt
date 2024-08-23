@@ -5,12 +5,12 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.AppCompatButton
+import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.productsadder.R
-import com.example.productsadder.activity.EditCategoryActivity
 import com.example.productsadder.activity.EditeProductActivity
 import com.example.productsadder.data.Product
 import com.google.firebase.auth.FirebaseAuth
@@ -25,8 +25,8 @@ class ProductAdapter(val products: MutableList<Product>) : RecyclerView.Adapter<
         val priceTextView: AppCompatTextView = itemView.findViewById(R.id.price)
         val offerPercentageTextView: AppCompatTextView = itemView.findViewById(R.id.offerpercentage)
         val sizeTextView: AppCompatTextView = itemView.findViewById(R.id.size)
-        val colorTextView: AppCompatTextView = itemView.findViewById(R.id.color)
-        val imagesTextView: AppCompatTextView = itemView.findViewById(R.id.images)
+//        val colorLayout: RecyclerView = itemView.findViewById(R.id.color)
+//        val imageLayout: LinearLayout = itemView.findViewById(R.id.image)
         val editButton: AppCompatImageView = itemView.findViewById(R.id.editImageView)
         val deleteButton: AppCompatImageView = itemView.findViewById(R.id.deleteImageView)
     }
@@ -45,8 +45,20 @@ class ProductAdapter(val products: MutableList<Product>) : RecyclerView.Adapter<
         holder.offerPercentageTextView.text = product.offerPercentage.toString()
         holder.sizeTextView.text = product.sizes?.joinToString(", ")
 
-        holder.colorTextView.text = product.colors?.joinToString(", ")
-        holder.imagesTextView.text = "${product.images.size}"
+//        holder.colorLayout.removeAllViews()
+//        product.colors?.forEach { color ->
+//            val colorView = View(holder.itemView.context)
+//            colorView.setBackgroundColor(color)
+//            holder.colorLayout.addView(colorView)
+//        }
+//
+//        holder.imageLayout.removeAllViews()
+//        product.images.forEach { image ->
+//            val imageView = AppCompatImageView(holder.itemView.context)
+//            imageView.setImageResource(R.drawable.chair)
+//            Glide.with(holder.itemView.context).load(image).into(imageView)
+//            holder.imageLayout.addView(imageView)
+//        }
 
         holder.editButton.setOnClickListener {
             val intent = Intent(holder.itemView.context, EditeProductActivity::class.java)
@@ -69,7 +81,7 @@ class ProductAdapter(val products: MutableList<Product>) : RecyclerView.Adapter<
             val firestore = FirebaseFirestore.getInstance()
             val userId = FirebaseAuth.getInstance().uid!!
 
-            firestore.collection("user").document(userId).collection("Product")
+            firestore.collection("Product")
                 .get()
                 .addOnSuccessListener { querySnapshot ->
                     if (querySnapshot.documents.isNotEmpty()) {

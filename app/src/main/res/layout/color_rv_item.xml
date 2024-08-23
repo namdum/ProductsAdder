@@ -7,8 +7,8 @@
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/imageShadow"
-        android:layout_width="@dimen/_20sdp"
-        android:layout_height="@dimen/_20sdp"
+        android:layout_width="@dimen/_26sdp"
+        android:layout_height="@dimen/_26sdp"
         android:src="@color/black"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -16,8 +16,8 @@
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/imageColor"
-        android:layout_width="@dimen/_19sdp"
-        android:layout_height="@dimen/_19sdp"
+        android:layout_width="@dimen/_25sdp"
+        android:layout_height="@dimen/_25sdp"
         android:src="@color/g_blue"
         app:layout_constraintStart_toStartOf="@id/imageShadow"
         app:layout_constraintTop_toTopOf="@id/imageShadow"
@@ -26,10 +26,11 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/imagePicked"
-        android:layout_width="@dimen/_9sdp"
-        android:layout_height="@dimen/_9sdp"
+        android:layout_width="@dimen/_12sdp"
+        android:layout_height="@dimen/_12sdp"
         android:src="@drawable/ic_close"
         android:visibility="visible"
+        android:background="@drawable/white_background"
         app:layout_constraintEnd_toEndOf="@id/imageShadow"
         app:layout_constraintTop_toTopOf="@id/imageShadow" />
 

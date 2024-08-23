@@ -62,7 +62,7 @@ class CategoryAdapter(val categories: MutableList<Category>) : RecyclerView.Adap
             val firestore = FirebaseFirestore.getInstance()
             val userId = FirebaseAuth.getInstance().uid!!
 
-            firestore.collection("user").document(userId).collection("Category")
+            firestore.collection("Category")
                 .whereEqualTo("category", category.category)
                 .get()
                 .addOnSuccessListener { querySnapshot ->

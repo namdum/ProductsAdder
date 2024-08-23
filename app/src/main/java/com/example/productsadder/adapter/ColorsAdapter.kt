@@ -1,6 +1,7 @@
 package com.example.productsadder.adapter
 
 import android.graphics.drawable.ColorDrawable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -43,10 +44,17 @@ class ColorsAdapter : RecyclerView.Adapter<ColorsAdapter.ColorsViewHolder>() {
     }
 
     fun updateColors(newColors: List<Int>) {
+        val currentSize = colors.size
         colors.clear()
         colors.addAll(newColors)
         selectedColors.clear()
         selectedColors.addAll(newColors.map { false })
-        notifyDataSetChanged()
+        notifyItemRangeRemoved(0, currentSize)
+        notifyItemRangeInserted(0, newColors.size)
+    }
+
+
+    fun getColor(): List<Int> {
+        return colors.toList()
     }
 }

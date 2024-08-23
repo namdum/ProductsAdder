@@ -33,7 +33,7 @@ class ProductViewModel(private val firestore: FirebaseFirestore, private val aut
 
         if (validateInputs) {
             viewModelScope.launch { _addNewProduct.emit(Resource.Loading()) }
-            firestore.collection("products").document()
+            firestore.collection("Product").document()
                 .set(product).addOnSuccessListener {
                     Log.i("test", product.toString())
                     viewModelScope.launch {
@@ -52,21 +52,22 @@ class ProductViewModel(private val firestore: FirebaseFirestore, private val aut
     }
 
     fun fetchProducts() {
-        firestore.collection("user").document(auth.uid!!).collection("Product")
+        firestore.collection("Product")
             .get().addOnSuccessListener { querySnapshot ->
-                Log.d("ProductViewModel", "Fetched products: ${querySnapshot.documents.size}")
+                Log.d("test", "Fetched products: ${querySnapshot.documents.size}")
+                Log.d("test", "Fetched products: ${querySnapshot.documents}")
                 val products = querySnapshot.documents.map { document ->
                     val name = document.getString("name") ?: ""
                     val category = document.getString("category") ?: ""
                     val description = document.getString("description") ?: ""
-                    val price = document.getString("price")?.toFloatOrNull() ?: 0f
-                    val offerPercentage = document.getString("offerPercentage")?.toFloatOrNull() ?: 0f
-                    val size = document.getString("sizes") ?: ""
-                    val colorStrings = document.get("colors") as? List<String> ?: mutableListOf()
-                    val colors = colorStrings.map { it.toIntOrNull() ?: 0 }
+                    val price = document.getDouble("price")?.toFloat() ?: 0f
+                    val offerPercentage = document.getDouble("offerPercentage")?.toFloat() ?: 0f
+                    val size = document.get("sizes") as? List<String> ?: mutableListOf()
+                    val colorStrings = document.get("colors") as? List<Long> ?: mutableListOf()
+                    val colors = colorStrings.map { it.toInt() ?: 0 }
                     val images = document.get("images") as? List<String> ?: mutableListOf()
 
-                    Product(name, category, price, offerPercentage, description, size.split(",").map { it.trim() }, colors, images.toMutableList())
+                    Product(name, category, price, offerPercentage, description, size, colors, images.toMutableList())
                 }
                 viewModelScope.launch {
                     _products.emit(products)
@@ -84,8 +85,7 @@ class ProductViewModel(private val firestore: FirebaseFirestore, private val aut
                 product.description?.isNotEmpty() ?: true &&
                 product.price > 0 &&
                 product.sizes?.isNotEmpty() ?: true &&
-                product.colors?.isNotEmpty() ?: true &&
-                product.images.isNotEmpty()
+                product.colors?.isNotEmpty() ?: true
     }
 
 

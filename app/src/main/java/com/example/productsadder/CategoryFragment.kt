@@ -40,8 +40,6 @@ class CategoryFragment : Fragment(R.layout.fragment_category) {
         categoryAdapter = CategoryAdapter(mutableListOf())
         recyclerView.adapter = categoryAdapter
 
-        viewModel.fetchCategories()
-
         lifecycleScope.launchWhenStarted {
             viewModel.categories.collect { categories ->
                 categoryAdapter.categories.clear()
@@ -64,5 +62,6 @@ class CategoryFragment : Fragment(R.layout.fragment_category) {
     override fun onResume() {
         super.onResume()
         showBottomNavigationView()
+        viewModel.fetchCategories()
     }
 }

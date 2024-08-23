@@ -152,7 +152,19 @@
         android:text="Color : "
         android:textSize="@dimen/_12ssp" />
 
-    <androidx.appcompat.widget.AppCompatTextView
+<!--    <androidx.appcompat.widget.AppCompatTextView-->
+<!--        android:id="@+id/color"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginStart="@dimen/_10sdp"-->
+<!--        android:layout_below="@+id/size"-->
+<!--        android:layout_toEndOf="@+id/colorTextView"-->
+<!--        android:fontFamily="@font/poppins_thin"-->
+<!--        android:textColor="@color/black"-->
+<!--        android:text="text"-->
+<!--        android:textSize="@dimen/_12ssp" />-->
+
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/color"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -160,9 +172,7 @@
         android:layout_below="@+id/size"
         android:layout_toEndOf="@+id/colorTextView"
         android:fontFamily="@font/poppins_thin"
-        android:textColor="@color/black"
-        android:text="text"
-        android:textSize="@dimen/_12ssp" />
+        android:textSize="@dimen/_10ssp"/>
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/imagesTextView"
@@ -175,7 +185,7 @@
         android:text="Images : "
         android:textSize="@dimen/_12ssp" />
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/images"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
