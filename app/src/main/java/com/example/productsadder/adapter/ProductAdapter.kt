@@ -40,7 +40,7 @@ class ProductAdapter(val products: MutableList<Product>) : RecyclerView.Adapter<
         holder.sizeTextView.text = product.sizes?.joinToString(", ")
 
         Glide.with(holder.itemView.context)
-            .load(product.images)
+            .load(product.images.firstOrNull())
             .placeholder(R.drawable.chair)
             .diskCacheStrategy(DiskCacheStrategy.ALL)
             .into(holder.productAppCompatImageView)
@@ -66,12 +66,12 @@ class ProductAdapter(val products: MutableList<Product>) : RecyclerView.Adapter<
         alertDialog.setPositiveButton("Yes") { _, _ ->
             val firestore = FirebaseFirestore.getInstance()
 
-            firestore.collection("Product")
+            firestore.collection("Products")
                 .get()
                 .addOnSuccessListener { querySnapshot ->
                     if (querySnapshot.documents.isNotEmpty()) {
                         val documentId = querySnapshot.documents[0].id
-                        firestore.collection("Product").document(documentId)
+                        firestore.collection("Products").document(documentId)
                             .delete()
                             .addOnSuccessListener {
                                 products.removeAt(position)

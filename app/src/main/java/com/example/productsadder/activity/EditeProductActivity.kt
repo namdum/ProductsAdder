@@ -2,8 +2,6 @@ package com.example.productsadder.activity
 
 import android.app.Activity
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -38,8 +36,7 @@ import com.skydoves.colorpickerview.ColorEnvelope
 import com.skydoves.colorpickerview.ColorPickerDialog
 import com.skydoves.colorpickerview.listeners.ColorEnvelopeListener
 import kotlinx.coroutines.flow.collectLatest
-import java.io.ByteArrayOutputStream
-import java.util.UUID
+import kotlinx.coroutines.launch
 
 class EditeProductActivity : AppCompatActivity() {
     private lateinit var binding: ActivityEditeProductBinding
@@ -48,8 +45,7 @@ class EditeProductActivity : AppCompatActivity() {
     private lateinit var imageAdapter: ImageAdapter
     private var selectedColors: MutableList<Int> = mutableListOf()
     private var selectedImages: MutableList<Uri> = mutableListOf()
-    private var uploadedImageUrls: MutableList<String> = mutableListOf()
-    private var categories: List<String> = emptyList()
+    private var uploadedImageString: MutableList<String> = mutableListOf()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityEditeProductBinding.inflate(layoutInflater)
@@ -59,7 +55,10 @@ class EditeProductActivity : AppCompatActivity() {
 
         val product: Product? = intent.getParcelableExtra("product")
 
-        imageAdapter = ImageAdapter(uploadedImageUrls)
+        uploadedImageString.addAll(product?.images ?: mutableListOf())
+        Log.i("test","$uploadedImageString")
+
+        imageAdapter = ImageAdapter(uploadedImageString)
         binding.rvImage.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         binding.rvImage.adapter = imageAdapter
 
@@ -79,7 +78,6 @@ class EditeProductActivity : AppCompatActivity() {
             intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
             intent.action = Intent.ACTION_GET_CONTENT
             imagePickerLauncher.launch(intent)
-//            imageAdapter.updateImageUris(selectedImages)
         }
 
         binding.addColorImageView.setOnClickListener {
@@ -109,16 +107,17 @@ class EditeProductActivity : AppCompatActivity() {
                     colorPicker.dismiss()
                 }.show()
         }
+
         binding.productNameEditText.setText(product?.name)
-        binding.categoryEditText.setSelection(categories.indexOf(product?.category?: ""))
         binding.productDescriptionEditText.setText(product?.description)
         binding.priceEditText.setText(product?.price.toString())
         binding.offerPercentageEditText.setText(product?.offerPercentage.toString())
-        binding.sizeEditText.setText(product?.sizes.toString())
+        binding.sizeEditText.setText(product?.sizes?.joinToString(", ").toString())
 
-        product?.images?.let { uploadedImageUrls.addAll(it)
-        Log.i("test","$it")}
-        imageAdapter.updateImageString(uploadedImageUrls)
+//        product?.images?.let { uploadedImageString.addAll(it)
+//        Log.i("test","$it")}
+        //imageAdapter.updateImageString(uploadedImageString)
+        imageAdapter.notifyDataSetChanged()
 
         product?.colors?.let { selectedColors.addAll(it) }
         colorsAdapter.updateColors(selectedColors)
@@ -145,16 +144,41 @@ class EditeProductActivity : AppCompatActivity() {
                     colors = product?.colors?.map { it.toInt() },
                     images = product?.images ?: emptyList()
                 )
-                val newProduct = Product(name, selectedCategory, price, offerpercentage, description, size, selectedColors, uploadedImageUrls)
+                val newProduct = Product(name, selectedCategory, price, offerpercentage, description, size, selectedColors, uploadedImageString)
                 viewModel.editProduct(oldProduct,newProduct)
             }
         }
+        lifecycleScope.launch {
+            viewModel.editProduct.collectLatest {
+                when (it) {
+                    is Resource.Loading -> {}
 
+                    is Resource.Success -> {
+                        binding.progressbarAddress.visibility = View.INVISIBLE
+                        Toast.makeText(this@EditeProductActivity, "Save Product", Toast.LENGTH_LONG).show()
+                        finish()
+                    }
+
+                    is Resource.Error -> {
+                        Toast.makeText(this@EditeProductActivity, it.message, Toast.LENGTH_SHORT).show()
+                    }
+
+                    else -> Unit
+                }
+            }
+        }
+
+        lifecycleScope.launch {
+            viewModel.error.collectLatest {
+                Toast.makeText(this@EditeProductActivity, it, Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     private val imagePickerLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        uploadedImageUrls = imageAdapter.getImage().toMutableList()
+        uploadedImageString = imageAdapter.getImage().toMutableList()
         if (result.resultCode == Activity.RESULT_OK) {
+            binding.progressbar.visibility = View.VISIBLE
             val imageUris = result.data?.clipData?.itemCount?.let { itemCount ->
                 (0 until itemCount).map { index ->
                     result.data?.clipData?.getItemAt(index)?.uri
@@ -166,14 +190,12 @@ class EditeProductActivity : AppCompatActivity() {
                 Log.i("test","${selectedImages}")
                 uploadImageToFirebaseStorage(imageUri)
             }
-//            imageAdapter.imageUris = selectedImages
-//            imageAdapter.notifyDataSetChanged()
         }
     }
 
     private fun uploadImageToFirebaseStorage(imageUri: Uri) {
         val storageRef = FirebaseStorage.getInstance().reference
-        val imageRef = storageRef.child("images/${UUID.randomUUID()}.jpg")
+        val imageRef = storageRef.child("images/${imageUri.lastPathSegment}.jpg")
         val uploadTask = imageRef.putFile(imageUri)
 
         uploadTask.continueWithTask { task ->
@@ -186,7 +208,13 @@ class EditeProductActivity : AppCompatActivity() {
         }.addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 val downloadUrl = task.result
-                uploadedImageUrls.add(downloadUrl.toString())
+
+                runOnUiThread {
+                    uploadedImageString.add(downloadUrl.toString())
+                    imageAdapter.updateImageString(uploadedImageString)
+                    imageAdapter.notifyDataSetChanged()
+                    binding.progressbar.visibility = View.GONE
+                }
             }
         }
     }
@@ -211,8 +239,12 @@ class EditeProductActivity : AppCompatActivity() {
     private fun populateSpinner(categories: List<String>) {
         val spinnerAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, categories)
         binding.categoryEditText.adapter = spinnerAdapter
-        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        val product: Product? = intent.getParcelableExtra("product")
+        val categoryIndex = categories.indexOf(product?.category ?: "")
+
+        binding.categoryEditText.setSelection(categoryIndex)
         binding.categoryEditText.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
                 val selectedCategory = categories[position]

@@ -1,11 +1,13 @@
 package com.example.productsadder.activity
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.productsadder.R
 import com.example.productsadder.databinding.ActivityHomeBinding
+import com.google.firebase.auth.FirebaseAuth
 
 class HomeActivity : AppCompatActivity() {
     private lateinit var binding: ActivityHomeBinding
@@ -25,6 +27,11 @@ class HomeActivity : AppCompatActivity() {
         menu.findItem(R.id.productsFragment).setOnMenuItemClickListener {
             navController.navigate(R.id.FragmentProducts)
             true
+        }
+
+        binding.logoutButton.setOnClickListener {
+            FirebaseAuth.getInstance().signOut()
+            startActivity(Intent(this,LoginActivity::class.java))
         }
     }
 }

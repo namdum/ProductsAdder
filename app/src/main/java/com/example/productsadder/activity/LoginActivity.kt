@@ -2,15 +2,20 @@ package com.example.productsadder.activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
+import com.example.productsadder.data.Category
 import com.example.productsadder.databinding.ActivityLoginBinding
 import com.example.productsadder.util.Resource
 import com.example.productsadder.viewmodel.LoginViewModel
 import com.example.productsadder.viewmodel.LoginViewModelFactory
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.launch
 
 class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
@@ -21,6 +26,7 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        val firestore = FirebaseFirestore.getInstance()
 
         val viewModelFactory = LoginViewModelFactory(FirebaseAuth.getInstance())
         viewModel = ViewModelProvider(this, viewModelFactory)[LoginViewModel::class.java]
@@ -28,8 +34,32 @@ class LoginActivity : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
 
         if (auth.currentUser != null) {
-            startActivity(Intent(this, HomeActivity::class.java))
-            finish()
+
+            firestore.collection("users")
+                .whereEqualTo("email", auth?.currentUser?.email)
+                .get()
+                .addOnSuccessListener { querySnapshot ->
+                    Log.i("test", querySnapshot.toString())
+
+                    println("auth.currentUser?.email: " + auth.currentUser?.email)
+                    firestore.collection("user").whereEqualTo("email", auth.currentUser?.email)
+                        .get().addOnSuccessListener { querySnapshot ->
+                            querySnapshot.documents.map { document ->
+                                println("document.getString(\"user_type\"): " + document.getString("user_type"))
+                                if(document.getString("user_type").toString().equals("admin")) {
+                                    startActivity(Intent(this, HomeActivity::class.java))
+                                    finish()
+                                } else {
+                                    Toast.makeText(this@LoginActivity, "Invalid credentials", Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                        }.addOnFailureListener { exception ->
+                            Toast.makeText(this@LoginActivity, "Invalid credentials", Toast.LENGTH_SHORT).show()
+                        }
+                }
+                .addOnFailureListener { exception ->
+                    Toast.makeText(this@LoginActivity, "Invalid credentials", Toast.LENGTH_SHORT).show()
+                }
         }
         binding.loginLoginBtn.setOnClickListener {
             val email = binding.loginEmailEdit.text.toString()
@@ -41,7 +71,32 @@ class LoginActivity : AppCompatActivity() {
             when (result) {
                 is Resource.Success -> {
                     Toast.makeText(this, result.data, Toast.LENGTH_SHORT).show()
-                    startActivity(Intent(this, HomeActivity::class.java))
+                    firestore.collection("users")
+                        .whereEqualTo("email", auth?.currentUser?.email)
+                        .get()
+                        .addOnSuccessListener { querySnapshot ->
+                            Log.i("test", querySnapshot.toString())
+
+                            println("auth.currentUser?.email: " + auth.currentUser?.email)
+                            firestore.collection("user").whereEqualTo("email", auth.currentUser?.email)
+                                .get().addOnSuccessListener { querySnapshot ->
+                                    querySnapshot.documents.map { document ->
+                                        println("document.getString(\"user_type\"): " + document.getString("user_type"))
+                                        if(document.getString("user_type").toString().equals("admin")) {
+                                            startActivity(Intent(this, HomeActivity::class.java))
+                                            finish()
+                                        } else {
+                                            Toast.makeText(this@LoginActivity, "Invalid credentials", Toast.LENGTH_SHORT).show()
+                                        }
+                                    }
+                                }.addOnFailureListener { exception ->
+                                    Toast.makeText(this@LoginActivity, "Invalid credentials", Toast.LENGTH_SHORT).show()
+                                }
+                        }
+                        .addOnFailureListener { exception ->
+                            Toast.makeText(this@LoginActivity, "Invalid credentials", Toast.LENGTH_SHORT).show()
+                        }
+
                 }
                 is Resource.Error -> {
                     Toast.makeText(this, result.message, Toast.LENGTH_SHORT).show()

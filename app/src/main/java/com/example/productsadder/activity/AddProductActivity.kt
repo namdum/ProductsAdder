@@ -147,6 +147,7 @@ class AddProductActivity : AppCompatActivity() {
     private val imagePickerLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         uploadedImageString = imageAdapter.getImage().toMutableList()
         if (result.resultCode == Activity.RESULT_OK) {
+            binding.progressbar.visibility = View.VISIBLE
             val imageUris = result.data?.clipData?.itemCount?.let { itemCount ->
                 (0 until itemCount).map { index ->
                     result.data?.clipData?.getItemAt(index)?.uri
@@ -187,6 +188,7 @@ class AddProductActivity : AppCompatActivity() {
                     uploadedImageString.add(downloadUrl.toString())
                     imageAdapter.updateImageString(uploadedImageString)
                     imageAdapter.notifyDataSetChanged()
+                    binding.progressbar.visibility = View.GONE
                 }
             }
         }

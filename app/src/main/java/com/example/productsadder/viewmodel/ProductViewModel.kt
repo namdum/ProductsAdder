@@ -33,7 +33,7 @@ class ProductViewModel(private val firestore: FirebaseFirestore, private val aut
 
         if (validateInputs) {
             viewModelScope.launch { _addNewProduct.emit(Resource.Loading()) }
-            firestore.collection("Product").document()
+            firestore.collection("Products").document()
                 .set(product).addOnSuccessListener {
                     Log.i("test", product.toString())
                     viewModelScope.launch {
@@ -52,7 +52,7 @@ class ProductViewModel(private val firestore: FirebaseFirestore, private val aut
     }
 
     fun fetchProducts() {
-        firestore.collection("Product")
+        firestore.collection("Products")
             .get().addOnSuccessListener { querySnapshot ->
                 Log.d("test", "Fetched products: ${querySnapshot.documents.size}")
                 Log.d("test", "Fetched products: ${querySnapshot.documents}")
@@ -96,7 +96,7 @@ class ProductViewModel(private val firestore: FirebaseFirestore, private val aut
             _editProduct.value = Resource.Loading()
             val firestore = FirebaseFirestore.getInstance()
 
-            firestore.collection("Product")
+            firestore.collection("Products")
                 .get()
                 .addOnSuccessListener { querySnapshot ->
                     Log.i("test", newProduct.toString())
