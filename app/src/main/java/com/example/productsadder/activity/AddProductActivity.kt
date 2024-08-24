@@ -40,7 +40,7 @@ class AddProductActivity : AppCompatActivity() {
     private lateinit var imageAdapter: ImageAdapter
     private var selectedColors: MutableList<Int> = mutableListOf()
     private var selectedImages: MutableList<Uri> = mutableListOf()
-    private val uploadedImageString: MutableList<String> = mutableListOf()
+    private var uploadedImageString: MutableList<String> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,7 +50,7 @@ class AddProductActivity : AppCompatActivity() {
         val viewModelFactory = ProductViewModelFactory(FirebaseFirestore.getInstance(), FirebaseAuth.getInstance())
         viewModel = ViewModelProvider(this, viewModelFactory)[ProductViewModel::class.java]
 
-        imageAdapter = ImageAdapter(selectedImages)
+        imageAdapter = ImageAdapter(uploadedImageString)
         binding.rvImage.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         binding.rvImage.adapter = imageAdapter
 
@@ -105,15 +105,15 @@ class AddProductActivity : AppCompatActivity() {
             binding.addAppCompatButton.visibility = View.GONE
             binding.apply {
                 println("uploadedImageString: " + uploadedImageString)
-//                val name = productNameEditText.text.toString().trim()
-//                val description = productDescriptionEditText.text.toString().trim()
-//                val price = priceEditText.text.toString().trim().toFloatOrNull() ?: 0f
-//                val offerpercentage = offerPercentageEditText.text.toString().trim().toFloatOrNull() ?: 0f
-//                val size = sizeEditText.text.toString().trim().split(",").map { it.trim() }
-//                val selectedCategory = binding.categoryEditText.selectedItem.toString()
-//
-//                val product = Product(name, selectedCategory, price, offerpercentage, description, size, selectedColors, uploadedImageString)
-//                viewModel.addProduct(product)
+                val name = productNameEditText.text.toString().trim()
+                val description = productDescriptionEditText.text.toString().trim()
+                val price = priceEditText.text.toString().trim().toFloatOrNull() ?: 0f
+                val offerpercentage = offerPercentageEditText.text.toString().trim().toFloatOrNull() ?: 0f
+                val size = sizeEditText.text.toString().trim().split(",").map { it.trim() }
+                val selectedCategory = binding.categoryEditText.selectedItem.toString()
+
+                val product = Product(name, selectedCategory, price, offerpercentage, description, size, selectedColors, uploadedImageString)
+                viewModel.addProduct(product)
             }
         }
 
@@ -145,7 +145,7 @@ class AddProductActivity : AppCompatActivity() {
     }
 
     private val imagePickerLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        selectedImages = imageAdapter.getImage().toMutableList()
+        uploadedImageString = imageAdapter.getImage().toMutableList()
         if (result.resultCode == Activity.RESULT_OK) {
             val imageUris = result.data?.clipData?.itemCount?.let { itemCount ->
                 (0 until itemCount).map { index ->
@@ -162,6 +162,8 @@ class AddProductActivity : AppCompatActivity() {
            // imageAdapter.updateImageUris(selectedImages)
 //            imageAdapter.updateImageString(uploadedImageString)
 //            imageAdapter.notifyDataSetChanged()
+
+            println("UploadedImage: " + uploadedImageString.toString())
         }
     }
 
@@ -181,11 +183,11 @@ class AddProductActivity : AppCompatActivity() {
             if (task.isSuccessful) {
                 val downloadUrl = task.result
 
-                uploadedImageString.add(downloadUrl.toString())
                 runOnUiThread {
+                    uploadedImageString.add(downloadUrl.toString())
                     imageAdapter.updateImageString(uploadedImageString)
+                    imageAdapter.notifyDataSetChanged()
                 }
-                Log.i("test","$uploadedImageString")
             }
         }
     }

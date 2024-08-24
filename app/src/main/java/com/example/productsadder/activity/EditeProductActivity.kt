@@ -48,7 +48,7 @@ class EditeProductActivity : AppCompatActivity() {
     private lateinit var imageAdapter: ImageAdapter
     private var selectedColors: MutableList<Int> = mutableListOf()
     private var selectedImages: MutableList<Uri> = mutableListOf()
-    private val uploadedImageUrls: MutableList<String> = mutableListOf()
+    private var uploadedImageUrls: MutableList<String> = mutableListOf()
     private var categories: List<String> = emptyList()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,7 +59,7 @@ class EditeProductActivity : AppCompatActivity() {
 
         val product: Product? = intent.getParcelableExtra("product")
 
-        imageAdapter = ImageAdapter(selectedImages)
+        imageAdapter = ImageAdapter(uploadedImageUrls)
         binding.rvImage.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         binding.rvImage.adapter = imageAdapter
 
@@ -79,7 +79,7 @@ class EditeProductActivity : AppCompatActivity() {
             intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
             intent.action = Intent.ACTION_GET_CONTENT
             imagePickerLauncher.launch(intent)
-            imageAdapter.updateImageUris(selectedImages)
+//            imageAdapter.updateImageUris(selectedImages)
         }
 
         binding.addColorImageView.setOnClickListener {
@@ -153,7 +153,7 @@ class EditeProductActivity : AppCompatActivity() {
     }
 
     private val imagePickerLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        selectedImages = imageAdapter.getImage().toMutableList()
+        uploadedImageUrls = imageAdapter.getImage().toMutableList()
         if (result.resultCode == Activity.RESULT_OK) {
             val imageUris = result.data?.clipData?.itemCount?.let { itemCount ->
                 (0 until itemCount).map { index ->
@@ -166,8 +166,8 @@ class EditeProductActivity : AppCompatActivity() {
                 Log.i("test","${selectedImages}")
                 uploadImageToFirebaseStorage(imageUri)
             }
-            imageAdapter.imageUris = selectedImages
-            imageAdapter.notifyDataSetChanged()
+//            imageAdapter.imageUris = selectedImages
+//            imageAdapter.notifyDataSetChanged()
         }
     }
 

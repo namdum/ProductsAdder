@@ -9,8 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.productsadder.R
 
-class ImageAdapter(var imageUris: MutableList<Uri>) : RecyclerView.Adapter<ImageAdapter.ViewHolder>() {
-private var imageString : MutableList<String> = mutableListOf()
+class ImageAdapter(var imageString: MutableList<String>) : RecyclerView.Adapter<ImageAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.image_rv_item, parent, false)
         return ViewHolder(view)
@@ -19,35 +18,25 @@ private var imageString : MutableList<String> = mutableListOf()
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
         println("imageString: " + imageString)
-        if(imageString.isEmpty())
-        {
-            val imageUri = imageUris[position]
-            holder.bindImage(imageUri) { pos ->
-                imageUris.removeAt(pos)
-                notifyDataSetChanged()
-            }
-        }
-        else{
-            val imageStrings = imageString[position]
-            holder.bindImage(imageStrings) { pos ->
-                imageString.removeAt(pos)
-                notifyDataSetChanged()
-            }
+        val imageStrings = imageString[position]
+        holder.bindImage(imageStrings) { pos ->
+            imageString.removeAt(pos)
+            notifyDataSetChanged()
         }
 
     }
 
-    override fun getItemCount(): Int = imageUris.size
+    override fun getItemCount(): Int = imageString.size
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun bindImage(imageUri: Uri, onDelete: (Int) -> Unit) {
-            val imageView = itemView.findViewById<ImageView>(R.id.image)
-            Glide.with(itemView.context).load(imageUri).into(imageView)
-            val imagePicked = itemView.findViewById<ImageView>(R.id.imagePicked)
-            imagePicked.setOnClickListener {
-                onDelete(adapterPosition)
-            }
-        }
+//        fun bindImage(imageUri: Uri, onDelete: (Int) -> Unit) {
+//            val imageView = itemView.findViewById<ImageView>(R.id.image)
+//            Glide.with(itemView.context).load(imageUri).into(imageView)
+//            val imagePicked = itemView.findViewById<ImageView>(R.id.imagePicked)
+//            imagePicked.setOnClickListener {
+//                onDelete(adapterPosition)
+//            }
+//        }
         fun bindImage(imaString: String, onDelete: (Int) -> Unit) {
             val imageView = itemView.findViewById<ImageView>(R.id.image)
             Glide.with(itemView.context).load(imaString).into(imageView)
@@ -57,21 +46,14 @@ private var imageString : MutableList<String> = mutableListOf()
             }
         }
     }
-    fun updateImageUris(newImageUris: MutableList<Uri>) {
-        imageUris = newImageUris
-        imageUris.addAll(newImageUris)
-        notifyDataSetChanged()
-    }
-
     fun updateImageString(newImageString: MutableList<String>) {
+        imageString.clear()
+        imageString.addAll(newImageString)
 
-        println("downloadUrl.toString(): " + newImageString.toString())
-
-        imageString = newImageString
-        notifyDataSetChanged()
+        notifyItemInserted(0)
     }
-    fun getImage(): List<Uri> {
-        return imageUris.toList()
+    fun getImage(): List<String> {
+        return imageString.toList()
     }
 
 }
