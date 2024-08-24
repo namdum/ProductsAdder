@@ -10,13 +10,15 @@ import com.bumptech.glide.Glide
 import com.example.productsadder.R
 
 class ImageAdapter(var imageUris: MutableList<Uri>) : RecyclerView.Adapter<ImageAdapter.ViewHolder>() {
-private lateinit var imageString : MutableList<String>
+private var imageString : MutableList<String> = mutableListOf()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.image_rv_item, parent, false)
         return ViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+
+        println("imageString: " + imageString)
         if(imageString.isEmpty())
         {
             val imageUri = imageUris[position]
@@ -62,8 +64,10 @@ private lateinit var imageString : MutableList<String>
     }
 
     fun updateImageString(newImageString: MutableList<String>) {
+
+        println("downloadUrl.toString(): " + newImageString.toString())
+
         imageString = newImageString
-        imageString.addAll(newImageString)
         notifyDataSetChanged()
     }
     fun getImage(): List<Uri> {

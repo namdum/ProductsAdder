@@ -42,7 +42,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        android:backgroundTint="@color/g_blue"
+        android:backgroundTint="@color/white"
         android:contentDescription="@string/todo"
         android:src="@drawable/ic_add"
         android:layout_marginBottom="@dimen/_16sdp"

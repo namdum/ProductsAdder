@@ -69,10 +69,7 @@ class AddProductActivity : AppCompatActivity() {
             intent.setType("image/*")
             intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
             intent.action = Intent.ACTION_GET_CONTENT
-//            startActivityForResult(Intent.createChooser(intent, "Select Picture"), 100);
             imagePickerLauncher.launch(intent)
-            imageAdapter.updateImageUris(selectedImages)
-            imageAdapter.updateImageString(uploadedImageString)
         }
 
         binding.addColorImageView.setOnClickListener {
@@ -107,15 +104,16 @@ class AddProductActivity : AppCompatActivity() {
             binding.progressbarAddress.visibility = View.VISIBLE
             binding.addAppCompatButton.visibility = View.GONE
             binding.apply {
-                val name = productNameEditText.text.toString().trim()
-                val description = productDescriptionEditText.text.toString().trim()
-                val price = priceEditText.text.toString().trim().toFloatOrNull() ?: 0f
-                val offerpercentage = offerPercentageEditText.text.toString().trim().toFloatOrNull() ?: 0f
-                val size = sizeEditText.text.toString().trim().split(",").map { it.trim() }
-                val selectedCategory = binding.categoryEditText.selectedItem.toString()
-
-                val product = Product(name, selectedCategory, price, offerpercentage, description, size, selectedColors, uploadedImageString)
-                viewModel.addProduct(product)
+                println("uploadedImageString: " + uploadedImageString)
+//                val name = productNameEditText.text.toString().trim()
+//                val description = productDescriptionEditText.text.toString().trim()
+//                val price = priceEditText.text.toString().trim().toFloatOrNull() ?: 0f
+//                val offerpercentage = offerPercentageEditText.text.toString().trim().toFloatOrNull() ?: 0f
+//                val size = sizeEditText.text.toString().trim().split(",").map { it.trim() }
+//                val selectedCategory = binding.categoryEditText.selectedItem.toString()
+//
+//                val product = Product(name, selectedCategory, price, offerpercentage, description, size, selectedColors, uploadedImageString)
+//                viewModel.addProduct(product)
             }
         }
 
@@ -160,14 +158,16 @@ class AddProductActivity : AppCompatActivity() {
                 Log.i("test","${selectedImages}")
                 uploadImageToFirebaseStorage(imageUri)
             }
-            imageAdapter.imageUris = selectedImages
-            imageAdapter.notifyDataSetChanged()
+//            imageAdapter.imageUris = selectedImages
+           // imageAdapter.updateImageUris(selectedImages)
+//            imageAdapter.updateImageString(uploadedImageString)
+//            imageAdapter.notifyDataSetChanged()
         }
     }
 
     private fun uploadImageToFirebaseStorage(imageUri: Uri) {
         val storageRef = FirebaseStorage.getInstance().reference
-        val imageRef = storageRef.child("images/${UUID.randomUUID()}.jpg")
+        val imageRef = storageRef.child("images/${imageUri.lastPathSegment}.jpg")
         val uploadTask = imageRef.putFile(imageUri)
 
         uploadTask.continueWithTask { task ->
@@ -180,7 +180,11 @@ class AddProductActivity : AppCompatActivity() {
         }.addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 val downloadUrl = task.result
+
                 uploadedImageString.add(downloadUrl.toString())
+                runOnUiThread {
+                    imageAdapter.updateImageString(uploadedImageString)
+                }
                 Log.i("test","$uploadedImageString")
             }
         }

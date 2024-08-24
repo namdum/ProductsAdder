@@ -115,7 +115,9 @@ class EditeProductActivity : AppCompatActivity() {
         binding.priceEditText.setText(product?.price.toString())
         binding.offerPercentageEditText.setText(product?.offerPercentage.toString())
         binding.sizeEditText.setText(product?.sizes.toString())
-        product?.images?.let { uploadedImageUrls.addAll(it) }
+
+        product?.images?.let { uploadedImageUrls.addAll(it)
+        Log.i("test","$it")}
         imageAdapter.updateImageString(uploadedImageUrls)
 
         product?.colors?.let { selectedColors.addAll(it) }
