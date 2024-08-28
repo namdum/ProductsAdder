@@ -97,6 +97,7 @@ class ProductViewModel(private val firestore: FirebaseFirestore, private val aut
             val firestore = FirebaseFirestore.getInstance()
 
             firestore.collection("Products")
+                .whereEqualTo("name", oldProduct.name)
                 .get()
                 .addOnSuccessListener { querySnapshot ->
                     Log.i("test", newProduct.toString())
