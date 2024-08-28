@@ -82,7 +82,8 @@ class ProductViewModel(private val firestore: FirebaseFirestore, private val aut
     private fun validateInputs(product: Product): Boolean {
         return product.name.isNotEmpty() &&
                 product.category.isNotEmpty() &&
-                product.price > 0 
+                product.price > 0 &&
+                product.images.isNotEmpty()
     }
 
 
