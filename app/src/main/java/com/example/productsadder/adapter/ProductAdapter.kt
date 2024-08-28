@@ -67,6 +67,7 @@ class ProductAdapter(val products: MutableList<Product>) : RecyclerView.Adapter<
             val firestore = FirebaseFirestore.getInstance()
 
             firestore.collection("Products")
+                .whereEqualTo("name", product.name)
                 .get()
                 .addOnSuccessListener { querySnapshot ->
                     if (querySnapshot.documents.isNotEmpty()) {
