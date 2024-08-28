@@ -10,6 +10,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/_10sdp"
+        android:layout_alignParentStart="true"
+        android:layout_toStartOf="@+id/images"
         android:fontFamily="@font/poppins_thin"
         android:textColor="@color/black"
         android:text="text"
@@ -21,41 +23,47 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/_10sdp"
         android:layout_below="@+id/productName"
-        android:fontFamily="@font/poppins_thin"
+        android:layout_alignParentStart="true"
+        android:layout_toStartOf="@+id/images"
+        android:fontFamily="@font/poppins_light"
         android:textColor="@color/black"
         android:text="text"
-        android:textSize="@dimen/_12ssp" />
+        android:textSize="@dimen/_11ssp" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_toStartOf="@+id/images"
         android:layout_marginStart="@dimen/_10sdp"
         android:layout_below="@+id/category"
-        android:fontFamily="@font/poppins_thin"
+        android:fontFamily="@font/poppins_light"
         android:textColor="@color/black"
         android:text="text"
-        android:textSize="@dimen/_12ssp" />
+        android:textSize="@dimen/_10ssp" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/size"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_toStartOf="@+id/images"
         android:layout_marginStart="@dimen/_10sdp"
         android:layout_below="@+id/price"
-        android:fontFamily="@font/poppins_thin"
+        android:fontFamily="@font/poppins_light"
         android:textColor="@color/black"
         android:text="text"
-        android:textSize="@dimen/_12ssp" />
+        android:textSize="@dimen/_10ssp" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/images"
-        android:layout_width="@dimen/_70sdp"
-        android:layout_height="@dimen/_70sdp"
+        android:layout_width="@dimen/_60sdp"
+        android:layout_height="@dimen/_60sdp"
         android:src="@drawable/chair"
-        android:scaleType="fitXY"
+        android:scaleType="centerCrop"
         android:layout_centerVertical="true"
-        android:layout_marginEnd="@dimen/_30sdp"
+        android:layout_marginEnd="@dimen/_12sdp"
         android:layout_toStartOf="@+id/editImageView" />
 
     <androidx.appcompat.widget.AppCompatImageView

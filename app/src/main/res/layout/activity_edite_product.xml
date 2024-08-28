@@ -41,238 +41,258 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <RelativeLayout
-        android:id="@+id/registerRelativelayout"
-        android:layout_below="@id/appbar"
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/_10sdp">
+        android:layout_below="@+id/appbar"
+        android:layout_above="@+id/actionFrameLayout">
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/titleAppCompatTextView"
+        <RelativeLayout
+            android:id="@+id/registerRelativelayout"
+            android:layout_below="@id/appbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:singleLine="true"
-            android:textStyle="bold"
-            android:textSize="@dimen/_15ssp"
-            android:textColor="@color/black"
-            android:text="Product general information :"
-            android:layout_marginBottom="@dimen/_10sdp"/>
+            android:padding="@dimen/_10sdp">
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textInputLayoutName"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_below="@id/titleAppCompatTextView"
-            android:hint="Name"
-            android:padding="@dimen/_2sdp"
-            app:endIconMode="clear_text"
-            app:endIconTint="@color/g_gray500"
-            app:shapeAppearance="@style/Rounded">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/productNameEditText"
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/titleAppCompatTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:textStyle="bold"
+                android:textSize="@dimen/_15ssp"
+                android:textColor="@color/black"
+                android:text="Product general information :"
+                android:layout_marginBottom="@dimen/_10sdp"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textInputLayoutName"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_below="@id/titleAppCompatTextView"
+                android:hint="Name"
+                android:padding="@dimen/_2sdp"
+                app:endIconMode="clear_text"
+                app:endIconTint="@color/g_gray500"
+                app:shapeAppearance="@style/Rounded">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/productNameEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins_light"
+                    android:imeOptions="actionDone"
+                    android:inputType="text"
+                    android:padding="@dimen/_10sdp"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_12ssp"
+                    android:textStyle="bold" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <androidx.appcompat.widget.AppCompatSpinner
+                android:id="@+id/categoryEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/spinner_border"
                 android:fontFamily="@font/poppins_light"
                 android:imeOptions="actionDone"
-                android:inputType="text"
-                android:padding="@dimen/_10sdp"
+                android:padding="@dimen/_11sdp"
+                android:prompt="@string/category_hint"
                 android:textColor="@color/black"
                 android:textSize="@dimen/_12ssp"
-                android:textStyle="bold" />
+                android:layout_margin="@dimen/_3sdp"
+                android:textStyle="bold"
+                android:layout_below="@id/textInputLayoutName" />
 
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <androidx.appcompat.widget.AppCompatSpinner
-            android:id="@+id/categoryEditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/spinner_border"
-            android:fontFamily="@font/poppins_light"
-            android:imeOptions="actionDone"
-            android:padding="@dimen/_11sdp"
-            android:prompt="@string/category_hint"
-            android:textColor="@color/black"
-            android:textSize="@dimen/_12ssp"
-            android:layout_margin="@dimen/_3sdp"
-            android:textStyle="bold"
-            android:layout_below="@id/textInputLayoutName" />
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textInputLayoutProductDescription"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/categoryEditText"
-            android:layout_gravity="center"
-            android:hint="Product Description"
-            android:padding="@dimen/_2sdp"
-            app:endIconMode="clear_text"
-            app:endIconTint="@color/g_gray500"
-            app:shapeAppearance="@style/Rounded">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/productDescriptionEditText"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textInputLayoutProductDescription"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/poppins_light"
-                android:imeOptions="actionNext"
-                android:inputType="text"
-                android:padding="@dimen/_10sdp"
-                android:textColor="@color/black"
-                android:textSize="@dimen/_12ssp"
-                android:textStyle="bold" />
+                android:layout_below="@id/categoryEditText"
+                android:layout_gravity="center"
+                android:hint="Product Description"
+                android:padding="@dimen/_2sdp"
+                app:endIconMode="clear_text"
+                app:endIconTint="@color/g_gray500"
+                app:shapeAppearance="@style/Rounded">
 
-        </com.google.android.material.textfield.TextInputLayout>
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/productDescriptionEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins_light"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"
+                    android:padding="@dimen/_10sdp"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_12ssp"
+                    android:textStyle="bold" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textInputLayoutPrice"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/textInputLayoutProductDescription"
-            android:layout_gravity="center"
-            android:hint="Price"
-            android:padding="@dimen/_2sdp"
-            app:endIconMode="clear_text"
-            app:endIconTint="@color/g_gray500"
-            app:shapeAppearance="@style/Rounded">
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/priceEditText"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textInputLayoutPrice"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/poppins_light"
-                android:imeOptions="actionDone"
-                android:inputType="number"
-                android:padding="@dimen/_10sdp"
-                android:textColor="@color/black"
-                android:textSize="@dimen/_12ssp"
-                android:textStyle="bold" />
+                android:layout_below="@+id/textInputLayoutProductDescription"
+                android:layout_gravity="center"
+                android:hint="Price"
+                android:padding="@dimen/_2sdp"
+                app:endIconMode="clear_text"
+                app:endIconTint="@color/g_gray500"
+                app:shapeAppearance="@style/Rounded">
 
-        </com.google.android.material.textfield.TextInputLayout>
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/priceEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins_light"
+                    android:imeOptions="actionDone"
+                    android:inputType="number"
+                    android:padding="@dimen/_10sdp"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_12ssp"
+                    android:textStyle="bold" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textInputLayoutOfferPercentage"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/textInputLayoutPrice"
-            android:hint="Offer Percentage"
-            android:padding="@dimen/_2sdp"
-            app:endIconMode="clear_text"
-            app:endIconTint="@color/g_gray500"
-            app:shapeAppearance="@style/Rounded">
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/offerPercentageEditText"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textInputLayoutOfferPercentage"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/poppins_light"
-                android:imeOptions="actionDone"
-                android:inputType="numberSigned"
-                android:padding="@dimen/_10sdp"
-                android:textColor="@color/black"
-                android:textSize="@dimen/_12ssp"
-                android:textStyle="bold" />
+                android:layout_below="@+id/textInputLayoutPrice"
+                android:hint="Offer Percentage"
+                android:padding="@dimen/_2sdp"
+                app:endIconMode="clear_text"
+                app:endIconTint="@color/g_gray500"
+                app:shapeAppearance="@style/Rounded">
 
-        </com.google.android.material.textfield.TextInputLayout>
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/offerPercentageEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins_light"
+                    android:imeOptions="actionDone"
+                    android:inputType="numberSigned"
+                    android:padding="@dimen/_10sdp"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_12ssp"
+                    android:textStyle="bold" />
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/titleTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/textInputLayoutOfferPercentage"
-            android:layout_marginTop="@dimen/_10sdp"
-            android:layout_marginBottom="@dimen/_10sdp"
-            android:singleLine="true"
-            android:text="Product details :"
-            android:textColor="@color/black"
-            android:textSize="@dimen/_15ssp"
-            android:textStyle="bold" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textInputLayoutSize"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/titleTextView"
-            android:hint="Size"
-            android:padding="@dimen/_2sdp"
-            app:endIconMode="clear_text"
-            app:endIconTint="@color/g_gray500"
-            app:shapeAppearance="@style/Rounded">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/sizeEditText"
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/titleTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/poppins_light"
-                android:imeOptions="actionDone"
-                android:inputType="text"
-                android:padding="@dimen/_10sdp"
+                android:layout_below="@+id/textInputLayoutOfferPercentage"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginBottom="@dimen/_10sdp"
+                android:singleLine="true"
+                android:text="Product details :"
                 android:textColor="@color/black"
-                android:textSize="@dimen/_12ssp"
+                android:textSize="@dimen/_15ssp"
                 android:textStyle="bold" />
 
-        </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textInputLayoutSize"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/titleTextView"
+                android:hint="Size"
+                android:padding="@dimen/_2sdp"
+                app:endIconMode="clear_text"
+                app:endIconTint="@color/g_gray500"
+                app:shapeAppearance="@style/Rounded">
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/addColorImageView"
-            style="@style/blueButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/textInputLayoutSize"
-            android:layout_marginStart="@dimen/_5sdp"
-            android:layout_marginTop="@dimen/_10sdp"
-            android:text="COLORS" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/sizeEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins_light"
+                    android:imeOptions="actionDone"
+                    android:inputType="text"
+                    android:padding="@dimen/_10sdp"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_12ssp"
+                    android:textStyle="bold" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvColors"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/textInputLayoutSize"
-            android:layout_marginStart="@dimen/_5sdp"
-            android:layout_marginTop="@dimen/_15sdp"
-            android:layout_toEndOf="@+id/addColorImageView"
-            android:fontFamily="@font/poppins_light"
-            android:textSize="@dimen/_10ssp"/>
+            </com.google.android.material.textfield.TextInputLayout>
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/addImageImageView"
-            style="@style/blueButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/addColorImageView"
-            android:layout_marginStart="@dimen/_5sdp"
-            android:layout_marginTop="@dimen/_10sdp"
-            android:text="IMAGES" />
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/addColorImageView"
+                style="@style/blueButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textInputLayoutSize"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:text="COLORS" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvImage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/textInputLayoutSize"
-            android:layout_marginStart="@dimen/_5sdp"
-            android:layout_marginTop="@dimen/_60sdp"
-            android:layout_toEndOf="@+id/addImageImageView"
-            android:singleLine="true"
-            android:textColor="@color/black"
-            android:textSize="@dimen/_15ssp"/>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvColors"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textInputLayoutSize"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:layout_toEndOf="@+id/addColorImageView"
+                android:fontFamily="@font/poppins_light"
+                android:textSize="@dimen/_10ssp"/>
 
-        <ProgressBar
-            android:id="@+id/progressbar"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/_20sdp"
-            android:indeterminateTint="@color/g_blue"
-            android:visibility="gone"
-            android:layout_below="@+id/textInputLayoutSize"
-            android:layout_marginStart="@dimen/_5sdp"
-            android:layout_marginTop="@dimen/_70sdp"
-            android:layout_toEndOf="@+id/addImageImageView" />
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/addImageImageView"
+                style="@style/blueButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/addColorImageView"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:text="IMAGES" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textInputLayoutSize"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:layout_marginTop="@dimen/_60sdp"
+                android:layout_toEndOf="@+id/addImageImageView"
+                android:singleLine="true"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_15ssp"/>
+
+            <ProgressBar
+                android:id="@+id/progressbar"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_20sdp"
+                android:indeterminateTint="@color/g_blue"
+                android:visibility="gone"
+                android:layout_below="@+id/textInputLayoutSize"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:layout_marginTop="@dimen/_70sdp"
+                android:layout_toEndOf="@+id/addImageImageView" />
+
+        </RelativeLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <FrameLayout
+        android:id="@+id/actionFrameLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/_4sdp"
+        android:layout_marginHorizontal="@dimen/_16sdp"
+        android:layout_marginBottom="@dimen/_12sdp">
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/saveAppCompatButton"
@@ -282,21 +302,17 @@
             android:text="Edit Product"
             android:textSize="@dimen/_15ssp"
             android:textStyle="bold"
-            android:layout_below="@id/addImageImageView"
-            android:layout_marginStart="@dimen/_7sdp"
-            android:layout_marginEnd="@dimen/_7sdp"
-            android:layout_marginTop="@dimen/_50sdp"/>
+            android:layout_below="@id/addImageImageView"/>
 
 
         <ProgressBar
             android:id="@+id/progressbarAddress"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/addImageImageView"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="@dimen/_50sdp"
             android:indeterminateTint="@color/g_blue"
+            android:layout_gravity="center"
             android:visibility="gone" />
-    </RelativeLayout>
+
+    </FrameLayout>
 
 </RelativeLayout>
