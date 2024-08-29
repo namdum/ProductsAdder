@@ -14,7 +14,7 @@
         android:layout_toStartOf="@+id/images"
         android:fontFamily="@font/poppins_thin"
         android:textColor="@color/black"
-        android:text="text"
+        android:text="@string/text"
         android:textSize="@dimen/_12ssp" />
 
     <androidx.appcompat.widget.AppCompatTextView
@@ -27,7 +27,7 @@
         android:layout_toStartOf="@+id/images"
         android:fontFamily="@font/poppins_light"
         android:textColor="@color/black"
-        android:text="text"
+        android:text="@string/text"
         android:textSize="@dimen/_11ssp" />
 
     <androidx.appcompat.widget.AppCompatTextView
@@ -40,7 +40,7 @@
         android:layout_below="@+id/category"
         android:fontFamily="@font/poppins_light"
         android:textColor="@color/black"
-        android:text="text"
+        android:text="@string/text"
         android:textSize="@dimen/_10ssp" />
 
     <androidx.appcompat.widget.AppCompatTextView
@@ -53,7 +53,7 @@
         android:layout_below="@+id/price"
         android:fontFamily="@font/poppins_light"
         android:textColor="@color/black"
-        android:text="text"
+        android:text="@string/text"
         android:textSize="@dimen/_10ssp" />
 
     <androidx.appcompat.widget.AppCompatImageView

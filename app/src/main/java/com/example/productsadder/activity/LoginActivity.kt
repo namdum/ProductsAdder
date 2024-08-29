@@ -7,15 +7,12 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewModelScope
-import com.example.productsadder.data.Category
 import com.example.productsadder.databinding.ActivityLoginBinding
 import com.example.productsadder.util.Resource
 import com.example.productsadder.viewmodel.LoginViewModel
 import com.example.productsadder.viewmodel.LoginViewModelFactory
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import kotlinx.coroutines.launch
 
 class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
@@ -41,11 +38,9 @@ class LoginActivity : AppCompatActivity() {
                 .addOnSuccessListener { querySnapshot ->
                     Log.i("test", querySnapshot.toString())
 
-                    println("auth.currentUser?.email: " + auth.currentUser?.email)
                     firestore.collection("user").whereEqualTo("email", auth.currentUser?.email)
                         .get().addOnSuccessListener { querySnapshot ->
                             querySnapshot.documents.map { document ->
-                                println("document.getString(\"user_type\"): " + document.getString("user_type"))
                                 if(document.getString("user_type").toString().equals("admin")) {
                                     startActivity(Intent(this, HomeActivity::class.java))
                                     finish()
@@ -77,11 +72,9 @@ class LoginActivity : AppCompatActivity() {
                         .addOnSuccessListener { querySnapshot ->
                             Log.i("test", querySnapshot.toString())
 
-                            println("auth.currentUser?.email: " + auth.currentUser?.email)
                             firestore.collection("user").whereEqualTo("email", auth.currentUser?.email)
                                 .get().addOnSuccessListener { querySnapshot ->
                                     querySnapshot.documents.map { document ->
-                                        println("document.getString(\"user_type\"): " + document.getString("user_type"))
                                         if(document.getString("user_type").toString().equals("admin")) {
                                             startActivity(Intent(this, HomeActivity::class.java))
                                             finish()

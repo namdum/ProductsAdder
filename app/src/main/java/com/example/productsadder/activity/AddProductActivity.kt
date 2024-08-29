@@ -15,7 +15,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.productsadder.ProductsFragment
 import com.example.productsadder.adapter.ColorsAdapter
 import com.example.productsadder.adapter.ImageAdapter
 import com.example.productsadder.data.Product
@@ -31,7 +30,6 @@ import com.skydoves.colorpickerview.ColorPickerDialog
 import com.skydoves.colorpickerview.listeners.ColorEnvelopeListener
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import java.util.UUID
 
 class AddProductActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAddProductBinding
@@ -104,7 +102,6 @@ class AddProductActivity : AppCompatActivity() {
             binding.progressbarAddress.visibility = View.VISIBLE
             binding.addAppCompatButton.visibility = View.GONE
             binding.apply {
-                println("uploadedImageString: " + uploadedImageString)
                 val name = productNameEditText.text.toString().trim()
                 val description = productDescriptionEditText.text.toString().trim()
                 val price = priceEditText.text.toString().trim().toFloatOrNull() ?: 0f
@@ -159,12 +156,6 @@ class AddProductActivity : AppCompatActivity() {
                 Log.i("test","${selectedImages}")
                 uploadImageToFirebaseStorage(imageUri)
             }
-//            imageAdapter.imageUris = selectedImages
-           // imageAdapter.updateImageUris(selectedImages)
-//            imageAdapter.updateImageString(uploadedImageString)
-//            imageAdapter.notifyDataSetChanged()
-
-            println("UploadedImage: " + uploadedImageString.toString())
         }
     }
 

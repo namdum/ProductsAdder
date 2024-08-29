@@ -44,22 +44,4 @@ class HomeActivity : AppCompatActivity() {
             replace(R.id.categoryHostFragment,fragment)
             commit()
         }
-
-//    val navController = findNavController(R.id.categoryHostFragment)
-//        binding.bottomNavigation.setupWithNavController(navController)
-//
-//        val menu = binding.bottomNavigation.menu
-//        menu.findItem(R.id.categoryFragment).setOnMenuItemClickListener {
-//            binding.bottomNavigation.menu.findItem(R.id.categoryFragment).isChecked = true
-//            binding.bottomNavigation.menu.findItem(R.id.productsFragment).isChecked = false
-//            navController.navigate(R.id.FragmentCategory)
-//            true
-//        }
-//        menu.findItem(R.id.productsFragment).setOnMenuItemClickListener {
-//            binding.bottomNavigation.menu.findItem(R.id.categoryFragment).isChecked = false
-//            binding.bottomNavigation.menu.findItem(R.id.productsFragment).isChecked = true
-//            navController.navigate(R.id.FragmentProducts)
-//            true
-//        }
-//    }
 }

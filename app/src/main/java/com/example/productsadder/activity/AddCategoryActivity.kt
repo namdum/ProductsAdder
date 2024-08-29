@@ -10,7 +10,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.example.productsadder.CategoryFragment
 import com.example.productsadder.data.Category
 import com.example.productsadder.databinding.ActivityAddCategoryBinding
 import com.example.productsadder.util.Resource
@@ -37,7 +36,6 @@ class AddCategoryActivity : AppCompatActivity() {
 
         binding.imageClose.setOnClickListener {
             finish()
-            //startActivity(Intent(this@AddCategoryActivity, CategoryFragment::class.java))
         }
 
         binding.imageAppCompatImageView.setOnClickListener {

@@ -11,7 +11,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
-import com.example.productsadder.CategoryFragment
 import com.example.productsadder.data.Category
 import com.example.productsadder.databinding.ActivityEditCategoryBinding
 import com.example.productsadder.util.Resource
@@ -42,7 +41,6 @@ class EditCategoryActivity : AppCompatActivity() {
 
         binding.imageClose.setOnClickListener {
             finish()
-            //startActivity(Intent(this@EditCategoryActivity, CategoryFragment::class.java))
         }
 
         binding.imageAppCompatImageView.setOnClickListener{

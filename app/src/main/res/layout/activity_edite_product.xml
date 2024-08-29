@@ -32,7 +32,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:fontFamily="@font/poppins_thin"
-                android:text="Edit Product"
+                android:text="@string/edit_product"
                 android:textColor="@color/g_black16"
                 android:textSize="@dimen/_16ssp"
                 android:textStyle="bold" />
@@ -62,7 +62,7 @@
                 android:textStyle="bold"
                 android:textSize="@dimen/_15ssp"
                 android:textColor="@color/black"
-                android:text="Product general information :"
+                android:text="@string/product_general_information"
                 android:layout_marginBottom="@dimen/_10sdp"/>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -72,7 +72,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_below="@id/titleAppCompatTextView"
-                android:hint="Name"
+                android:hint="@string/name"
                 android:padding="@dimen/_2sdp"
                 app:endIconMode="clear_text"
                 app:endIconTint="@color/g_gray500"
@@ -114,7 +114,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/categoryEditText"
                 android:layout_gravity="center"
-                android:hint="Product Description"
+                android:hint="@string/product_description"
                 android:padding="@dimen/_2sdp"
                 app:endIconMode="clear_text"
                 app:endIconTint="@color/g_gray500"
@@ -141,7 +141,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/textInputLayoutProductDescription"
                 android:layout_gravity="center"
-                android:hint="Price"
+                android:hint="@string/price"
                 android:padding="@dimen/_2sdp"
                 app:endIconMode="clear_text"
                 app:endIconTint="@color/g_gray500"
@@ -167,7 +167,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/textInputLayoutPrice"
-                android:hint="Offer Percentage"
+                android:hint="@string/offer_percentage"
                 android:padding="@dimen/_2sdp"
                 app:endIconMode="clear_text"
                 app:endIconTint="@color/g_gray500"
@@ -179,7 +179,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/poppins_light"
                     android:imeOptions="actionDone"
-                    android:inputType="numberSigned"
+                    android:inputType="numberDecimal"
                     android:padding="@dimen/_10sdp"
                     android:textColor="@color/black"
                     android:textSize="@dimen/_12ssp"
@@ -195,7 +195,7 @@
                 android:layout_marginTop="@dimen/_10sdp"
                 android:layout_marginBottom="@dimen/_10sdp"
                 android:singleLine="true"
-                android:text="Product details :"
+                android:text="@string/product_details"
                 android:textColor="@color/black"
                 android:textSize="@dimen/_15ssp"
                 android:textStyle="bold" />
@@ -206,7 +206,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/titleTextView"
-                android:hint="Size"
+                android:hint="@string/size"
                 android:padding="@dimen/_2sdp"
                 app:endIconMode="clear_text"
                 app:endIconTint="@color/g_gray500"
@@ -234,7 +234,7 @@
                 android:layout_below="@+id/textInputLayoutSize"
                 android:layout_marginStart="@dimen/_5sdp"
                 android:layout_marginTop="@dimen/_10sdp"
-                android:text="COLORS" />
+                android:text="@string/colors" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvColors"
@@ -255,7 +255,7 @@
                 android:layout_below="@+id/addColorImageView"
                 android:layout_marginStart="@dimen/_5sdp"
                 android:layout_marginTop="@dimen/_10sdp"
-                android:text="IMAGES" />
+                android:text="@string/images" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvImage"
@@ -299,7 +299,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             style="@style/blueButtonStyle"
-            android:text="Edit Product"
+            android:text="@string/edit_product"
             android:textSize="@dimen/_15ssp"
             android:textStyle="bold"
             android:layout_below="@id/addImageImageView"/>

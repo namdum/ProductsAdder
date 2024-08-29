@@ -60,7 +60,6 @@ class CategoryAdapter(val categories: MutableList<Category>) : RecyclerView.Adap
 
         alertDialog.setPositiveButton("Yes") { _, _ ->
             val firestore = FirebaseFirestore.getInstance()
-            val userId = FirebaseAuth.getInstance().uid!!
 
             firestore.collection("Category")
                 .whereEqualTo("category", category.category)

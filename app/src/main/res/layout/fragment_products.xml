@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/white"
     tools:context=".ProductsFragment">
 
@@ -21,7 +20,7 @@
             android:fontFamily="@font/poppins_thin"
             android:layout_marginVertical="@dimen/_10sdp"
             android:layout_gravity="center"
-            android:text="Product"
+            android:text="@string/product"
             android:textColor="@color/g_black16"
             android:textSize="@dimen/_16ssp"
             android:textStyle="bold" />

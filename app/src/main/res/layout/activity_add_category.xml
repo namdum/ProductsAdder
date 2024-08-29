@@ -32,7 +32,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:fontFamily="@font/poppins_thin"
-                android:text="Add Category"
+                android:text="@string/add_category"
                 android:textColor="@color/g_black16"
                 android:textSize="@dimen/_16ssp"
                 android:textStyle="bold" />
@@ -64,7 +64,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:hint="Category"
+            android:hint="@string/category"
             android:padding="@dimen/_2sdp"
             app:endIconMode="clear_text"
             android:layout_below="@id/imageAppCompatImageView"

@@ -3,7 +3,6 @@ package com.example.productsadder.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.productsadder.data.Category
 import com.example.productsadder.data.Product
 import com.example.productsadder.util.Resource
 import com.google.firebase.auth.FirebaseAuth

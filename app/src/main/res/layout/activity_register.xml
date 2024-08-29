@@ -193,7 +193,7 @@
                 android:layout_marginTop="@dimen/_18sdp"
                 android:fontFamily="@font/poppins_thin"
                 android:gravity="center"
-                android:text="Already Have An Account?"
+                android:text="@string/already_have_an_account"
                 android:textColor="@color/g_gray900"
                 android:textSize="@dimen/_9ssp" />
 

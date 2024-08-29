@@ -9,24 +9,16 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.productsadder.R
 import com.example.productsadder.adapter.ColorsAdapter
 import com.example.productsadder.adapter.ImageAdapter
-import com.example.productsadder.data.Category
 import com.example.productsadder.data.Product
-import com.example.productsadder.databinding.ActivityAddProductBinding
 import com.example.productsadder.databinding.ActivityEditeProductBinding
 import com.example.productsadder.util.Resource
-import com.example.productsadder.viewmodel.CategoryViewModel
-import com.example.productsadder.viewmodel.CategoryViewModelFactory
 import com.example.productsadder.viewmodel.ProductViewModel
 import com.example.productsadder.viewmodel.ProductViewModelFactory
 import com.google.firebase.auth.FirebaseAuth
@@ -114,9 +106,6 @@ class EditeProductActivity : AppCompatActivity() {
         binding.offerPercentageEditText.setText(product?.offerPercentage.toString())
         binding.sizeEditText.setText(product?.sizes?.joinToString(", ").toString())
 
-//        product?.images?.let { uploadedImageString.addAll(it)
-//        Log.i("test","$it")}
-        //imageAdapter.updateImageString(uploadedImageString)
         imageAdapter.notifyDataSetChanged()
 
         product?.colors?.let { selectedColors.addAll(it) }

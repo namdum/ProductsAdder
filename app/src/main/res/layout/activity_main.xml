@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:textAlignment="center"
         android:fontFamily="@font/poppins_light"
-        android:text="moneymakers"
+        android:text="@string/moneymakers"
         android:layout_marginStart="@dimen/_45sdp"
         android:gravity="center"
         android:textStyle="bold"
@@ -20,7 +20,7 @@
         android:textColor="@color/black"
         android:textSize="@dimen/_30ssp" />
 
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:layout_width="@dimen/_26sdp"
         android:layout_height="@dimen/_26sdp"
         android:layout_gravity="center"
