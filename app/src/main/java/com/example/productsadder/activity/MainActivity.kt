@@ -44,22 +44,29 @@ class MainActivity : AppCompatActivity() {
                                     finish()
                                 } else {
                                     Toast.makeText(this@MainActivity, "Invalid credentials", Toast.LENGTH_SHORT).show()
+                                    openLoginScreen()
                                 }
                             }
                         }.addOnFailureListener { exception ->
                             Toast.makeText(this@MainActivity, "Invalid credentials", Toast.LENGTH_SHORT).show()
+                            openLoginScreen()
                         }
                 }
                 .addOnFailureListener { exception ->
                     Toast.makeText(this@MainActivity, "Invalid credentials", Toast.LENGTH_SHORT).show()
+                    openLoginScreen()
                 }
         } else {
-            Handler(Looper.getMainLooper()).postDelayed({
-
-                val intent = Intent(this, LoginActivity::class.java)
-                startActivity(intent)
-                finish()
-            }, 1000)
+            openLoginScreen()
         }
+    }
+
+    fun openLoginScreen() {
+        Handler(Looper.getMainLooper()).postDelayed({
+
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
+            finish()
+        }, 1000)
     }
 }
