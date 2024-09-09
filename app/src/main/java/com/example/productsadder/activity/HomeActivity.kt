@@ -8,6 +8,7 @@ import com.example.productsadder.CategoryFragment
 import com.example.productsadder.ProductsFragment
 import com.example.productsadder.R
 import com.example.productsadder.databinding.ActivityHomeBinding
+import com.example.productsadder.OrderFragment
 import com.google.firebase.auth.FirebaseAuth
 
 class HomeActivity : AppCompatActivity() {
@@ -19,6 +20,7 @@ class HomeActivity : AppCompatActivity() {
 
         val categoryFragment=CategoryFragment()
         val productsFragment=ProductsFragment()
+        val orderListFragment= OrderFragment()
 
         setCurrentFragment(categoryFragment)
 
@@ -26,6 +28,7 @@ class HomeActivity : AppCompatActivity() {
             when(it.itemId){
                 R.id.categoryFragment->setCurrentFragment(categoryFragment)
                 R.id.productsFragment->setCurrentFragment(productsFragment)
+                R.id.orderFragment->setCurrentFragment(orderListFragment)
 
             }
             true

@@ -18,14 +18,18 @@
         android:theme="@style/Theme.ProductsAdder"
         tools:targetApi="31">
         <activity
-            android:name=".activity.EditeProductActivity"
+            android:name=".activity.OrderDetailsActivity"
             android:exported="false"
             android:screenOrientation="portrait"/>
         <activity
+            android:name=".activity.EditeProductActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".activity.AddProductActivity"
             android:exported="false"
-            android:windowSoftInputMode="adjustResize"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".activity.EditCategoryActivity"
             android:exported="false"

@@ -43,4 +43,7 @@
     <string name="already_have_an_account">Already Have An Account?</string>
     <string name="product">Product</string>
     <string name="text">text</string>
+    <string name="order">Order</string>
+    <string name="order_list">Order List</string>
+    <string name="order_detail">Order Detail</string>
 </resources>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".OrderFragment"
+    android:background="@color/white">
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appbar"
+        style="@style/Widget.MaterialComponents.Toolbar.Primary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/AppcompatTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins_thin"
+            android:layout_marginVertical="@dimen/_10sdp"
+            android:layout_gravity="center"
+            android:text="@string/order_list"
+            android:textColor="@color/g_black16"
+            android:textSize="@dimen/_16ssp"
+            android:textStyle="bold" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+    <RelativeLayout
+        android:background="@color/white"
+        android:gravity="center_vertical"
+        android:layout_marginVertical="@dimen/_5sdp"
+        android:layout_marginHorizontal="@dimen/_10sdp"
+        android:layout_below="@id/appbar"
+        android:id="@+id/searchRelativeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <androidx.appcompat.widget.AppCompatEditText
+            android:padding="@dimen/_5sdp"
+            android:drawablePadding="@dimen/_10sdp"
+            android:hint="Search.."
+            android:textSize="@dimen/_12sdp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/searchAppCompatEditText"
+            android:drawableStart="@drawable/ic_search"
+            android:drawableTint="@color/gray"
+            android:backgroundTint="@color/g_line"
+            android:background="@drawable/rounded_corner_background"
+            android:layout_toLeftOf="@+id/sortAppCompatImageView"
+            android:textColor="@color/black"
+            android:fontFamily="@font/poppins_light"
+            android:layout_centerVertical="true"/>
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_marginStart="@dimen/_10sdp"
+            android:layout_centerVertical="true"
+            android:id="@+id/sortAppCompatImageView"
+            android:layout_width="@dimen/_30sdp"
+            android:layout_height="@dimen/_30sdp"
+            android:src="@drawable/ic_sort"
+            android:layout_alignParentEnd="true"/>
+    </RelativeLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/orderListRV"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/searchRelativeLayout"
+        tools:listitem="@layout/order_list_item"/>
+
+
+</RelativeLayout>

@@ -8,4 +8,8 @@
         android:title="Products"
         android:icon="@drawable/ic_products"
         android:id="@+id/productsFragment"/>
+    <item
+        android:title="@string/order"
+        android:icon="@drawable/ic_order_list"
+        android:id="@+id/orderFragment"/>
 </menu>
