@@ -20,8 +20,8 @@
         android:label="Fragment Products"
         tools:layout="@layout/fragment_products">
         <action
-            android:id="@+id/action_FragmentProducts_to_FragmentCategory"
-            app:destination="@id/FragmentCategory"
+            android:id="@+id/action_FragmentProducts_to_FragmentOrder"
+            app:destination="@id/FragmentOrder"
             app:popUpTo="@id/FragmentCategory"
             app:popUpToInclusive="true" />
     </fragment>
@@ -31,7 +31,7 @@
     android:label="Fragment Products"
     tools:layout="@layout/fragment_oredr">
     <action
-        android:id="@+id/action_FragmentCategory_to_FragmentOrder"
+        android:id="@+id/action_FragmentOrder_to_FragmentProducts"
         app:destination="@id/FragmentProducts"
         app:popUpTo="@id/FragmentProducts"
         app:popUpToInclusive="true" />

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.OrderDetailsActivity">
+    tools:context=".activity.OrderDetailsActivity"
+    android:background="@color/white">
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbar"
         style="@style/Widget.MaterialComponents.Toolbar.Primary"
@@ -38,174 +38,38 @@
 
         </RelativeLayout>
     </com.google.android.material.appbar.AppBarLayout>
-
-    <androidx.core.widget.NestedScrollView
+<androidx.core.widget.NestedScrollView
+    android:layout_below="@+id/appbar"
+    android:layout_above="@+id/statusAppCompatSpinner"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/statusAppCompatSpinner"
-        android:layout_marginBottom="@dimen/_4sdp"
-        android:layout_below="@id/appbar">
-
-        <RelativeLayout
-            android:id="@+id/mainRelativelayout"
+        android:layout_height="match_parent">
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvProducts"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cardProductImages"
-                android:layout_width="match_parent"
-                android:layout_height="350dp"
-                android:layout_marginTop="@dimen/_15sdp"
-                app:cardCornerRadius="@dimen/_5sdp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginStart="@dimen/_15sdp"
-                android:layout_marginEnd="@dimen/_15sdp">
-
-                <androidx.viewpager2.widget.ViewPager2
-                    android:id="@+id/viewPagerProductImages"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
-
-            </androidx.cardview.widget.CardView>
-
-
-            <RelativeLayout
-                android:id="@+id/relativetext"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_20sdp"
-                android:layout_below="@+id/cardProductImages"
-                android:layout_marginStart="@dimen/_20sdp"
-                android:layout_marginEnd="@dimen/_20sdp">
-
-                <TextView
-                    android:id="@+id/tvProductName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins_light"
-                    android:text="Chair"
-                    android:textColor="@color/gray"
-                    android:textSize="@dimen/_11ssp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/tvProductDescription"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/tvProductName"
-                    android:text="Calvin Clein Regular fit slim fit shirt"
-                    android:fontFamily="@font/poppins_light"
-                    android:textColor="@color/g_black16"
-                    android:textStyle="bold"
-                    android:layout_marginTop="@dimen/_3sdp"
-                    android:textSize="@dimen/_13ssp"/>
-
-                <LinearLayout
-                    android:id="@+id/amountRelativeLayout"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_5sdp"
-                    android:layout_below="@+id/tvProductDescription"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/tvProductPrice"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/poppins_thin"
-                        android:text="$68.00"
-                        android:textColor="@color/g_black07"
-                        android:textSize="@dimen/_13ssp"
-                        android:textStyle="bold"
-                        android:layout_marginEnd="@dimen/_3sdp"/>
-
-                    <TextView
-                        android:id="@+id/tvProductCartDescountPrice"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="$136"
-                        android:textColor="@color/g_gray500"
-                        android:fontFamily="@font/poppins_thin"
-                        android:textSize="@dimen/_9ssp"
-                        android:layout_marginEnd="@dimen/_3sdp"/>
-
-                    <TextView
-                        android:id="@+id/tvDescountPrice"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="50% OFF"
-                        android:fontFamily="@font/poppins_thin"
-                        android:textStyle="bold"
-                        android:textColor="@color/g_blue"
-                        android:textSize="@dimen/_9ssp"/>
-                </LinearLayout>
-
-                <RelativeLayout
-                    android:id="@+id/colorRelativeLayout"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_10sdp"
-                    android:layout_below="@+id/amountRelativeLayout">
-
-                    <TextView
-                        android:id="@+id/tvProductColors"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/poppins_light"
-                        android:text="Color :"
-                        android:textColor="#1F2937"
-                        android:layout_marginTop="@dimen/_3sdp"
-                        android:textSize="@dimen/_12ssp"
-                        android:textStyle="bold"/>
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/rvColors"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_toEndOf="@+id/tvProductColors"
-                        android:fontFamily="@font/poppins_light"
-                        android:textSize="@dimen/_10ssp"/>
-
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:id="@+id/sizeRelativeLayout"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_4sdp"
-                    android:layout_below="@+id/colorRelativeLayout">
-
-                    <TextView
-                        android:id="@+id/tvProductSize"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/poppins_light"
-                        android:text="Size :"
-                        android:textColor="#1F2937"
-                        android:textSize="@dimen/_12ssp"
-                        android:layout_marginTop="@dimen/_3sdp"
-                        android:textStyle="bold"/>
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/rv_sizes"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_toEndOf="@+id/tvProductSize"
-                        android:fontFamily="@font/poppins_light"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/_10ssp"/>
-
-                </RelativeLayout>
-
-            </RelativeLayout>
-
-
-        </RelativeLayout>
-
-    </androidx.core.widget.NestedScrollView>
-
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/_5sdp"
+            tools:listitem="@layout/order_products_item"
+            tools:itemCount="2"/>
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/totalPrice"
+            android:layout_alignParentEnd="true"
+            android:padding="@dimen/_3sdp"
+            android:layout_below="@+id/rvProducts"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_corner_background"
+            android:backgroundTint="@color/g_card_background"
+            android:layout_marginEnd="@dimen/_10sdp"
+            android:fontFamily="@font/poppins_thin"
+            android:text="Total:- $68.00"
+            android:textColor="@color/g_black07"
+            android:textSize="@dimen/_13ssp"
+            android:textStyle="bold"/>
+    </RelativeLayout>
+</androidx.core.widget.NestedScrollView>
 
     <androidx.appcompat.widget.AppCompatSpinner
         android:id="@+id/statusAppCompatSpinner"
@@ -218,8 +82,8 @@
         android:prompt="@string/category_hint"
         android:textColor="@color/black"
         android:textSize="@dimen/_12ssp"
-        android:layout_margin="@dimen/_3sdp"
         android:textStyle="bold"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"/>
+        android:layout_marginVertical="@dimen/_20sdp"
+        android:layout_marginHorizontal="@dimen/_25sdp"/>
 </RelativeLayout>

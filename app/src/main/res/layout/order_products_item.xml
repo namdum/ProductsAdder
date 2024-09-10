@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/_5sdp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <RelativeLayout
+        android:id="@+id/mainRelativeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/rounded_corner_background">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/imageCartProduct"
+            android:layout_width="@dimen/_65sdp"
+            android:layout_height="@dimen/_65sdp"
+            android:layout_margin="@dimen/_8sdp"
+            android:scaleType="fitXY"
+            android:src="@drawable/chair"
+            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvProductCartName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins_light"
+            android:text="Estre Euphoria Signature Sofa"
+            android:layout_marginTop="@dimen/_8sdp"
+            android:layout_toEndOf="@id/imageCartProduct"
+            android:layout_marginEnd="@dimen/_20sdp"
+            android:textColor="@color/g_black16"
+            android:textSize="@dimen/_12ssp"
+            android:textStyle="bold" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvProductCartPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvProductCartName"
+            android:layout_marginEnd="@dimen/_4sdp"
+            android:layout_toEndOf="@id/imageCartProduct"
+            android:fontFamily="@font/poppins_thin"
+            android:text="$68.00"
+            android:textColor="@color/g_black07"
+            android:textSize="@dimen/_13ssp"
+            android:textStyle="bold" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvProductCartDescountPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvProductCartName"
+            android:layout_marginTop="@dimen/_4sdp"
+            android:layout_marginEnd="@dimen/_4sdp"
+            android:layout_toEndOf="@id/tvProductCartPrice"
+            android:fontFamily="@font/poppins_thin"
+            android:text="$136"
+            android:textColor="@color/g_gray500"
+            android:textSize="@dimen/_9ssp" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvDescountPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="50% OFF"
+            android:fontFamily="@font/poppins_thin"
+            android:layout_marginTop="@dimen/_4sdp"
+            android:layout_toEndOf="@id/tvProductCartDescountPrice"
+            android:layout_below="@+id/tvProductCartName"
+            android:textStyle="bold"
+            android:textColor="@color/g_blue"
+            android:textSize="@dimen/_9ssp"/>
+
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvBillingProductQuantity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvProductCartPrice"
+            android:layout_toEndOf="@id/imageCartProduct"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:text="2"
+            android:textSize="@dimen/_14ssp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:layout_marginStart="@dimen/_7sdp"
+            android:layout_marginEnd="@dimen/_7sdp"/>
+
+
+    </RelativeLayout>
+
+</RelativeLayout>

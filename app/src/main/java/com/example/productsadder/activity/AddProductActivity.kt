@@ -109,7 +109,7 @@ class AddProductActivity : AppCompatActivity() {
                 val size = sizeEditText.text.toString().trim().split(",").map { it.trim() }
                 val selectedCategory = binding.categoryEditText.selectedItem.toString()
 
-                val product = Product(name, selectedCategory, price, offerpercentage, description, size, selectedColors, uploadedImageString)
+                val product = Product(name, selectedCategory, price, offerpercentage, description, size ?: mutableListOf(), selectedColors, uploadedImageString)
                 viewModel.addProduct(product)
             }
         }

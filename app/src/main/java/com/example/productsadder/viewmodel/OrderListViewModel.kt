@@ -3,19 +3,14 @@ package com.example.productsadder.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.productsadder.data.Category
+import com.example.productsadder.data.Order
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Date
-import java.util.Locale
 
 class OrderListViewModel (private val firestore: FirebaseFirestore, private val auth: FirebaseAuth) : ViewModel() {
 
@@ -33,6 +28,15 @@ class OrderListViewModel (private val firestore: FirebaseFirestore, private val 
             .get()
             .addOnSuccessListener { querySnapshot ->
                 Log.d("OrderListViewModel", "Orders fetched successfully")
+
+                val orders = querySnapshot.mapNotNull { document ->
+                    try {
+                        document.toObject(Order::class.java)
+                    } catch (e: Exception) {
+                        Log.e("FirestoreError", "Error parsing document", e)
+                        null
+                    }
+                }
                 val ordersList = querySnapshot.documents.mapNotNull { document ->
                     val order = document.toObject(Order::class.java)
                     Log.d("OrderListViewModel", "Document data: $order")

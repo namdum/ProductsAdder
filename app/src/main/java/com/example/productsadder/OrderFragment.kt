@@ -1,5 +1,6 @@
 package com.example.productsadder
 
+import android.app.DatePickerDialog
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -13,7 +14,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.productsadder.adapter.OrderListAdapter
 import com.example.productsadder.databinding.FragmentOredrBinding
-import com.example.productsadder.viewmodel.Order
 import com.example.productsadder.viewmodel.OrderListViewModelFactory
 import com.example.productsadder.viewmodel.OrderListViewModel
 import com.google.firebase.auth.FirebaseAuth
@@ -21,6 +21,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.launch
 import java.text.ParseException
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
@@ -29,7 +30,6 @@ class OrderFragment : Fragment(R.layout.fragment_oredr) {
     private lateinit var binding: FragmentOredrBinding
     private lateinit var orderAdapter: OrderListAdapter
     private lateinit var viewModel: OrderListViewModel
-    private var isAscending: Boolean = true
     private var searchQuery: String = ""
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -56,33 +56,24 @@ class OrderFragment : Fragment(R.layout.fragment_oredr) {
         lifecycleScope.launchWhenStarted {
             viewModel.orders.collect { orders ->
                 // Log the size of orders
-                Log.d("OrderFragment", "Orders collected: ${orders.size}")
-
+                orderAdapter.isAscending=true
+                orderAdapter.toggleSorting(orders)
                 // Prepare the data with dates
-                val preparedData = prepareData(orders)
 
-                // Log the prepared data to check date and order information
-//                for (item in preparedData) {
-//                    when (item) {
-//                        is String -> Log.d("OrderFragment", "Date Header: $item")
-//                        is Order -> Log.d("OrderFragment", "Order Item: ${item.orderId}, ${item.address}, ${item.address?.fullName ?: "No Address"}")
-//                    }
-//                }
-
-                // Update the adapter with prepared data
-                orderAdapter.updateItems(preparedData)
                 // Set up search field
-                binding.searchAppCompatEditText.addTextChangedListener(object : TextWatcher {
-                    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-                    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                        searchQuery = s.toString()
-                        updateDataWithFilter()
+                binding.searchAppCompatEditText.setOnClickListener {
+                    showDatePickerDialog()
+                }
+                binding.sortAppCompatImageView.setOnClickListener {
+                    binding.searchAppCompatEditText.text=""
+                    orderAdapter.toggleSorting(orders)
+                    // Optionally update button text based on sorting order
+                    if (orderAdapter.isAscending) {
+                        binding.sortAppCompatImageView.setBackgroundResource(R.drawable.ic_desc)
+                    } else {
+                        binding.sortAppCompatImageView.setBackgroundResource(R.drawable.ic_asce)
                     }
-
-                    override fun afterTextChanged(s: Editable?) {}
-                })
-
+                }
                 orderAdapter.notifyDataSetChanged()
             }
         }
@@ -92,55 +83,71 @@ class OrderFragment : Fragment(R.layout.fragment_oredr) {
         viewModel.fetchOrders()
         return binding.root
     }
+    private fun showDatePickerDialog() {
+        val calendar = Calendar.getInstance()
+        val datePickerDialog = DatePickerDialog(
+            requireContext(),
+            { _, year, month, dayOfMonth ->
+                // Create a Calendar object and set the selected date
+                calendar.set(year, month, dayOfMonth)
+                // Format the date to "10 June 2024"
+                val dateFormat = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault())
+                val formattedDate = dateFormat.format(calendar.time)
+                // Set the formatted date to the EditText and update the search query
+                binding.searchAppCompatEditText.setText(formattedDate)
+                searchQuery = formattedDate
+                updateDataWithFilter(searchQuery)
+            },
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH)
+        )
+        datePickerDialog.show()
+    }
+
     private fun updateDataWithFilter(dateFilter: String? = null) {
         lifecycleScope.launch {
             viewModel.orders.collect { orders ->
-                val filteredOrders = orders
-                    .filter { order ->
-                        val matchesDateFilter = dateFilter?.let {
-                            val orderDate = parseDate(order.date)
-                            val filterDate = parseDate(dateFilter)
-                            orderDate == filterDate
-                        } ?: true
+                val filteredOrders = orders.filter { order ->
+                    // Date Filter Matching
+                    val matchesDateFilter = dateFilter?.let {
+                        val orderDate = parseDate(order.date, "yyyy-MM-dd")
+                        val filterDate = parseDate(dateFilter, "dd MMMM yyyy")
 
-                        val matchesSearchQuery = searchQuery.isEmpty() || order.date?.contains(searchQuery, ignoreCase = true) == true ||
-                                order.address?.fullName?.contains(searchQuery, ignoreCase = true) == true
+                        orderDate == filterDate
+                    } ?: true
 
-                        matchesDateFilter && matchesSearchQuery
-                    }
+                    // Search Query Matching
+                    val matchesSearchQuery = searchQuery.isEmpty() ||
+                            order.date?.let {
+                                val parsedOrderDate = parseDate(it, "yyyy-MM-dd")
+                                val formattedOrderDate = parsedOrderDate?.let { date ->
+                                    SimpleDateFormat("dd MMMM yyyy", Locale.getDefault()).format(date)
+                                }
 
-                val preparedData = prepareData(filteredOrders)
-                orderAdapter.updateItems(preparedData)
+                                formattedOrderDate?.contains(searchQuery, ignoreCase = true) ?: false
+                            } == true ||
+                            order.address?.fullName?.contains(searchQuery, ignoreCase = true) == true
+
+                    matchesDateFilter && matchesSearchQuery
+                }
+
+                // Group orders by date and update the adapter
+                val groupedOrders = orderAdapter.groupOrdersByDate(filteredOrders)
+                orderAdapter.updateItems(groupedOrders)
                 orderAdapter.notifyDataSetChanged()
             }
         }
     }
 
-    fun prepareData(orders: List<Order>): List<Any> {
-        val data = mutableListOf<Any>()
-        var lastDate: String? = null
-
-        for (order in orders) {
-            val orderDate = order.date
-//            val orderDate = parseDate(order.date)
-            if (orderDate != lastDate) {
-                data.add(orderDate ?: "Unknown Date") // Add date header if it’s different
-                lastDate = orderDate
-            }
-            data.add(order)
-        }
-
-        return data
-    }
-    fun parseDate(dateString: String?, format: String = "dd-MM-yyyy"): Date? {
-        if (dateString.isNullOrEmpty()) return null
+    fun parseDate(dateString: String?, pattern: String = "yyyy-MM-dd"): Date? {
         return try {
-            val formatter = SimpleDateFormat(format, Locale.getDefault())
-            formatter.parse(dateString)
-        } catch (e: ParseException) {
-            e.printStackTrace()
+            val dateFormat = SimpleDateFormat(pattern, Locale.getDefault())
+            dateString?.let { dateFormat.parse(it) }
+        } catch (e: Exception) {
             null
         }
     }
+
 
 }
