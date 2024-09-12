@@ -11,13 +11,17 @@ import com.example.productsadder.databinding.ActivityLoginBinding
 import com.example.productsadder.util.Resource
 import com.example.productsadder.viewmodel.LoginViewModel
 import com.example.productsadder.viewmodel.LoginViewModelFactory
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
+import com.google.firebase.messaging.FirebaseMessaging
 
 class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
     private lateinit var viewModel: LoginViewModel
     private lateinit var auth: FirebaseAuth
+    private lateinit var db: FirebaseFirestore
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,10 +29,11 @@ class LoginActivity : AppCompatActivity() {
         setContentView(binding.root)
         val firestore = FirebaseFirestore.getInstance()
 
-        val viewModelFactory = LoginViewModelFactory(FirebaseAuth.getInstance())
+        val viewModelFactory = LoginViewModelFactory(FirebaseAuth.getInstance(),FirebaseFirestore.getInstance())
         viewModel = ViewModelProvider(this, viewModelFactory)[LoginViewModel::class.java]
 
         auth = FirebaseAuth.getInstance()
+        db= FirebaseFirestore.getInstance()
 
         if (auth.currentUser != null) {
 
@@ -76,6 +81,7 @@ class LoginActivity : AppCompatActivity() {
                                 .get().addOnSuccessListener { querySnapshot ->
                                     querySnapshot.documents.map { document ->
                                         if(document.getString("user_type").toString().equals("admin")) {
+                                            Log.i("test", document.toString())
                                             startActivity(Intent(this, HomeActivity::class.java))
                                             finish()
                                         } else {

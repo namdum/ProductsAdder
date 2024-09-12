@@ -1,17 +1,26 @@
 package com.example.productsadder.activity
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.meangene.notification.NotificationRepository
+import com.example.meangene.notification.NotificationViewModelFactory
+import com.example.meangene.notification.model.NotificationInfo
+import com.example.meangene.notification.model.NotificationViewModel
 import com.example.productsadder.OrderFragment
 import com.example.productsadder.R
 import com.example.productsadder.adapter.OrderDetailAdapter
@@ -23,26 +32,33 @@ import com.example.productsadder.data.Product
 import com.example.productsadder.databinding.ActivityEditeProductBinding
 import com.example.productsadder.databinding.ActivityOrderDetailsBinding
 import com.example.productsadder.util.OrderStatus
+import com.example.productsadder.util.Resource
 import com.example.productsadder.util.VerticalItemDecoration
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
+import javax.inject.Inject
 
 class OrderDetailsActivity : AppCompatActivity() {
     private lateinit var binding: ActivityOrderDetailsBinding
     private lateinit var orderDetailAdapter: OrderDetailAdapter
-    private  var selectedOrderStatus=""
+    private var selectedOrderStatus = ""
     private var order: Order? = null
+    private lateinit var auth: FirebaseAuth
+    private val notificationViewModel: NotificationViewModel by viewModels {
+        NotificationViewModelFactory(NotificationRepository())
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         binding = ActivityOrderDetailsBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+        auth = FirebaseAuth.getInstance()
         order = intent.getParcelableExtra("order")
         val products = order?.products ?: emptyList()
         Log.d("MyTesting", "11:${products}")
-        selectedOrderStatus= order?.orderStatus.toString()
+        selectedOrderStatus = order?.orderStatus.toString()
         binding.rvProducts.apply {
             orderDetailAdapter = OrderDetailAdapter(mutableListOf())
             adapter = orderDetailAdapter
@@ -51,12 +67,31 @@ class OrderDetailsActivity : AppCompatActivity() {
             addItemDecoration(VerticalItemDecoration())
         }
 
+
+
         orderDetailAdapter.updateItems(products)
         orderDetailAdapter.notifyDataSetChanged()
         binding.imageClose.setOnClickListener { finish() }
         binding.totalPrice.text = "Total:- " + "$${String.format("%.2f", order?.totalPrice)}"
 
         setupStatusSpinner()
+        notificationViewModel.notificationResult.observe(this, Observer { result ->
+            when (result) {
+                is Resource.Loading -> {
+                    // Show loading UI
+                    Toast.makeText(this, "Sending notification...", Toast.LENGTH_SHORT).show()
+                }
+                is Resource.Success -> {
+                    // Handle successful notification
+                    Toast.makeText(this, "Notification sent successfully!", Toast.LENGTH_SHORT).show()
+                }
+                is Resource.Error -> {
+                    // Handle error
+                    Toast.makeText(this, "Error: ${result.message}", Toast.LENGTH_SHORT).show()
+                }
+                else->{}
+            }
+        })
 
     }
     private fun setupStatusSpinner() {
@@ -132,15 +167,12 @@ class OrderDetailsActivity : AppCompatActivity() {
     }
     private fun updateOrderStatus(orderId: Long, selectedStatus: OrderStatus) {
         val db = FirebaseFirestore.getInstance()
-        Log.d("FirestoreUpdate", "Querying for orderId: $orderId")
-
         // Querying for the specific order
         db.collection("orders")
             .whereEqualTo("orderId", orderId)
             .get()
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    Log.d("FirestoreUpdate", "isSuccessful..........:-${task.result}")
                     val documents = task.result
                     if (documents != null && !documents.isEmpty) {
                         // Assuming there is only one document with this orderId
@@ -149,7 +181,16 @@ class OrderDetailsActivity : AppCompatActivity() {
                             db.collection("orders").document(document.id)
                                 .update("orderStatus", selectedStatus.status)
                                 .addOnSuccessListener {
-                                    Log.d("FirestoreUpdate", "Order status updated successfully.")
+                                    notificationViewModel.sendNotification(
+                                        NotificationInfo(
+                                            title = "Testing",
+                                            message = "Testing Message",
+                                            notificationType = "Your Order id ${selectedOrderStatus}",
+                                            receiverId = order?.address?.userId.toString(),
+                                            senderId = auth.currentUser?.uid.toString()
+                                        )
+                                    )
+
                                 }
                                 .addOnFailureListener { exception ->
                                     Log.e(
