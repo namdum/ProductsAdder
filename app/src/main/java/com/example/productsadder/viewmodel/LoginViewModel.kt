@@ -52,6 +52,41 @@ class LoginViewModel(private val firebaseAuth: FirebaseAuth = FirebaseAuth.getIn
 
         })
     }
+    private val _userStatus = MutableLiveData<Resource<Boolean>>()
+    val userStatus: LiveData<Resource<Boolean>> = _userStatus
 
+    fun checkUserStatus() {
+        _userStatus.value = Resource.Loading()
+
+        val currentUser = firebaseAuth.currentUser
+        if (currentUser != null) {
+            firestore.collection("users")
+                .whereEqualTo("email", currentUser.email)
+                .get()
+                .addOnSuccessListener { querySnapshot ->
+                    firestore.collection("user").whereEqualTo("email", currentUser.email)
+                        .get()
+                        .addOnSuccessListener { querySnapshot ->
+                            val isAdmin = querySnapshot.documents.any { document ->
+                                document.getString("user_type") == "admin"
+                            }
+
+                            if (isAdmin) {
+                                _userStatus.value = Resource.Success(true) // Admin user
+                            } else {
+                                _userStatus.value = Resource.Success(false) // Invalid user
+                            }
+                        }
+                        .addOnFailureListener {
+                            _userStatus.value = Resource.Error("Failed to fetch user data.")
+                        }
+                }
+                .addOnFailureListener {
+                    _userStatus.value = Resource.Error("Failed to fetch user data.")
+                }
+        } else {
+            _userStatus.value = Resource.Error("User not logged in.")
+        }
+    }
 
 }
