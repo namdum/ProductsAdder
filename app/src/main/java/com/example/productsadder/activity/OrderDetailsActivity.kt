@@ -3,6 +3,7 @@ package com.example.productsadder.activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.MenuItem
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -36,6 +37,7 @@ import com.example.productsadder.util.Resource
 import com.example.productsadder.util.VerticalItemDecoration
 import com.example.productsadder.viewmodel.OrderViewModel
 import com.example.productsadder.viewmodel.StatusSpinnerSetup
+import com.google.android.material.navigation.NavigationBarView.OnItemSelectedListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
@@ -62,7 +64,7 @@ class OrderDetailsActivity : AppCompatActivity() {
         order = intent.getParcelableExtra("order")
         val products = order?.products ?: emptyList()
         orderId = order?.orderId?:0L
-         userId = order?.address?.userId ?: ""
+        userId = order?.address?.userId ?: ""
         selectedOrderStatus = order?.orderStatus.toString()
         binding.rvProducts.apply {
             orderDetailAdapter = OrderDetailAdapter(mutableListOf())
@@ -71,8 +73,6 @@ class OrderDetailsActivity : AppCompatActivity() {
                 LinearLayoutManager(this@OrderDetailsActivity, RecyclerView.VERTICAL, false)
             addItemDecoration(VerticalItemDecoration())
         }
-
-
 
         orderDetailAdapter.updateItems(products)
         orderDetailAdapter.notifyDataSetChanged()
@@ -139,8 +139,8 @@ class OrderDetailsActivity : AppCompatActivity() {
                 is Resource.Success -> {
                                     notificationViewModel.sendNotification(
                                         NotificationInfo(
-                                            title = "Testing",
-                                            message = "Testing Message",
+                                            title = "Order updates",
+                                            message = "Your order for ${order?.products?.firstOrNull()?.product?.name} is ${selectedOrderStatus}",
                                             notificationType = "Your Order id ${selectedOrderStatus}",
                                             receiverId = order?.address?.userId.toString(),
                                             senderId = auth.currentUser?.uid.toString()
@@ -183,6 +183,7 @@ class OrderDetailsActivity : AppCompatActivity() {
                     id: Long
                 ) {
                     val selectedStatus = statuses[position]
+                    selectedOrderStatus = selectedStatus.status
                     if (selectedStatus != currentStatus && adapter.isEnabled(position)) {
                         orderViewModel.updateUser(orderId, selectedOrderStatus, userId)
                         orderViewModel.updateOrderStatus(orderId, selectedOrderStatus)
