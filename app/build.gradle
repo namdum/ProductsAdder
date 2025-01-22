@@ -68,6 +68,10 @@ dependencies {
     implementation ("com.google.firebase:firebase-storage:20.3.0")
     implementation("com.google.firebase:firebase-firestore:24.9.1")
     implementation("com.google.firebase:firebase-messaging:21.0.1")
+
+    implementation platform('com.google.firebase:firebase-bom:32.2.0') // Use the latest BoM version
+    implementation 'com.google.firebase:firebase-database'
+
     //Dagger hilt
     implementation ("com.google.dagger:hilt-android:2.48.1")
     kapt ("com.google.dagger:hilt-compiler:2.48.1")

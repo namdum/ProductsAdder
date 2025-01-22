@@ -17,34 +17,48 @@ class RegisterViewModel(private val firebaseAuth: FirebaseAuth) : ViewModel() {
     val registerResult: LiveData<Resource<String>> = _registerResult
 
     val db= FirebaseFirestore.getInstance()
-    fun registerUser(email: String, password: String, firstName: String, lastName: String) {
-
-        _registerResult.value = Resource.Loading()
-        firebaseAuth.createUserWithEmailAndPassword(email, password)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    val user = firebaseAuth.currentUser
-                    if (user != null) {
-                        val profileUpdates = UserProfileChangeRequest.Builder()
-                            .setDisplayName(firstName)
-                            .build()
-
-                        user.updateProfile(profileUpdates)
-                            .addOnCompleteListener { profileTask ->
-                                if (profileTask.isSuccessful) {
-                                    getUserToken()
-                                    _registerResult.value = Resource.Success("Registration successful")
-                                } else {
-                                    _registerResult.value = Resource.Error("Error updating profile: ${profileTask.exception?.message}")
-                                }
+fun registerUser(email: String, password: String, firstName: String, lastName: String) {
+    _registerResult.value = Resource.Loading()
+    firebaseAuth.createUserWithEmailAndPassword(email, password)
+        .addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val user = firebaseAuth.currentUser
+                if (user != null) {
+                    val profileUpdates = UserProfileChangeRequest.Builder()
+                        .setDisplayName(firstName)
+                        .build()
+                    user.updateProfile(profileUpdates)
+                        .addOnCompleteListener { profileTask ->
+                            if (profileTask.isSuccessful) {
+                                // Save user data to Firestore
+                                val userId = user.uid
+                                val userMap = mapOf(
+                                    "email" to email,
+                                    "firstName" to firstName,
+                                    "lastName" to lastName,
+                                    "user_type" to "admin"
+                                )
+                                db.collection("user")
+                                    .document(userId)
+                                    .set(userMap)
+                                    .addOnCompleteListener { dbTask ->
+                                        if (dbTask.isSuccessful) {
+                                            getUserToken()
+                                            _registerResult.value = Resource.Success("Registration successful")
+                                        } else {
+                                            _registerResult.value = Resource.Error("Error saving user data: ${dbTask.exception?.message}")
+                                        }
+                                    }
+                            } else {
+                                _registerResult.value = Resource.Error("Error updating profile: ${profileTask.exception?.message}")
                             }
-                    }
-                } else {
-                    _registerResult.value = Resource.Error("Registration failed: ${task.exception?.message}")
+                        }
                 }
+            } else {
+                _registerResult.value = Resource.Error("Registration failed: ${task.exception?.message}")
             }
-    }
-
+        }
+}
 //    private fun getUserToken() {
 //        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
 //            if (!task.isSuccessful) {

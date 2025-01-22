@@ -20,10 +20,35 @@ class LoginViewModel(private val firebaseAuth: FirebaseAuth = FirebaseAuth.getIn
         firebaseAuth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    _loginResult.value = Resource.Success("Log In Successfully...")
-                    getUserToken()
+                    val user = firebaseAuth.currentUser
+                    if (user != null) {
+                        val userId = user.uid
+
+                        // Fetch user data from Firestore
+                        val db = FirebaseFirestore.getInstance()
+                        db.collection("user")
+                            .document(userId)
+                            .get()
+                            .addOnSuccessListener { document ->
+                                if (document.exists()) {
+                                    val userType = document.getString("user_type")
+                                    if (userType == "admin") {
+                                        getUserToken()
+                                        _loginResult.value = Resource.Success("Log In Successfully...")
+                                    } else {
+                                        firebaseAuth.signOut() // Sign out non-admin users
+                                        _loginResult.value = Resource.Error("Invalid user please check email or password is incorrect")
+                                    }
+                                } else {
+                                    _loginResult.value = Resource.Error("User data not found.")
+                                }
+                            }
+                            .addOnFailureListener { exception ->
+                                _loginResult.value = Resource.Error("Error fetching user data: ${exception.message}")
+                            }
+                    }
                 } else {
-                    _loginResult.value = Resource.Error("Log In Failed...")
+                    _loginResult.value = Resource.Error("Log In Failed: ${task.exception?.message}")
                 }
             }
     }
