@@ -3,7 +3,9 @@ package com.example.productsadder.activity
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
+import android.window.OnBackInvokedDispatcher
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.productsadder.databinding.ActivityRegisterBinding
@@ -36,11 +38,17 @@ class RegisterActivity : AppCompatActivity() {
                 is Resource.Success -> {
                     Toast.makeText(this, result.data, Toast.LENGTH_SHORT).show()
                     startActivity(Intent(this, HomeActivity::class.java))
+                    binding.progressbar.isVisible=false
+                    binding.registerRegisterBtn.isVisible=true
                 }
                 is Resource.Error -> {
                     Toast.makeText(this, result.message, Toast.LENGTH_SHORT).show()
+                    binding.progressbar.isVisible=false
+                    binding.registerRegisterBtn.isVisible=true
                 }
                 is Resource.Loading -> {
+                    binding.progressbar.isVisible=true
+                    binding.registerRegisterBtn.isVisible=false
                 }
 
                 else -> {}
@@ -59,5 +67,10 @@ class RegisterActivity : AppCompatActivity() {
         } else {
             Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    override fun getOnBackInvokedDispatcher(): OnBackInvokedDispatcher {
+        return super.getOnBackInvokedDispatcher()
+        finish()
     }
 }

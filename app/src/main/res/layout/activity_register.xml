@@ -171,6 +171,14 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
             </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/registerBtnRelativelayout"
+            android:layout_marginTop="@dimen/_12sdp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/registerRelativelayout"
+            >
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/registerRegisterBtn"
@@ -180,16 +188,21 @@
                 android:fontFamily="@font/poppins_thin"
                 android:text="@string/register"
                 android:textSize="@dimen/_12ssp"
+                android:layout_centerHorizontal="true" />
+            <ProgressBar
+                android:id="@+id/progressbar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:layout_below="@+id/registerRelativelayout"
-                android:layout_marginTop="@dimen/_12sdp"/>
-
+                android:indeterminateTint="@color/g_blue"
+                android:visibility="invisible" />
+        </RelativeLayout>
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/textView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/registerRegisterBtn"
+                android:layout_below="@+id/registerBtnRelativelayout"
                 android:layout_marginTop="@dimen/_18sdp"
                 android:fontFamily="@font/poppins_thin"
                 android:gravity="center"

@@ -109,16 +109,33 @@
             </com.google.android.material.textfield.TextInputLayout>
 
         </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/_25sdp"
+            >
 
-        <androidx.appcompat.widget.AppCompatButton
+            <androidx.appcompat.widget.AppCompatButton
+            android:gravity="center"
             android:id="@+id/loginLoginBtn"
             style="@style/blueButtonStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="@dimen/_8sdp"
             android:text="@string/login"
-            android:textSize="@dimen/_13ssp"
-            android:layout_marginTop="@dimen/_25sdp" />
+            android:layout_centerHorizontal="true"
+            android:textSize="@dimen/_13ssp"/>
+            <ProgressBar
+                android:id="@+id/progressbar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:indeterminateTint="@color/g_blue"
+                android:visibility="invisible" />
+
+
+        </RelativeLayout>
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/textview"

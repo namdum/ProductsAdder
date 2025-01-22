@@ -46,4 +46,8 @@
     <string name="order">Order</string>
     <string name="order_list">Order List</string>
     <string name="order_detail">Order Detail</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="are_you_sure_you_want_to_sign_out">Are you sure you want to sign out?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 </resources>

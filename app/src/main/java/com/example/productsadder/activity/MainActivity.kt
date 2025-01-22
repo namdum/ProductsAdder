@@ -29,49 +29,13 @@ class MainActivity : AppCompatActivity() {
             WindowManager.LayoutParams.FLAG_FULLSCREEN,
             WindowManager.LayoutParams.FLAG_FULLSCREEN
         )
-//        val firestore = FirebaseFirestore.getInstance()
-//
-//        auth = FirebaseAuth.getInstance()
-//        if (auth.currentUser != null) {
-//
-//            firestore.collection("users")
-//                .whereEqualTo("email", auth?.currentUser?.email)
-//                .get()
-//                .addOnSuccessListener { querySnapshot ->
-//                    Log.i("test", querySnapshot.toString())
-//
-//                    firestore.collection("user").whereEqualTo("email", auth.currentUser?.email)
-//                        .get().addOnSuccessListener { querySnapshot ->
-//                            querySnapshot.documents.map { document ->
-//                                if(document.getString("user_type").toString().equals("admin")) {
-//                                    startActivity(Intent(this, HomeActivity::class.java))
-//                                    finish()
-//                                } else {
-//                                    Toast.makeText(this@MainActivity, "Invalid credentials", Toast.LENGTH_SHORT).show()
-//                                }
-//                            }
-//                        }.addOnFailureListener { exception ->
-//                            Toast.makeText(this@MainActivity, "Invalid credentials", Toast.LENGTH_SHORT).show()
-//                        }
-//                }
-//                .addOnFailureListener { exception ->
-//                    Toast.makeText(this@MainActivity, "Invalid credentials", Toast.LENGTH_SHORT).show()
-//                }
-//        } else {
-//            Handler(Looper.getMainLooper()).postDelayed({
-//
-//                val intent = Intent(this, LoginActivity::class.java)
-//                startActivity(intent)
-//                finish()
-//            }, 1000)
-//        }
+
 
         // Observe user status
         loginViewModel.userStatus.observe(this) { resource ->
             when (resource) {
                 is Resource.Loading -> {
                     // Show a loading indicator
-                    Toast.makeText(this, "Loading...", Toast.LENGTH_SHORT).show()
                 }
                 is Resource.Success -> {
                     if (resource.data == true) {
@@ -85,11 +49,11 @@ class MainActivity : AppCompatActivity() {
                 }
                 is Resource.Error -> {
                     // Show error message
-                    Toast.makeText(this, resource.message ?: "An error occurred", Toast.LENGTH_SHORT).show()
+//                    Toast.makeText(this, resource.message ?: "An error occurred", Toast.LENGTH_SHORT).show()
                 }
                 else->{}
             }
-            if (resource is Resource.Error && resource.message == "User not logged in.") {
+            if (resource is Resource.Error ) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     val intent = Intent(this, LoginActivity::class.java)
                     startActivity(intent)

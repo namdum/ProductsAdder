@@ -16,6 +16,7 @@ class LoginViewModel(private val firebaseAuth: FirebaseAuth = FirebaseAuth.getIn
     val loginResult: LiveData<Resource<String>> = _loginResult
 
     fun login(email: String, password: String) {
+
         _loginResult.value = Resource.Loading()
         firebaseAuth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
@@ -37,7 +38,7 @@ class LoginViewModel(private val firebaseAuth: FirebaseAuth = FirebaseAuth.getIn
                                         _loginResult.value = Resource.Success("Log In Successfully...")
                                     } else {
                                         firebaseAuth.signOut() // Sign out non-admin users
-                                        _loginResult.value = Resource.Error("Invalid user please check email or password is incorrect")
+                                        _loginResult.value = Resource.Error("Please check email or password is incorrect")
                                     }
                                 } else {
                                     _loginResult.value = Resource.Error("User data not found.")
@@ -48,7 +49,7 @@ class LoginViewModel(private val firebaseAuth: FirebaseAuth = FirebaseAuth.getIn
                             }
                     }
                 } else {
-                    _loginResult.value = Resource.Error("Log In Failed: ${task.exception?.message}")
+                    _loginResult.value = Resource.Error("Invalid email or password please try again")
                 }
             }
     }

@@ -5,17 +5,15 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.productsadder.databinding.ActivityLoginBinding
 import com.example.productsadder.util.Resource
 import com.example.productsadder.viewmodel.LoginViewModel
 import com.example.productsadder.viewmodel.LoginViewModelFactory
-import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.SetOptions
-import com.google.firebase.messaging.FirebaseMessaging
 
 class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
@@ -34,6 +32,8 @@ class LoginActivity : AppCompatActivity() {
 
         auth = FirebaseAuth.getInstance()
         db= FirebaseFirestore.getInstance()
+            binding.loginEmailEdit.setText("")
+         binding.loginPasswordEdit.setText("")
 
         if (auth.currentUser != null) {
 
@@ -64,12 +64,20 @@ class LoginActivity : AppCompatActivity() {
         binding.loginLoginBtn.setOnClickListener {
             val email = binding.loginEmailEdit.text.toString()
             val password = binding.loginPasswordEdit.text.toString()
-            viewModel.login(email, password)
+
+            if(email.isNullOrEmpty()|| password.isNullOrEmpty()){
+                Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show()
+            }
+            else {
+                viewModel.login(email, password)
+            }
         }
 
         viewModel.loginResult.observe(this, Observer { result ->
             when (result) {
                 is Resource.Success -> {
+                    binding.progressbar.isVisible=false
+                    binding.loginLoginBtn.isVisible=true
                     Toast.makeText(this, result.data, Toast.LENGTH_SHORT).show()
                     firestore.collection("users")
                         .whereEqualTo("email", auth?.currentUser?.email)
@@ -81,27 +89,34 @@ class LoginActivity : AppCompatActivity() {
                                 .get().addOnSuccessListener { querySnapshot ->
                                     querySnapshot.documents.map { document ->
                                         if(document.getString("user_type").toString().equals("admin")) {
-                                            Log.i("test", document.toString())
+//                                            ProgressUtil.dismissProgress()
+                                            Log.i("MyTest", document.toString())
                                             startActivity(Intent(this, HomeActivity::class.java))
                                             finish()
                                         } else {
-                                            Toast.makeText(this@LoginActivity, "Invalid credentials", Toast.LENGTH_SHORT).show()
+                                            Toast.makeText(this@LoginActivity, "Please check email or password is incorrect", Toast.LENGTH_SHORT).show()
+//                                            ProgressUtil.dismissProgress()
                                         }
                                     }
                                 }.addOnFailureListener { exception ->
                                     Toast.makeText(this@LoginActivity, "Invalid credentials", Toast.LENGTH_SHORT).show()
+//                                    ProgressUtil.dismissProgress()
                                 }
                         }
                         .addOnFailureListener { exception ->
                             Toast.makeText(this@LoginActivity, "Invalid credentials", Toast.LENGTH_SHORT).show()
+//                            ProgressUtil.dismissProgress()
                         }
 
                 }
                 is Resource.Error -> {
                     Toast.makeText(this, result.message, Toast.LENGTH_SHORT).show()
-                }
+                    binding.progressbar.isVisible=false
+                    binding.loginLoginBtn.isVisible=true                }
                 is Resource.Loading -> {
-                }
+                    // Show progress dialog
+                    binding.progressbar.isVisible=true
+                    binding.loginLoginBtn.isVisible=false                }
 
                 else -> {}
             }
@@ -110,5 +125,12 @@ class LoginActivity : AppCompatActivity() {
         binding.dontHaveAccount.setOnClickListener {
             startActivity(Intent(this, RegisterActivity::class.java))
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        binding.loginEmailEdit.setText("")
+        binding.loginPasswordEdit.setText("")
+
     }
 }

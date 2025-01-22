@@ -2,6 +2,7 @@ package com.example.productsadder.activity
 
 import android.content.Intent
 import android.os.Bundle
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.productsadder.CategoryFragment
@@ -33,11 +34,23 @@ class HomeActivity : AppCompatActivity() {
             }
             true
         }
-
         binding.logoutButton.setOnClickListener {
-            FirebaseAuth.getInstance().signOut()
-            finish()
-            startActivity(Intent(this,LoginActivity::class.java))
+            AlertDialog.Builder(this).apply {
+                setTitle(getString(R.string.sign_out))
+                setMessage(getString(R.string.are_you_sure_you_want_to_sign_out))
+                setPositiveButton(getString(R.string.yes)) { _, _ ->
+                    // Sign out the user
+                    FirebaseAuth.getInstance().signOut()
+                    finishAffinity()
+                    startActivity(Intent(this@HomeActivity, LoginActivity::class.java))
+                }
+                setNegativeButton(getString(R.string.no)) { dialog, _ ->
+                    // Dismiss the dialog
+                    dialog.dismiss()
+                }
+                create()
+                show()
+            }
         }
 
     }

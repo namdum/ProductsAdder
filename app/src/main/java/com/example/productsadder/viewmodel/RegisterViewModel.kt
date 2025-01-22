@@ -55,7 +55,7 @@ fun registerUser(email: String, password: String, firstName: String, lastName: S
                         }
                 }
             } else {
-                _registerResult.value = Resource.Error("Registration failed: ${task.exception?.message}")
+                _registerResult.value = Resource.Error("${task.exception?.message}")
             }
         }
 }
@@ -76,7 +76,7 @@ fun registerUser(email: String, password: String, firstName: String, lastName: S
     private fun getUserToken() {
         FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
             if (!task.isSuccessful) {
-                _registerResult.value = Resource.Error("Error fetching FCM token: ${task.exception?.message}")
+                _registerResult.value = Resource.Error("${task.exception?.message}")
                 return@OnCompleteListener
             }
 
@@ -88,10 +88,11 @@ fun registerUser(email: String, password: String, firstName: String, lastName: S
                 Log.w("TAG", "Fetching FCM registration token successFull :- $uid")
                 db.collection("user").document(uid).set(tokenData, SetOptions.mergeFields("fcm_token"))
                     .addOnSuccessListener {
-                        _registerResult.value = Resource.Success("FCM token updated successfully")
+//                        _registerResult.value = Resource.Success("")
                     }
                     .addOnFailureListener { exception ->
-                        _registerResult.value = Resource.Error("Error updating FCM token: ${exception.message}")
+//                        _registerResult.value = Resource.Error("Error updating FCM token: ${exception.message}")
+                        _registerResult.value = Resource.Error("${exception.message}")
                     }
             }
         })
