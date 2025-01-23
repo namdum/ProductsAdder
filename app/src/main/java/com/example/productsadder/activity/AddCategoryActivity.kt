@@ -9,17 +9,15 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import com.example.productsadder.data.Category
 import com.example.productsadder.databinding.ActivityAddCategoryBinding
-import com.example.productsadder.util.Resource
+import com.example.productsadder.network.extension.subscribeAndObserveOnMainThread
 import com.example.productsadder.viewmodel.CategoryViewModel
 import com.example.productsadder.viewmodel.CategoryViewModelFactory
+import com.example.productsadder.viewmodel.CategoryViewState
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
 import java.util.UUID
 
@@ -34,6 +32,11 @@ class AddCategoryActivity : AppCompatActivity() {
         val viewModelFactory = CategoryViewModelFactory(FirebaseFirestore.getInstance(), FirebaseAuth.getInstance())
         viewModel = ViewModelProvider(this, viewModelFactory)[CategoryViewModel::class.java]
 
+        listenToViewEvent()
+        listenToViewModel()
+
+    }
+    private fun listenToViewEvent() {
         binding.imageClose.setOnClickListener {
             finish()
         }
@@ -75,30 +78,23 @@ class AddCategoryActivity : AppCompatActivity() {
                 }
             }
         }
+    }
 
-        lifecycleScope.launch {
-            viewModel.addNewCategory.collectLatest {
-                when (it) {
-                    is Resource.Loading -> {}
-
-                    is Resource.Success -> {
-                        binding.progressbarAddress.visibility = View.INVISIBLE
-                        Toast.makeText(this@AddCategoryActivity, "Add Category", Toast.LENGTH_LONG).show()
-                        finish()
-                    }
-
-                    is Resource.Error -> {
-                        Toast.makeText(this@AddCategoryActivity, it.message, Toast.LENGTH_SHORT).show()
-                    }
-
-                    else -> Unit
+    private fun listenToViewModel() {
+        viewModel.categoryState.subscribeAndObserveOnMainThread {
+            when(it){
+                is CategoryViewState.LoadingState->{}
+                is CategoryViewState.SuccessMessage->{
+                    binding.progressbarAddress.visibility = View.INVISIBLE
+                    Toast.makeText(this@AddCategoryActivity, it.successMessage, Toast.LENGTH_LONG).show()
+                    finish()
                 }
-            }
-        }
+                is CategoryViewState.FetchCategoriesSuccess->{}
+                is CategoryViewState.ErrorMessage->{
+                    Toast.makeText(this@AddCategoryActivity, it.errorMessage, Toast.LENGTH_SHORT).show()
 
-        lifecycleScope.launch {
-            viewModel.error.collectLatest {
-                Toast.makeText(this@AddCategoryActivity, it, Toast.LENGTH_SHORT).show()
+                }
+                else->{}
             }
         }
     }

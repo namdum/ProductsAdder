@@ -36,9 +36,11 @@ class LoginViewModel(private val firebaseAuth: FirebaseAuth = FirebaseAuth.getIn
                                     if (userType == "admin") {
                                         getUserToken()
                                         _loginResult.value = Resource.Success("Log In Successfully...")
+                                        Log.d("checkUserStatus","Log In Successfully....")
                                     } else {
                                         FirebaseAuth.getInstance().signOut()
                                         _loginResult.value = Resource.Error("Please check email or password is incorrect")
+                                        Log.d("checkUserStatus","Please check email or password is incorrect...")
                                     }
                                 } else {
                                     _loginResult.value = Resource.Error("User data not found.")
@@ -85,7 +87,7 @@ class LoginViewModel(private val firebaseAuth: FirebaseAuth = FirebaseAuth.getIn
 
         val currentUser = firebaseAuth.currentUser
         if (currentUser != null) {
-            firestore.collection("users")
+            firestore.collection("user")
                 .whereEqualTo("email", currentUser.email)
                 .get()
                 .addOnSuccessListener { querySnapshot ->
@@ -95,14 +97,15 @@ class LoginViewModel(private val firebaseAuth: FirebaseAuth = FirebaseAuth.getIn
                     if (isAdmin) {
                         _userStatus.value = Resource.Success(true) // Admin user
                     } else {
-                                _userStatus.value = Resource.Success(false) // Invalid user
-//                        _userStatus.value = Resource.Error("Invalid user please check email or password is incorrect")
+//                                _userStatus.value = Resource.Success(false) // Invalid user
+                        _userStatus.value = Resource.Error("Invalid user please check email or password is incorrect")
                     }
                 }
                 .addOnFailureListener {
                     _userStatus.value = Resource.Error("Failed to fetch user data.")
                 }
         } else {
+
             _userStatus.value = Resource.Error("User not logged in.")
         }
     }

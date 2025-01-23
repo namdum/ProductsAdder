@@ -44,7 +44,7 @@ class MainActivity : AppCompatActivity() {
                         // Admin user, navigate to HomeActivity
                         startActivity(Intent(this, HomeActivity::class.java))
                         finish()
-                    } else {3
+                    } else {
                         // Invalid user
                         val intent = Intent(this, LoginActivity::class.java)
                         startActivity(intent)

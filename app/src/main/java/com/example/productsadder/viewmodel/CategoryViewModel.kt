@@ -7,6 +7,8 @@ import com.example.productsadder.data.Category
 import com.example.productsadder.util.Resource
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import io.reactivex.Observable
+import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -15,98 +17,144 @@ import kotlinx.coroutines.launch
 
 class CategoryViewModel(private val firestore: FirebaseFirestore, private val auth: FirebaseAuth) : ViewModel() {
 
-    private val _addNewCategory = MutableStateFlow<Resource<Category>>(Resource.Unspecified())
-    val addNewCategory = _addNewCategory.asStateFlow()
-
-    private val _categories = MutableStateFlow<List<Category>>(emptyList())
-    val categories = _categories.asStateFlow()
-
-    private val _error = MutableSharedFlow<String>()
-    val error = _error.asSharedFlow()
-
-    private val _editCategory = MutableStateFlow<Resource<Category>>(Resource.Unspecified())
-    val editCategory = _editCategory.asStateFlow()
+    private val categoryStateSubject: PublishSubject<CategoryViewState> = PublishSubject.create()
+    val categoryState: Observable<CategoryViewState> = categoryStateSubject.hide()
 
     fun editCategory(oldCategory: Category, newCategory: Category) {
-        val validateInputs = validateInputs(newCategory)
-
-        if (validateInputs) {
-            _editCategory.value = Resource.Loading()
-            val firestore = FirebaseFirestore.getInstance()
-
+        if (validateInputs(newCategory)) {
+            categoryStateSubject.onNext(CategoryViewState.LoadingState(true))
             firestore.collection("Category")
                 .whereEqualTo("category", oldCategory.category)
                 .get()
                 .addOnSuccessListener { querySnapshot ->
-                    Log.i("test", newCategory.toString())
                     if (querySnapshot.documents.isNotEmpty()) {
                         val document = querySnapshot.documents[0]
-                        document.reference.update("image", newCategory.image,"category", newCategory.category )
+                        document.reference.update("image", newCategory.image, "category", newCategory.category)
                             .addOnSuccessListener {
-                                _editCategory.value = Resource.Success(newCategory)
-                                val currentCategories = _categories.value.toMutableList()
-                                val index = currentCategories.indexOf(oldCategory)
-                                if (index != -1) {
-                                    currentCategories[index] = newCategory
-                                    _categories.value = currentCategories
-                                }
+                                categoryStateSubject.onNext(CategoryViewState.SuccessMessage("Category updated successfully"))
                             }
                             .addOnFailureListener { exception ->
-                                _editCategory.value = Resource.Error(exception.message.toString())
+                                categoryStateSubject.onNext(CategoryViewState.ErrorMessage(exception.message.toString()))
                             }
                     } else {
-                        _editCategory.value = Resource.Error("Category not found")
+                        categoryStateSubject.onNext(CategoryViewState.ErrorMessage("Category not found"))
                     }
                 }
                 .addOnFailureListener { exception ->
-                    _editCategory.value = Resource.Error(exception.message.toString())
+                    categoryStateSubject.onNext(CategoryViewState.ErrorMessage(exception.message.toString()))
+                }
+                .addOnCompleteListener {
+                    categoryStateSubject.onNext(CategoryViewState.LoadingState(false))
                 }
         } else {
-            _editCategory.value = Resource.Error("Category fields are required")
+            categoryStateSubject.onNext(CategoryViewState.ErrorMessage("Category fields are required"))
         }
     }
 
     fun addCategory(category: Category) {
-        val validateInputs = validateInputs(category)
-
-        if (validateInputs) {
-            viewModelScope.launch { _addNewCategory.emit(Resource.Loading()) }
-        firestore.collection("Category").document()
-                .set(category).addOnSuccessListener {
-                    Log.i("test", category.toString())
-                viewModelScope.launch {
-                    val currentCategories = categories.value.toMutableList()
-                    currentCategories.add(category)
-                    _categories.emit(currentCategories)
-                    _addNewCategory.emit(Resource.Success(category))
+        if (validateInputs(category)) {
+            categoryStateSubject.onNext(CategoryViewState.LoadingState(true))
+            firestore.collection("Category").document()
+                .set(category)
+                .addOnSuccessListener {
+                    categoryStateSubject.onNext(CategoryViewState.SuccessMessage("Category added successfully"))
                 }
-                }.addOnFailureListener {
-                    viewModelScope.launch { _addNewCategory.emit(Resource.Error(it.message.toString())) }
+                .addOnFailureListener { exception ->
+                    categoryStateSubject.onNext(CategoryViewState.ErrorMessage(exception.message.toString()))
+                }
+                .addOnCompleteListener {
+                    categoryStateSubject.onNext(CategoryViewState.LoadingState(false))
                 }
         } else {
-            viewModelScope.launch {
-                _error.emit("Category fields are required")
-            }
+            categoryStateSubject.onNext(CategoryViewState.ErrorMessage("Category fields are required"))
         }
     }
 
     fun fetchCategories() {
+        categoryStateSubject.onNext(CategoryViewState.LoadingState(true))
         firestore.collection("Category")
-            .get().addOnSuccessListener { querySnapshot ->
+            .get()
+            .addOnSuccessListener { querySnapshot ->
                 val categories = querySnapshot.documents.map { document ->
-                    Category(document.getString("image")!!,document.getString("category")!!)
+                    Category(document.getString("image")!!, document.getString("category")!!)
                 }
-                viewModelScope.launch {
-                    _categories.emit(categories)
-                }
-            }.addOnFailureListener { exception ->
-                viewModelScope.launch {
-                    _error.emit(exception.message.toString())
-                }
+                categoryStateSubject.onNext(CategoryViewState.FetchCategoriesSuccess(categories))
+            }
+            .addOnFailureListener { exception ->
+                categoryStateSubject.onNext(CategoryViewState.ErrorMessage(exception.message.toString()))
+            }
+            .addOnCompleteListener {
+                categoryStateSubject.onNext(CategoryViewState.LoadingState(false))
             }
     }
+//    fun deleteCategory(category: Category) {
+//        categoryStateSubject.onNext(CategoryViewState.LoadingState(true))
+//        firestore.collection("Category")
+//            .whereEqualTo("category", category.category)
+//            .get()
+//            .addOnSuccessListener { querySnapshot ->
+//                if (querySnapshot.documents.isNotEmpty()) {
+//                    val documentId = querySnapshot.documents[0].id
+//                    firestore.collection("Category").document(documentId)
+//                        .delete()
+//                        .addOnSuccessListener {
+//                            categoryStateSubject.onNext(CategoryViewState.SuccessMessage("Category deleted successfully"))
+//                        }
+//                        .addOnFailureListener { exception ->
+//                            categoryStateSubject.onNext(CategoryViewState.ErrorMessage("Error deleting category: ${exception.message}"))
+//                        }
+//                } else {
+//                    categoryStateSubject.onNext(CategoryViewState.ErrorMessage("Category not found"))
+//                }
+//            }
+//            .addOnFailureListener { exception ->
+//                categoryStateSubject.onNext(CategoryViewState.ErrorMessage("Error getting category: ${exception.message}"))
+//            }
+//            .addOnCompleteListener {
+//                categoryStateSubject.onNext(CategoryViewState.LoadingState(false))
+//            }
+//    }
 
+    fun deleteCategory(category: Category) {
+        categoryStateSubject.onNext(CategoryViewState.LoadingState(true))
+        firestore.collection("Category")
+            .whereEqualTo("category", category.category)
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                if (querySnapshot.documents.isNotEmpty()) {
+                    val documentId = querySnapshot.documents[0].id
+                    firestore.collection("Category").document(documentId)
+                        .delete()
+                        .addOnSuccessListener {
+                            // Update adapter data after deletion
+                            categoryStateSubject.onNext(CategoryViewState.CategoryDeleted(category))
+                            categoryStateSubject.onNext(CategoryViewState.SuccessMessage("Category deleted successfully"))
+                            Log.d("DeleteCategory", "Emitted CategoryDeleted state for: $category")
+
+                        }
+                        .addOnFailureListener { exception ->
+                            categoryStateSubject.onNext(CategoryViewState.ErrorMessage("Error deleting category: ${exception.message}"))
+                        }
+                } else {
+                    categoryStateSubject.onNext(CategoryViewState.ErrorMessage("Category not found"))
+                }
+            }
+            .addOnFailureListener { exception ->
+                categoryStateSubject.onNext(CategoryViewState.ErrorMessage("Error getting category: ${exception.message}"))
+            }
+            .addOnCompleteListener {
+                categoryStateSubject.onNext(CategoryViewState.LoadingState(false))
+            }
+    }
     private fun validateInputs(category: Category): Boolean {
         return category.category.trim().isNotEmpty() && category.image.trim().isNotEmpty()
     }
+}
+
+sealed class CategoryViewState {
+    data class ErrorMessage(val errorMessage: String) : CategoryViewState()
+    data class SuccessMessage(val successMessage: String) : CategoryViewState()
+    data class LoadingState(val isLoading: Boolean) : CategoryViewState()
+    data class FetchCategoriesSuccess(val fetchCategories: List<Category>) : CategoryViewState()
+    data class CategoryDeleted(val category: Category) : CategoryViewState()
 }
