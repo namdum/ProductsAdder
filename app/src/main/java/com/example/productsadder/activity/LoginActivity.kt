@@ -35,32 +35,32 @@ class LoginActivity : AppCompatActivity() {
             binding.loginEmailEdit.setText("")
          binding.loginPasswordEdit.setText("")
 
-        if (auth.currentUser != null) {
-
-            firestore.collection("users")
-                .whereEqualTo("email", auth?.currentUser?.email)
-                .get()
-                .addOnSuccessListener { querySnapshot ->
-                    Log.i("test", querySnapshot.toString())
-
-                    firestore.collection("user").whereEqualTo("email", auth.currentUser?.email)
-                        .get().addOnSuccessListener { querySnapshot ->
-                            querySnapshot.documents.map { document ->
-                                if(document.getString("user_type").toString().equals("admin")) {
-                                    startActivity(Intent(this, HomeActivity::class.java))
-                                    finish()
-                                } else {
-                                    Toast.makeText(this@LoginActivity, "Invalid credentials", Toast.LENGTH_SHORT).show()
-                                }
-                            }
-                        }.addOnFailureListener { exception ->
-                            Toast.makeText(this@LoginActivity, "Invalid credentials", Toast.LENGTH_SHORT).show()
-                        }
-                }
-                .addOnFailureListener { exception ->
-                    Toast.makeText(this@LoginActivity, "Invalid credentials", Toast.LENGTH_SHORT).show()
-                }
-        }
+//        if (auth.currentUser != null) {
+//
+//            firestore.collection("users")
+//                .whereEqualTo("email", auth?.currentUser?.email)
+//                .get()
+//                .addOnSuccessListener { querySnapshot ->
+//                    Log.i("test", querySnapshot.toString())
+//
+//                    firestore.collection("user").whereEqualTo("email", auth.currentUser?.email)
+//                        .get().addOnSuccessListener { querySnapshot ->
+//                            querySnapshot.documents.map { document ->
+//                                if(document.getString("user_type").toString().equals("admin")) {
+//                                    startActivity(Intent(this, HomeActivity::class.java))
+//                                    finish()
+//                                } else {
+//                                    Toast.makeText(this@LoginActivity, "Invalid credentials", Toast.LENGTH_SHORT).show()
+//                                }
+//                            }
+//                        }.addOnFailureListener { exception ->
+//                            Toast.makeText(this@LoginActivity, "Invalid credentials", Toast.LENGTH_SHORT).show()
+//                        }
+//                }
+//                .addOnFailureListener { exception ->
+//                    Toast.makeText(this@LoginActivity, "Invalid credentials", Toast.LENGTH_SHORT).show()
+//                }
+//        }
         binding.loginLoginBtn.setOnClickListener {
             val email = binding.loginEmailEdit.text.toString()
             val password = binding.loginPasswordEdit.text.toString()
@@ -79,44 +79,20 @@ class LoginActivity : AppCompatActivity() {
                     binding.progressbar.isVisible=false
                     binding.loginLoginBtn.isVisible=true
                     Toast.makeText(this, result.data, Toast.LENGTH_SHORT).show()
-                    firestore.collection("users")
-                        .whereEqualTo("email", auth?.currentUser?.email)
-                        .get()
-                        .addOnSuccessListener { querySnapshot ->
-                            Log.i("test", querySnapshot.toString())
-
-                            firestore.collection("user").whereEqualTo("email", auth.currentUser?.email)
-                                .get().addOnSuccessListener { querySnapshot ->
-                                    querySnapshot.documents.map { document ->
-                                        if(document.getString("user_type").toString().equals("admin")) {
-//                                            ProgressUtil.dismissProgress()
-                                            Log.i("MyTest", document.toString())
-                                            startActivity(Intent(this, HomeActivity::class.java))
-                                            finish()
-                                        } else {
-                                            Toast.makeText(this@LoginActivity, "Please check email or password is incorrect", Toast.LENGTH_SHORT).show()
-//                                            ProgressUtil.dismissProgress()
-                                        }
-                                    }
-                                }.addOnFailureListener { exception ->
-                                    Toast.makeText(this@LoginActivity, "Invalid credentials", Toast.LENGTH_SHORT).show()
-//                                    ProgressUtil.dismissProgress()
-                                }
-                        }
-                        .addOnFailureListener { exception ->
-                            Toast.makeText(this@LoginActivity, "Invalid credentials", Toast.LENGTH_SHORT).show()
-//                            ProgressUtil.dismissProgress()
-                        }
+                    Log.d("MyTesting","result.data${result.data}")
+                    startActivity(Intent(this, HomeActivity::class.java))
 
                 }
                 is Resource.Error -> {
                     Toast.makeText(this, result.message, Toast.LENGTH_SHORT).show()
                     binding.progressbar.isVisible=false
-                    binding.loginLoginBtn.isVisible=true                }
+                    binding.loginLoginBtn.isVisible=true
+                }
                 is Resource.Loading -> {
                     // Show progress dialog
                     binding.progressbar.isVisible=true
-                    binding.loginLoginBtn.isVisible=false                }
+                    binding.loginLoginBtn.isVisible=false
+                }
 
                 else -> {}
             }

@@ -30,6 +30,8 @@ class MainActivity : AppCompatActivity() {
             WindowManager.LayoutParams.FLAG_FULLSCREEN
         )
 
+        // Check user status
+        loginViewModel.checkUserStatus()
 
         // Observe user status
         loginViewModel.userStatus.observe(this) { resource ->
@@ -42,38 +44,22 @@ class MainActivity : AppCompatActivity() {
                         // Admin user, navigate to HomeActivity
                         startActivity(Intent(this, HomeActivity::class.java))
                         finish()
-                    } else {
+                    } else {3
                         // Invalid user
-                        Toast.makeText(this, "Invalid credentials", Toast.LENGTH_SHORT).show()
+                        val intent = Intent(this, LoginActivity::class.java)
+                        startActivity(intent)
+                        finish()
                     }
                 }
                 is Resource.Error -> {
                     // Show error message
-//                    Toast.makeText(this, resource.message ?: "An error occurred", Toast.LENGTH_SHORT).show()
-                }
-                else->{}
-            }
-            if (resource is Resource.Error ) {
-                Handler(Looper.getMainLooper()).postDelayed({
+                    Log.d("MyTesting","error:-${resource.message}")
                     val intent = Intent(this, LoginActivity::class.java)
                     startActivity(intent)
                     finish()
-                }, 1000)
+                }
+                else->{}
             }
         }
-
-        // Check user status
-        loginViewModel.checkUserStatus()
-
-
-    }
-
-    fun openLoginScreen() {
-        Handler(Looper.getMainLooper()).postDelayed({
-
-            val intent = Intent(this, LoginActivity::class.java)
-            startActivity(intent)
-            finish()
-        }, 1000)
     }
 }

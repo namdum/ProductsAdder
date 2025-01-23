@@ -37,7 +37,7 @@ class LoginViewModel(private val firebaseAuth: FirebaseAuth = FirebaseAuth.getIn
                                         getUserToken()
                                         _loginResult.value = Resource.Success("Log In Successfully...")
                                     } else {
-                                        firebaseAuth.signOut() // Sign out non-admin users
+                                        FirebaseAuth.getInstance().signOut()
                                         _loginResult.value = Resource.Error("Please check email or password is incorrect")
                                     }
                                 } else {
@@ -53,7 +53,6 @@ class LoginViewModel(private val firebaseAuth: FirebaseAuth = FirebaseAuth.getIn
                 }
             }
     }
-
     private fun getUserToken() {
         FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
             if (!task.isSuccessful) {
@@ -90,22 +89,15 @@ class LoginViewModel(private val firebaseAuth: FirebaseAuth = FirebaseAuth.getIn
                 .whereEqualTo("email", currentUser.email)
                 .get()
                 .addOnSuccessListener { querySnapshot ->
-                    firestore.collection("user").whereEqualTo("email", currentUser.email)
-                        .get()
-                        .addOnSuccessListener { querySnapshot ->
-                            val isAdmin = querySnapshot.documents.any { document ->
-                                document.getString("user_type") == "admin"
-                            }
-
-                            if (isAdmin) {
-                                _userStatus.value = Resource.Success(true) // Admin user
-                            } else {
+                    val isAdmin = querySnapshot.documents.any { document ->
+                        document.getString("user_type") == "admin"
+                    }
+                    if (isAdmin) {
+                        _userStatus.value = Resource.Success(true) // Admin user
+                    } else {
                                 _userStatus.value = Resource.Success(false) // Invalid user
-                            }
-                        }
-                        .addOnFailureListener {
-                            _userStatus.value = Resource.Error("Failed to fetch user data.")
-                        }
+//                        _userStatus.value = Resource.Error("Invalid user please check email or password is incorrect")
+                    }
                 }
                 .addOnFailureListener {
                     _userStatus.value = Resource.Error("Failed to fetch user data.")

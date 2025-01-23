@@ -27,6 +27,7 @@ class RegisterActivity : AppCompatActivity() {
 
         binding.registerHeaderText.setOnClickListener {
             startActivity(Intent(this, LoginActivity::class.java))
+            finish()
         }
 
         binding.registerRegisterBtn.setOnClickListener {
