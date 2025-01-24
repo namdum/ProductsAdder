@@ -1,9 +1,7 @@
 package com.example.productsadder.activity
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.MenuItem
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -32,10 +30,12 @@ import com.example.productsadder.data.Order
 import com.example.productsadder.data.Product
 import com.example.productsadder.databinding.ActivityEditeProductBinding
 import com.example.productsadder.databinding.ActivityOrderDetailsBinding
+import com.example.productsadder.network.extension.subscribeAndObserveOnMainThread
 import com.example.productsadder.util.OrderStatus
 import com.example.productsadder.util.Resource
 import com.example.productsadder.util.VerticalItemDecoration
 import com.example.productsadder.viewmodel.OrderViewModel
+import com.example.productsadder.viewmodel.OrderViewState
 import com.example.productsadder.viewmodel.StatusSpinnerSetup
 import com.google.android.material.navigation.NavigationBarView.OnItemSelectedListener
 import com.google.firebase.auth.FirebaseAuth
@@ -78,6 +78,44 @@ class OrderDetailsActivity : AppCompatActivity() {
         orderDetailAdapter.notifyDataSetChanged()
         binding.imageClose.setOnClickListener { finish() }
         binding.totalPrice.text = "Total:- " + "$${String.format("%.2f", order?.totalPrice)}"
+        listenToViewModel()
+
+        orderViewModel.setupStatusSpinner(orderId, selectedOrderStatus)
+
+    }
+
+    private fun listenToViewModel() {
+        orderViewModel.orderState.subscribeAndObserveOnMainThread {
+            when(it){
+                is OrderViewState.LoadingState->{
+                    showLoading()
+                }
+                is OrderViewState.SuccessMessage->{
+                    notificationViewModel.sendNotification(
+                        NotificationInfo(
+                            title = "Order updates",
+                            message = "Your order for ${order?.products?.firstOrNull()?.product?.name} is ${selectedOrderStatus}",
+                            notificationType = "Your Order id ${selectedOrderStatus}",
+                            receiverId = order?.address?.userId.toString(),
+                            senderId = auth.currentUser?.uid.toString()
+                        )
+                    )
+
+                    hideLoading()
+                    Log.d("MyTesting","SuccessMessage:--${it.successMessage}")
+                    onBackPressedDispatcher
+                }
+                is OrderViewState.FetchStatusSpinnerSetup->{
+                    it.fetchStatusSpinnerSetup?.let { setupSpinner(it) }
+                    hideLoading()
+                }
+                is OrderViewState.ErrorMessage->{
+                    hideLoading()
+                    Log.d("MyTesting","SuccessMessage:--${it.errorMessage}")
+                }
+                else->{}
+            }
+        }
 
         notificationViewModel.notificationResult.observe(this, Observer { result ->
             when (result) {
@@ -93,70 +131,6 @@ class OrderDetailsActivity : AppCompatActivity() {
                 else->{}
             }
         })
-
-
-        orderViewModel.updateUserStatus.observe(this) { resource ->
-            when (resource) {
-                is Resource.Loading -> {
-                    showLoading()
-
-                }
-                is Resource.Success -> {
-                    hideLoading()
-                }
-                is Resource.Error -> {
-                    hideLoading()
-                }
-                else->{}
-            }
-        }
-
-        orderViewModel.setupStatusSpinner(orderId, selectedOrderStatus)
-
-        orderViewModel.spinnerSetupStatus.observe(this) { resource ->
-            when (resource) {
-                is Resource.Loading -> {
-                    showLoading()
-                }
-                is Resource.Success -> {
-                    resource.data?.let { setupSpinner(it) }
-                    hideLoading()
-                }
-                is Resource.Error -> {
-                    hideLoading()
-                }
-                else->{}
-            }
-        }
-
-        // Observe the LiveData
-        orderViewModel.updateOrderStatus.observe(this) { resource ->
-            when (resource) {
-                is Resource.Loading -> {
-                    showLoading()
-
-                }
-                is Resource.Success -> {
-                                    notificationViewModel.sendNotification(
-                                        NotificationInfo(
-                                            title = "Order updates",
-                                            message = "Your order for ${order?.products?.firstOrNull()?.product?.name} is ${selectedOrderStatus}",
-                                            notificationType = "Your Order id ${selectedOrderStatus}",
-                                            receiverId = order?.address?.userId.toString(),
-                                            senderId = auth.currentUser?.uid.toString()
-                                        )
-                                    )
-
-                    hideLoading()
-                }
-                is Resource.Error -> {
-                    // Show error message
-                    hideLoading()
-                }
-                else->{}
-            }
-        }
-
     }
 
     private fun setupSpinner(statusSpinnerSetup: StatusSpinnerSetup) {
@@ -199,10 +173,10 @@ class OrderDetailsActivity : AppCompatActivity() {
 
 
     private fun showLoading() {
-        Log.d("MyTesting","showLoading...")
+//        Log.d("MyTesting","showLoading...")
     }
 
     private fun hideLoading() {
-        Log.d("MyTesting","showLoading...")
+//        Log.d("MyTesting","showLoading...")
     }
 }

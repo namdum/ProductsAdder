@@ -19,9 +19,11 @@ import com.example.productsadder.adapter.ColorsAdapter
 import com.example.productsadder.adapter.ImageAdapter
 import com.example.productsadder.data.Product
 import com.example.productsadder.databinding.ActivityAddProductBinding
+import com.example.productsadder.network.extension.subscribeAndObserveOnMainThread
 import com.example.productsadder.util.Resource
 import com.example.productsadder.viewmodel.ProductViewModel
 import com.example.productsadder.viewmodel.ProductViewModelFactory
+import com.example.productsadder.viewmodel.ProductViewState
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
@@ -48,6 +50,12 @@ class AddProductActivity : AppCompatActivity() {
         val viewModelFactory = ProductViewModelFactory(FirebaseFirestore.getInstance(), FirebaseAuth.getInstance())
         viewModel = ViewModelProvider(this, viewModelFactory)[ProductViewModel::class.java]
 
+        fetchCategories()
+        listenToViewEvent()
+        listenToViewModel()
+    }
+
+    private fun listenToViewEvent() {
         imageAdapter = ImageAdapter(uploadedImageString)
         binding.rvImage.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         binding.rvImage.adapter = imageAdapter
@@ -55,13 +63,9 @@ class AddProductActivity : AppCompatActivity() {
         colorsAdapter = ColorsAdapter()
         binding.rvColors.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         binding.rvColors.adapter = colorsAdapter
-
         binding.imageClose.setOnClickListener {
             finish()
         }
-
-        fetchCategories()
-
         binding.addImageImageView.setOnClickListener {
             val intent = Intent()
             intent.setType("image/*")
@@ -69,7 +73,6 @@ class AddProductActivity : AppCompatActivity() {
             intent.action = Intent.ACTION_GET_CONTENT
             imagePickerLauncher.launch(intent)
         }
-
         binding.addColorImageView.setOnClickListener {
             ColorPickerDialog
                 .Builder(this)
@@ -97,7 +100,6 @@ class AddProductActivity : AppCompatActivity() {
                     colorPicker.dismiss()
                 }.show()
         }
-
         binding.addAppCompatButton.setOnClickListener {
             binding.progressbarAddress.visibility = View.VISIBLE
             binding.addAppCompatButton.visibility = View.GONE
@@ -113,34 +115,23 @@ class AddProductActivity : AppCompatActivity() {
                 viewModel.addProduct(product)
             }
         }
-
-        lifecycleScope.launch {
-            viewModel.addNewProduct.collectLatest {
-                when (it) {
-                    is Resource.Loading -> {}
-
-                    is Resource.Success -> {
-                        binding.progressbarAddress.visibility = View.INVISIBLE
-                        Toast.makeText(this@AddProductActivity, "Add Product", Toast.LENGTH_LONG).show()
-                        finish()
-                    }
-
-                    is Resource.Error -> {
-                        Toast.makeText(this@AddProductActivity, it.message, Toast.LENGTH_SHORT).show()
-                    }
-
-                    else -> Unit
+    }
+    private fun listenToViewModel() {
+        viewModel.productState.subscribeAndObserveOnMainThread {
+            when(it){
+                is ProductViewState.LoadingState->{}
+                is ProductViewState.SuccessMessage->{
+                    binding.progressbarAddress.visibility = View.INVISIBLE
+                    Toast.makeText(this@AddProductActivity, it.successMessage, Toast.LENGTH_LONG).show()
+                    finish()
                 }
-            }
-        }
-
-        lifecycleScope.launch {
-            viewModel.error.collectLatest {
-                Toast.makeText(this@AddProductActivity, it, Toast.LENGTH_SHORT).show()
+                is ProductViewState.ErrorMessage->{
+                    Log.d("MyTesting","error:-${it.errorMessage}")
+                }
+                else->{}
             }
         }
     }
-
     private val imagePickerLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         uploadedImageString = imageAdapter.getImage().toMutableList()
         if (result.resultCode == Activity.RESULT_OK) {

@@ -19,6 +19,11 @@ class HomeActivity : AppCompatActivity() {
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        listenToViewEvent()
+
+    }
+
+    private fun listenToViewEvent() {
         val categoryFragment=CategoryFragment()
         val productsFragment=ProductsFragment()
         val orderListFragment= OrderFragment()
@@ -52,7 +57,6 @@ class HomeActivity : AppCompatActivity() {
                 show()
             }
         }
-
     }
 
     private fun setCurrentFragment(fragment: Fragment)=

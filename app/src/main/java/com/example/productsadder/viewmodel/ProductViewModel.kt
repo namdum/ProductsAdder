@@ -3,10 +3,13 @@ package com.example.productsadder.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.productsadder.data.Category
 import com.example.productsadder.data.Product
 import com.example.productsadder.util.Resource
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import io.reactivex.Observable
+import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -15,46 +18,37 @@ import kotlinx.coroutines.launch
 
 class ProductViewModel(private val firestore: FirebaseFirestore, private val auth: FirebaseAuth) : ViewModel() {
 
-    private val _addNewProduct = MutableStateFlow<Resource<Product>>(Resource.Unspecified())
-    val addNewProduct = _addNewProduct.asStateFlow()
-
-    private val _products = MutableStateFlow<List<Product>>(emptyList())
-    val products = _products.asStateFlow()
-
-    private val _error = MutableSharedFlow<String>()
-    val error = _error.asSharedFlow()
-
-    private val _editProduct = MutableStateFlow<Resource<Product>>(Resource.Unspecified())
-    val editProduct = _editProduct.asStateFlow()
+    private val productStateSubject: PublishSubject<ProductViewState> = PublishSubject.create()
+    val productState: Observable<ProductViewState> = productStateSubject.hide()
 
     fun addProduct(product: Product) {
         val validateInputs = validateInputs(product)
 
         if (validateInputs) {
-            viewModelScope.launch { _addNewProduct.emit(Resource.Loading()) }
+            viewModelScope.launch {
+                productStateSubject.onNext(ProductViewState.LoadingState(true))
+            }
             firestore.collection("Products").document()
                 .set(product).addOnSuccessListener {
-                    Log.i("test", product.toString())
                     viewModelScope.launch {
-                        _addNewProduct.emit(Resource.Success(product))
+                        productStateSubject.onNext(ProductViewState.SuccessMessage("Product Add successfully.."))
                     }
                 }.addOnFailureListener { e ->
                     viewModelScope.launch {
-                        _addNewProduct.emit(Resource.Error(e.message.toString()))
+                        productStateSubject.onNext(ProductViewState.ErrorMessage(e.message.toString()))
                     }
                 }
         } else {
             viewModelScope.launch {
-                _error.emit("Product fields are required")
+                productStateSubject.onNext(ProductViewState.ErrorMessage("Product fields are required"))
             }
         }
     }
 
     fun fetchProducts() {
+        productStateSubject.onNext(ProductViewState.LoadingState(true))
         firestore.collection("Products")
             .get().addOnSuccessListener { querySnapshot ->
-                Log.d("test", "Fetched products: ${querySnapshot.documents.size}")
-                Log.d("test", "Fetched products: ${querySnapshot.documents}")
                 val products = querySnapshot.documents.map { document ->
                     val name = document.getString("name") ?: ""
                     val category = document.getString("category") ?: ""
@@ -69,11 +63,12 @@ class ProductViewModel(private val firestore: FirebaseFirestore, private val aut
                     Product(name, category, price, offerPercentage, description, size, colors, images.toMutableList())
                 }
                 viewModelScope.launch {
-                    _products.emit(products)
+                    productStateSubject.onNext(ProductViewState.FetchProductSuccess(products))
+
                 }
             }.addOnFailureListener { exception ->
                 viewModelScope.launch {
-                    _error.emit(exception.message.toString())
+                    productStateSubject.onNext(ProductViewState.ErrorMessage(exception.message.toString()))
                 }
             }
     }
@@ -90,7 +85,7 @@ class ProductViewModel(private val firestore: FirebaseFirestore, private val aut
         val validateInputs = validateInputs(newProduct)
 
         if (validateInputs) {
-            _editProduct.value = Resource.Loading()
+            productStateSubject.onNext(ProductViewState.LoadingState(true))
             val firestore = FirebaseFirestore.getInstance()
 
             firestore.collection("Products")
@@ -112,20 +107,29 @@ class ProductViewModel(private val firestore: FirebaseFirestore, private val aut
                         )
                         document.reference.update(productMap)
                             .addOnSuccessListener {
-                                _editProduct.value = Resource.Success(newProduct)
+                                productStateSubject.onNext(ProductViewState.SuccessMessage("Product Update successfully.."))
                             }
                             .addOnFailureListener { exception ->
-                                _editProduct.value = Resource.Error(exception.message.toString())
+                                productStateSubject.onNext(ProductViewState.ErrorMessage(exception.message.toString()))
                             }
                     } else {
-                        _editProduct.value = Resource.Error("Product not found")
+                        productStateSubject.onNext(ProductViewState.ErrorMessage("Product not found"))
                     }
                 }
                 .addOnFailureListener { exception ->
-                    _editProduct.value = Resource.Error(exception.message.toString())
+                    productStateSubject.onNext(ProductViewState.ErrorMessage(exception.message.toString()))
                 }
         } else {
-            _editProduct.value = Resource.Error("Product fields are required")
+            productStateSubject.onNext(ProductViewState.ErrorMessage("Product fields are required"))
         }
     }
+
+}
+
+sealed class ProductViewState {
+    data class ErrorMessage(val errorMessage: String) : ProductViewState()
+    data class SuccessMessage(val successMessage: String) : ProductViewState()
+    data class LoadingState(val isLoading: Boolean) : ProductViewState()
+    data class FetchProductSuccess(val fetchProducts: List<Product>) : ProductViewState()
+    data class ProductDeleted(val category: Product) : ProductViewState()
 }

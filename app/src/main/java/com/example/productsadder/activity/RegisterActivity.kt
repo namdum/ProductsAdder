@@ -6,55 +6,66 @@ import android.widget.Toast
 import android.window.OnBackInvokedDispatcher
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.productsadder.databinding.ActivityRegisterBinding
-import com.example.productsadder.util.Resource
-import com.example.productsadder.viewmodel.RegisterViewModel
-import com.example.productsadder.viewmodel.RegisterViewModelFactory
+import com.example.productsadder.network.extension.subscribeAndObserveOnMainThread
+import com.example.productsadder.viewmodel.LoginViewModel
+import com.example.productsadder.viewmodel.LoginViewModelFactory
+import com.example.productsadder.viewmodel.LoginViewState
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
 class RegisterActivity : AppCompatActivity() {
     private lateinit var binding: ActivityRegisterBinding
-    private lateinit var viewModel: RegisterViewModel
+private lateinit var viewModel: LoginViewModel
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityRegisterBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        val viewModelFactory = RegisterViewModelFactory(FirebaseAuth.getInstance())
-        viewModel = ViewModelProvider(this, viewModelFactory)[RegisterViewModel::class.java]
+        val viewModelFactory = LoginViewModelFactory(FirebaseAuth.getInstance(), FirebaseFirestore.getInstance())
+        viewModel = ViewModelProvider(this, viewModelFactory)[LoginViewModel::class.java]
 
-        binding.registerHeaderText.setOnClickListener {
-            startActivity(Intent(this, LoginActivity::class.java))
-            finish()
-        }
+        listenToViewEvent()
+        listenToViewModel()
+
+    }
+
+    private fun listenToViewEvent() {
 
         binding.registerRegisterBtn.setOnClickListener {
             registerUser()
         }
 
-        viewModel.registerResult.observe(this, Observer { result ->
-            when (result) {
-                is Resource.Success -> {
-                    Toast.makeText(this, result.data, Toast.LENGTH_SHORT).show()
+        binding.registerHeaderText.setOnClickListener {
+            startActivity(Intent(this, LoginActivity::class.java))
+            finish()
+        }
+    }
+
+    private fun listenToViewModel() {
+        viewModel.loginState.subscribeAndObserveOnMainThread {
+            when(it){
+                is LoginViewState.LoadingState->{
+                    binding.progressbar.isVisible=true
+                    binding.registerRegisterBtn.isVisible=false
+                }
+                is LoginViewState.SuccessMessage->{
+                    Toast.makeText(this, it.successMessage, Toast.LENGTH_SHORT).show()
                     startActivity(Intent(this, HomeActivity::class.java))
                     binding.progressbar.isVisible=false
                     binding.registerRegisterBtn.isVisible=true
                 }
-                is Resource.Error -> {
-                    Toast.makeText(this, result.message, Toast.LENGTH_SHORT).show()
+                is LoginViewState.ErrorMessage->{
+                    Toast.makeText(this, it.errorMessage, Toast.LENGTH_SHORT).show()
                     binding.progressbar.isVisible=false
                     binding.registerRegisterBtn.isVisible=true
                 }
-                is Resource.Loading -> {
-                    binding.progressbar.isVisible=true
-                    binding.registerRegisterBtn.isVisible=false
-                }
 
-                else -> {}
+                else->{}
             }
-        })
+        }
     }
 
     private fun registerUser() {

@@ -1,7 +1,6 @@
 package com.example.productsadder.data
 
 import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
 
 
 @kotlinx.parcelize.Parcelize

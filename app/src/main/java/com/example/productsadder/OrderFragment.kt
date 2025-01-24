@@ -2,24 +2,24 @@ package com.example.productsadder
 
 import android.app.DatePickerDialog
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.productsadder.adapter.OrderListAdapter
+import com.example.productsadder.data.Order
 import com.example.productsadder.databinding.FragmentOredrBinding
+import com.example.productsadder.network.extension.subscribeAndObserveOnMainThread
 import com.example.productsadder.viewmodel.OrderListViewModelFactory
 import com.example.productsadder.viewmodel.OrderListViewModel
+import com.example.productsadder.viewmodel.OrderListViewState
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.launch
-import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -31,6 +31,7 @@ class OrderFragment : Fragment(R.layout.fragment_oredr) {
     private lateinit var orderAdapter: OrderListAdapter
     private lateinit var viewModel: OrderListViewModel
     private var searchQuery: String = ""
+    private lateinit var ordersList:List<Order>
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -53,36 +54,52 @@ class OrderFragment : Fragment(R.layout.fragment_oredr) {
         recyclerView.adapter = orderAdapter
         // Observe the orders LiveData from the ViewModel
 
-        lifecycleScope.launchWhenStarted {
-            viewModel.orders.collect { orders ->
-                // Log the size of orders
-                orderAdapter.isAscending=true
-                orderAdapter.toggleSorting(orders)
-                // Prepare the data with dates
-
-                // Set up search field
-                binding.searchAppCompatEditText.setOnClickListener {
-                    showDatePickerDialog()
-                }
-                binding.sortAppCompatImageView.setOnClickListener {
-                    binding.searchAppCompatEditText.text=""
-                    orderAdapter.toggleSorting(orders)
-                    // Optionally update button text based on sorting order
-                    if (orderAdapter.isAscending) {
-                        binding.sortAppCompatImageView.setBackgroundResource(R.drawable.ic_desc)
-                    } else {
-                        binding.sortAppCompatImageView.setBackgroundResource(R.drawable.ic_asce)
-                    }
-                }
-                orderAdapter.notifyDataSetChanged()
+        binding.searchAppCompatEditText.setOnClickListener {
+            showDatePickerDialog()
+        }
+        binding.sortAppCompatImageView.setOnClickListener {
+            binding.searchAppCompatEditText.text=""
+            orderAdapter.toggleSorting(ordersList)
+            // Optionally update button text based on sorting order
+            if (orderAdapter.isAscending) {
+                binding.sortAppCompatImageView.setBackgroundResource(R.drawable.ic_desc)
+            } else {
+                binding.sortAppCompatImageView.setBackgroundResource(R.drawable.ic_asce)
             }
         }
+        listenToViewModel()
+
+
 
 
         // Fetch orders when the fragment is created or based on your specific logic
-        viewModel.fetchOrders()
         return binding.root
     }
+
+    private fun listenToViewModel() {
+        viewModel.orderListState.subscribeAndObserveOnMainThread {
+            when(it){
+                is OrderListViewState.LoadingState->{
+                    binding.progressbar.isVisible=true
+                }
+                is OrderListViewState.FetchOrderList->{
+                    binding.progressbar.isVisible=false
+                    orderAdapter.isAscending=true
+                orderAdapter.toggleSorting(it.fetchOrderList)
+                // Prepare the data with dates
+                ordersList=it.fetchOrderList
+
+                // Set up search field
+
+                orderAdapter.notifyDataSetChanged()
+                }
+                is OrderListViewState.ErrorMessage->{
+                    binding.progressbar.isVisible=false
+                }
+            }
+        }
+    }
+
     private fun showDatePickerDialog() {
         val calendar = Calendar.getInstance()
         val datePickerDialog = DatePickerDialog(
@@ -107,8 +124,7 @@ class OrderFragment : Fragment(R.layout.fragment_oredr) {
 
     private fun updateDataWithFilter(dateFilter: String? = null) {
         lifecycleScope.launch {
-            viewModel.orders.collect { orders ->
-                val filteredOrders = orders.filter { order ->
+                val filteredOrders = ordersList.filter { order ->
                     // Date Filter Matching
                     val matchesDateFilter = dateFilter?.let {
                         val orderDate = parseDate(order.date, "yyyy-MM-dd")
@@ -136,7 +152,6 @@ class OrderFragment : Fragment(R.layout.fragment_oredr) {
                 val groupedOrders = orderAdapter.groupOrdersByDate(filteredOrders)
                 orderAdapter.updateItems(groupedOrders)
                 orderAdapter.notifyDataSetChanged()
-            }
         }
     }
 
@@ -149,5 +164,9 @@ class OrderFragment : Fragment(R.layout.fragment_oredr) {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.fetchOrders()
+    }
 
 }

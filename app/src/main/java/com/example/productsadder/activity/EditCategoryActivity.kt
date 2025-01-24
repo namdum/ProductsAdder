@@ -17,7 +17,6 @@ import com.example.productsadder.network.extension.subscribeAndObserveOnMainThre
 import com.example.productsadder.util.Resource
 import com.example.productsadder.viewmodel.CategoryViewModel
 import com.example.productsadder.viewmodel.CategoryViewModelFactory
-import com.example.productsadder.viewmodel.CategoryViewState
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
@@ -47,22 +46,48 @@ class EditCategoryActivity : AppCompatActivity() {
     }
 
     private fun listenToViewModel() {
-        viewModel.categoryState.subscribeAndObserveOnMainThread {
-            when(it){
-                is CategoryViewState.LoadingState->{}
-                is CategoryViewState.SuccessMessage->{
-                    binding.progressbarAddress.visibility = View.INVISIBLE
-                    Toast.makeText(this@EditCategoryActivity, it.successMessage, Toast.LENGTH_LONG).show()
-                    finish()
-                }
-                is CategoryViewState.FetchCategoriesSuccess->{
+//        viewModel.categoryState.subscribeAndObserveOnMainThread {
+//            when(it){
+//                is CategoryViewState.LoadingState->{}
+//                is CategoryViewState.SuccessMessage->{
+//                    binding.progressbarAddress.visibility = View.INVISIBLE
+//                    Toast.makeText(this@EditCategoryActivity, it.successMessage, Toast.LENGTH_LONG).show()
+//                    finish()
+//                }
+//                is CategoryViewState.FetchCategoriesSuccess->{
+//
+//                }
+//                is CategoryViewState.ErrorMessage->{
+//                    Toast.makeText(this@EditCategoryActivity, it.errorMessage, Toast.LENGTH_SHORT).show()
+//
+//                }
+//                else->{}
+//            }
+//        }
+        lifecycleScope.launchWhenStarted {
+            viewModel.editCategory.collectLatest {
+                when (it) {
+                    is Resource.Loading -> {
+                    }
 
-                }
-                is CategoryViewState.ErrorMessage->{
-                    Toast.makeText(this@EditCategoryActivity, it.errorMessage, Toast.LENGTH_SHORT).show()
+                    is Resource.Success -> {
+                        binding.progressbarAddress.visibility = View.INVISIBLE
+                        Toast.makeText(this@EditCategoryActivity,"Save Category", Toast.LENGTH_LONG).show()
+                        finish()
+                    }
 
+                    is Resource.Error -> {
+                        Toast.makeText(this@EditCategoryActivity, it.message, Toast.LENGTH_SHORT).show()
+                    }
+
+                    else -> Unit
                 }
-                else->{}
+            }
+        }
+
+        lifecycleScope.launchWhenStarted {
+            viewModel.error.collectLatest {
+                Toast.makeText(this@EditCategoryActivity, it, Toast.LENGTH_SHORT).show()
             }
         }
     }

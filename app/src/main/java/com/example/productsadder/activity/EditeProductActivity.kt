@@ -18,9 +18,11 @@ import com.example.productsadder.adapter.ColorsAdapter
 import com.example.productsadder.adapter.ImageAdapter
 import com.example.productsadder.data.Product
 import com.example.productsadder.databinding.ActivityEditeProductBinding
+import com.example.productsadder.network.extension.subscribeAndObserveOnMainThread
 import com.example.productsadder.util.Resource
 import com.example.productsadder.viewmodel.ProductViewModel
 import com.example.productsadder.viewmodel.ProductViewModelFactory
+import com.example.productsadder.viewmodel.ProductViewState
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
@@ -45,6 +47,41 @@ class EditeProductActivity : AppCompatActivity() {
         val viewModelFactory = ProductViewModelFactory(FirebaseFirestore.getInstance(), FirebaseAuth.getInstance())
         viewModel = ViewModelProvider(this, viewModelFactory)[ProductViewModel::class.java]
 
+        fetchCategories()
+        listenToViewEvent()
+        listenToViewModel()
+
+    }
+
+    private fun listenToViewModel() {
+        viewModel.productState.subscribeAndObserveOnMainThread {
+            when(it){
+                is ProductViewState.LoadingState->{
+                    binding.progressbarAddress.visibility = View.VISIBLE
+                    binding.saveAppCompatButton.visibility = View.INVISIBLE
+                }
+                is ProductViewState.SuccessMessage->{
+                    binding.progressbarAddress.visibility = View.INVISIBLE
+                    binding.saveAppCompatButton.visibility = View.VISIBLE
+
+                    Toast.makeText(this@EditeProductActivity, it.successMessage, Toast.LENGTH_LONG).show()
+                    finish()
+                    Log.d("MyTesting","${it.successMessage}")
+                }
+                is ProductViewState.ErrorMessage->{
+                    Log.d("MyTesting","error:-${it.errorMessage}")
+                    Toast.makeText(this@EditeProductActivity, it.errorMessage, Toast.LENGTH_LONG).show()
+                    binding.progressbarAddress.visibility = View.INVISIBLE
+                    binding.saveAppCompatButton.visibility = View.VISIBLE
+
+
+                }
+                else->{}
+            }
+        }
+    }
+
+    private fun listenToViewEvent() {
         val product: Product? = intent.getParcelableExtra("product")
 
         uploadedImageString.addAll(product?.images ?: mutableListOf())
@@ -58,7 +95,6 @@ class EditeProductActivity : AppCompatActivity() {
         binding.rvColors.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         binding.rvColors.adapter = colorsAdapter
 
-        fetchCategories()
 
         binding.imageClose.setOnClickListener {
             finish()
@@ -135,31 +171,6 @@ class EditeProductActivity : AppCompatActivity() {
                 )
                 val newProduct = Product(name, selectedCategory, price, offerpercentage, description, size, selectedColors, uploadedImageString)
                 viewModel.editProduct(oldProduct,newProduct)
-            }
-        }
-        lifecycleScope.launch {
-            viewModel.editProduct.collectLatest {
-                when (it) {
-                    is Resource.Loading -> {}
-
-                    is Resource.Success -> {
-                        binding.progressbarAddress.visibility = View.INVISIBLE
-                        Toast.makeText(this@EditeProductActivity, "Save Product", Toast.LENGTH_LONG).show()
-                        finish()
-                    }
-
-                    is Resource.Error -> {
-                        Toast.makeText(this@EditeProductActivity, it.message, Toast.LENGTH_SHORT).show()
-                    }
-
-                    else -> Unit
-                }
-            }
-        }
-
-        lifecycleScope.launch {
-            viewModel.error.collectLatest {
-                Toast.makeText(this@EditeProductActivity, it, Toast.LENGTH_SHORT).show()
             }
         }
     }

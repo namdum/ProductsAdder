@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".OrderFragment"
     android:background="@color/white">
     <com.google.android.material.appbar.AppBarLayout
@@ -68,6 +69,13 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/searchRelativeLayout"
         tools:listitem="@layout/order_list_item"/>
+    <ProgressBar
+        android:id="@+id/progressbar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:indeterminateTint="@color/g_blue"
+        android:visibility="invisible"/>
 
 
 </RelativeLayout>
