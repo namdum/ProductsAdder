@@ -28,9 +28,9 @@ class HomeActivity : AppCompatActivity() {
         val productsFragment=ProductsFragment()
         val orderListFragment= OrderFragment()
 
-        setCurrentFragment(categoryFragment)
+//        setCurrentFragment(categoryFragment)
 
-        binding.bottomNavigation.setOnNavigationItemSelectedListener {
+        binding.bottomNavigation.setOnNavigationItemSelectedListener  {
             when(it.itemId){
                 R.id.categoryFragment->setCurrentFragment(categoryFragment)
                 R.id.productsFragment->setCurrentFragment(productsFragment)
@@ -59,9 +59,16 @@ class HomeActivity : AppCompatActivity() {
         }
     }
 
-    private fun setCurrentFragment(fragment: Fragment)=
-        supportFragmentManager.beginTransaction().apply {
-            replace(R.id.categoryHostFragment,fragment)
-            commit()
-        }
+//    private fun setCurrentFragment(fragment: Fragment)=
+//        supportFragmentManager.beginTransaction().apply {
+//            replace(R.id.categoryHostFragment,fragment)
+//            commit()
+//        }
+    // Function to replace the current fragment
+    private fun setCurrentFragment(fragment: Fragment) {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.categoryHostFragment, fragment) // Replace the fragment in the container
+            .commit()
+    }
+
 }

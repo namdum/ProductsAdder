@@ -19,6 +19,8 @@ import com.example.productsadder.network.extension.subscribeAndObserveOnMainThre
 import com.example.productsadder.util.Resource
 import com.example.productsadder.viewmodel.CategoryViewModel
 import com.example.productsadder.viewmodel.CategoryViewModelFactory
+import com.example.productsadder.viewmodel.CategoryViewState
+import com.example.productsadder.viewmodel.ProductViewState
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
@@ -49,7 +51,7 @@ class EditCategoryActivity : AppCompatActivity() {
         this.category = intent?.getParcelableExtra(CATEGORY) ?: return
         
 
-        val viewModelFactory = CategoryViewModelFactory(FirebaseFirestore.getInstance(), FirebaseAuth.getInstance())
+        val viewModelFactory = CategoryViewModelFactory(FirebaseFirestore.getInstance())
         viewModel = ViewModelProvider(this, viewModelFactory)[CategoryViewModel::class.java]
 
         listenToViewEvent()
@@ -58,30 +60,28 @@ class EditCategoryActivity : AppCompatActivity() {
     }
 
     private fun listenToViewModel() {
-        lifecycleScope.launchWhenStarted {
-            viewModel.editCategory.collectLatest {
-                when (it) {
-                    is Resource.Loading -> {
-                    }
 
-                    is Resource.Success -> {
-                        binding.progressbarAddress.visibility = View.INVISIBLE
-                        Toast.makeText(this@EditCategoryActivity,"Save Category", Toast.LENGTH_LONG).show()
-                        finish()
-                    }
-
-                    is Resource.Error -> {
-                        Toast.makeText(this@EditCategoryActivity, it.message, Toast.LENGTH_SHORT).show()
-                    }
-
-                    else -> Unit
+        viewModel.categoryState.subscribeAndObserveOnMainThread {
+            when(it){
+                is CategoryViewState.LoadingState->{
+                    binding.progressbarAddress.visibility = View.VISIBLE
+                    binding.saveAppCompatButton.visibility = View.INVISIBLE
                 }
-            }
-        }
+                is CategoryViewState.SuccessMessage->{
+                    binding.progressbarAddress.visibility = View.INVISIBLE
+                    binding.saveAppCompatButton.visibility = View.VISIBLE
 
-        lifecycleScope.launchWhenStarted {
-            viewModel.error.collectLatest {
-                Toast.makeText(this@EditCategoryActivity, it, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@EditCategoryActivity, it.successMessage, Toast.LENGTH_LONG).show()
+                    finish()
+                }
+                is CategoryViewState.ErrorMessage->{
+                    Toast.makeText(this@EditCategoryActivity, it.errorMessage, Toast.LENGTH_LONG).show()
+                    binding.progressbarAddress.visibility = View.INVISIBLE
+                    binding.saveAppCompatButton.visibility = View.VISIBLE
+
+
+                }
+                else->{}
             }
         }
     }

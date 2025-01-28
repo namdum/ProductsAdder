@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 
-class OrderListViewModel (private val firestore: FirebaseFirestore, private val auth: FirebaseAuth) : ViewModel() {
+class OrderListViewModel (private val firestore: FirebaseFirestore) : ViewModel() {
 
 //    private val _orders = MutableStateFlow<List<Order>>(emptyList())
 //    val orders: StateFlow<List<Order>> = _orders

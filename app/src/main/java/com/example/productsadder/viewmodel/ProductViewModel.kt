@@ -1,6 +1,7 @@
 package com.example.productsadder.viewmodel
 
 import android.util.Log
+import android.view.View
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.productsadder.data.Category
@@ -16,7 +17,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class ProductViewModel(private val firestore: FirebaseFirestore, private val auth: FirebaseAuth) : ViewModel() {
+class ProductViewModel(private val firestore: FirebaseFirestore) : ViewModel() {
 
     private val productStateSubject: PublishSubject<ProductViewState> = PublishSubject.create()
     val productState: Observable<ProductViewState> = productStateSubject.hide()
@@ -71,6 +72,32 @@ class ProductViewModel(private val firestore: FirebaseFirestore, private val aut
                     productStateSubject.onNext(ProductViewState.ErrorMessage(exception.message.toString()))
                 }
             }
+    }
+
+     fun deleteProduct(product: Product) {
+
+            val firestore = FirebaseFirestore.getInstance()
+
+            firestore.collection("Products")
+                .whereEqualTo("name", product.name)
+                .get()
+                .addOnSuccessListener { querySnapshot ->
+                    if (querySnapshot.documents.isNotEmpty()) {
+                        val documentId = querySnapshot.documents[0].id
+                        firestore.collection("Products").document(documentId)
+                            .delete()
+                            .addOnSuccessListener {
+                               fetchProducts()
+                            }
+                            .addOnFailureListener { exception ->
+                                Log.e("Error", "Error deleting product: $exception")
+                            }
+                    }
+                }
+                .addOnFailureListener { exception ->
+                    Log.e("Error", "Error getting product: $exception")
+                }
+
     }
 
     private fun validateInputs(product: Product): Boolean {

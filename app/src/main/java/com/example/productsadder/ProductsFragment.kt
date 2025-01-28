@@ -7,11 +7,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.productsadder.activity.AddProductActivity
 import com.example.productsadder.adapter.ProductAdapter
+import com.example.productsadder.data.Category
+import com.example.productsadder.data.Product
 import com.example.productsadder.databinding.FragmentProductsBinding
 import com.example.productsadder.network.extension.subscribeAndObserveOnMainThread
 import com.example.productsadder.util.showBottomNavigationView
@@ -33,7 +36,7 @@ class ProductsFragment : Fragment(R.layout.fragment_products) {
         binding = FragmentProductsBinding.inflate(inflater, container, false)
         val view = binding.root
 
-        val viewModelFactory = ProductViewModelFactory(FirebaseFirestore.getInstance(), FirebaseAuth.getInstance())
+        val viewModelFactory = ProductViewModelFactory(FirebaseFirestore.getInstance())
         viewModel = ViewModelProvider(this, viewModelFactory)[ProductViewModel::class.java]
 
         val recyclerView = binding.productRV
@@ -67,7 +70,21 @@ class ProductsFragment : Fragment(R.layout.fragment_products) {
             startActivity(Intent(requireContext(), AddProductActivity::class.java))
         }
     }
-
+    private fun deleteCategory(product: Product) {
+        AlertDialog.Builder(requireContext()).apply {
+            setTitle(getString(R.string.delete_product))
+            setMessage(getString(R.string.are_you_sure_you_want_to_delete_this_product))
+            setPositiveButton(getString(R.string.yes)) { _, _ ->
+                viewModel.deleteProduct(product)
+            }
+            setNegativeButton(getString(R.string.no)) { dialog, _ ->
+                // Dismiss the dialog
+                dialog.dismiss()
+            }
+            create()
+            show()
+        }
+    }
     override fun onResume() {
         super.onResume()
         showBottomNavigationView()

@@ -44,7 +44,7 @@ class EditeProductActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityEditeProductBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        val viewModelFactory = ProductViewModelFactory(FirebaseFirestore.getInstance(), FirebaseAuth.getInstance())
+        val viewModelFactory = ProductViewModelFactory(FirebaseFirestore.getInstance())
         viewModel = ViewModelProvider(this, viewModelFactory)[ProductViewModel::class.java]
 
         fetchCategories()

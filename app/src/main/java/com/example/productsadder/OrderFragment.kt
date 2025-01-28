@@ -36,23 +36,17 @@ class OrderFragment : Fragment(R.layout.fragment_oredr) {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Use the specific binding class generated from fragment_order_list.xml
         binding = FragmentOredrBinding.inflate(inflater, container, false)
-        val viewModelFactory = OrderListViewModelFactory(
-            // Initialize ViewModel
-                FirebaseFirestore.getInstance(),
-        FirebaseAuth.getInstance()
-        )
+
+        val viewModelFactory = OrderListViewModelFactory(FirebaseFirestore.getInstance())
         viewModel = ViewModelProvider(this, viewModelFactory)[OrderListViewModel::class.java]
 
-        // Set up RecyclerView
         val recyclerView = binding.orderListRV
         recyclerView.layoutManager = LinearLayoutManager(context)
 
         orderAdapter = OrderListAdapter(emptyList())
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = orderAdapter
-        // Observe the orders LiveData from the ViewModel
 
         binding.searchAppCompatEditText.setOnClickListener {
             showDatePickerDialog()
@@ -60,7 +54,6 @@ class OrderFragment : Fragment(R.layout.fragment_oredr) {
         binding.sortAppCompatImageView.setOnClickListener {
             binding.searchAppCompatEditText.text=""
             orderAdapter.toggleSorting(ordersList)
-            // Optionally update button text based on sorting order
             if (orderAdapter.isAscending) {
                 binding.sortAppCompatImageView.setBackgroundResource(R.drawable.ic_desc)
             } else {
@@ -69,10 +62,6 @@ class OrderFragment : Fragment(R.layout.fragment_oredr) {
         }
         listenToViewModel()
 
-
-
-
-        // Fetch orders when the fragment is created or based on your specific logic
         return binding.root
     }
 
@@ -86,11 +75,7 @@ class OrderFragment : Fragment(R.layout.fragment_oredr) {
                     binding.progressbar.isVisible=false
                     orderAdapter.isAscending=true
                 orderAdapter.toggleSorting(it.fetchOrderList)
-                // Prepare the data with dates
                 ordersList=it.fetchOrderList
-
-                // Set up search field
-
                 orderAdapter.notifyDataSetChanged()
                 }
                 is OrderListViewState.ErrorMessage->{

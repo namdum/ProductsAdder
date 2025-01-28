@@ -12,9 +12,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.example.productsadder.data.Category
 import com.example.productsadder.databinding.ActivityAddCategoryBinding
+import com.example.productsadder.network.extension.subscribeAndObserveOnMainThread
 import com.example.productsadder.util.Resource
 import com.example.productsadder.viewmodel.CategoryViewModel
 import com.example.productsadder.viewmodel.CategoryViewModelFactory
+import com.example.productsadder.viewmodel.CategoryViewState
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
@@ -31,7 +33,7 @@ class AddCategoryActivity : AppCompatActivity() {
         binding = ActivityAddCategoryBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val viewModelFactory = CategoryViewModelFactory(FirebaseFirestore.getInstance(), FirebaseAuth.getInstance())
+        val viewModelFactory = CategoryViewModelFactory(FirebaseFirestore.getInstance())
         viewModel = ViewModelProvider(this, viewModelFactory)[CategoryViewModel::class.java]
 
         listenToViewEvent()
@@ -83,23 +85,27 @@ class AddCategoryActivity : AppCompatActivity() {
     }
 
     private fun listenToViewModel() {
-        lifecycleScope.launch {
-            viewModel.addNewCategory.collectLatest {
-                when (it) {
-                    is Resource.Loading -> {}
 
-                    is Resource.Success -> {
-                        binding.progressbarAddress.visibility = View.INVISIBLE
-                        Toast.makeText(this@AddCategoryActivity, "Add Category", Toast.LENGTH_LONG).show()
-                        finish()
-                    }
-
-                    is Resource.Error -> {
-                        Toast.makeText(this@AddCategoryActivity, it.message, Toast.LENGTH_SHORT).show()
-                    }
-
-                    else -> Unit
+        viewModel.categoryState.subscribeAndObserveOnMainThread {
+            when(it){
+                is CategoryViewState.LoadingState->{
+                    binding.progressbarAddress.visibility = View.VISIBLE
+                    binding.addAppCompatButton.visibility = View.INVISIBLE
                 }
+                is CategoryViewState.SuccessMessage->{
+                    binding.progressbarAddress.visibility = View.INVISIBLE
+                    binding.addAppCompatButton.visibility = View.VISIBLE
+
+                    Toast.makeText(this@AddCategoryActivity, it.successMessage, Toast.LENGTH_LONG).show()
+                    finish()
+                }
+                is CategoryViewState.ErrorMessage->{
+                    Toast.makeText(this@AddCategoryActivity, it.errorMessage, Toast.LENGTH_LONG).show()
+                    binding.progressbarAddress.visibility = View.INVISIBLE
+                    binding.addAppCompatButton.visibility = View.VISIBLE
+
+                }
+                else->{}
             }
         }
 

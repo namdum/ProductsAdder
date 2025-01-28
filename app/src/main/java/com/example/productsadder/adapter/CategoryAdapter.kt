@@ -1,5 +1,6 @@
 package com.example.productsadder.adapter
 
+import android.database.Observable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -12,11 +13,15 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.productsadder.R
 import com.example.productsadder.activity.EditCategoryActivity
 import com.example.productsadder.data.Category
+import com.example.productsadder.data.CategoryState
 import com.google.firebase.firestore.FirebaseFirestore
+import io.reactivex.subjects.PublishSubject
 
 
 class CategoryAdapter(val categories: MutableList<Category>) : RecyclerView.Adapter<CategoryAdapter.ViewHolder>() {
 
+    private val CategoryItemClicksSubject: PublishSubject<CategoryState> = PublishSubject.create()
+    val categoryClicks: io.reactivex.Observable<CategoryState> = CategoryItemClicksSubject.hide()
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val categoryNameTextView: AppCompatTextView = itemView.findViewById(R.id.categoryAppCompatTextView)
         val categoryAppCompatImageView : AppCompatImageView = itemView.findViewById(R.id.categoryAppCompatImageView)
@@ -35,15 +40,17 @@ class CategoryAdapter(val categories: MutableList<Category>) : RecyclerView.Adap
         Glide.with(holder.itemView.context)
             .load(category.image)
             .placeholder(R.drawable.chair)
-            .diskCacheStrategy(DiskCacheStrategy.ALL)
             .into(holder.categoryAppCompatImageView)
 
         holder.editButton.setOnClickListener {
-            holder.itemView.context.startActivity(EditCategoryActivity.getIntent(holder.itemView.context, category))
+//            holder.itemView.context.startActivity(EditCategoryActivity.getIntent(holder.itemView.context, category))
+            CategoryItemClicksSubject.onNext(CategoryState.EditCategoryClick(category))
+
         }
 
         holder.deleteButton.setOnClickListener {
-            deleteCategory(category, position, holder.itemView)
+//            deleteCategory(category, position, holder.itemView)
+            CategoryItemClicksSubject.onNext(CategoryState.DeleteCategoryClick(category))
         }
     }
 

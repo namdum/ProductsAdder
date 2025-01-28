@@ -50,4 +50,9 @@
     <string name="are_you_sure_you_want_to_sign_out">Are you sure you want to sign out?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="delete_category">Delete Category</string>
+    <string name="delete_product">Delete Product</string>
+    <string name="are_you_sure_you_want_to_delete_this_category">Are you sure you want to delete this category?</string>
+    <string name="are_you_sure_you_want_to_delete_this_product">Are you sure you want to delete this product?</string>
+
 </resources>

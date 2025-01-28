@@ -5,8 +5,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
-class ProductViewModelFactory (private val firestore: FirebaseFirestore, private val auth: FirebaseAuth) : ViewModelProvider.Factory {
+class ProductViewModelFactory (private val firestore: FirebaseFirestore) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return ProductViewModel(firestore,auth) as T
+        return ProductViewModel(firestore) as T
     }
 }
