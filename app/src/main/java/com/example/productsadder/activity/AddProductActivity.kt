@@ -101,8 +101,7 @@ class AddProductActivity : AppCompatActivity() {
                 }.show()
         }
         binding.addAppCompatButton.setOnClickListener {
-            binding.progressbarAddress.visibility = View.VISIBLE
-            binding.addAppCompatButton.visibility = View.GONE
+
             binding.apply {
                 val name = productNameEditText.text.toString().trim()
                 val description = productDescriptionEditText.text.toString().trim()
@@ -119,14 +118,20 @@ class AddProductActivity : AppCompatActivity() {
     private fun listenToViewModel() {
         viewModel.productState.subscribeAndObserveOnMainThread {
             when(it){
-                is ProductViewState.LoadingState->{}
+                is ProductViewState.LoadingState->{
+                    binding.progressbarAddress.visibility = View.VISIBLE
+                    binding.addAppCompatButton.visibility = View.GONE
+                }
                 is ProductViewState.SuccessMessage->{
                     binding.progressbarAddress.visibility = View.INVISIBLE
+                    binding.addAppCompatButton.visibility = View.VISIBLE
                     Toast.makeText(this@AddProductActivity, it.successMessage, Toast.LENGTH_LONG).show()
                     finish()
                 }
                 is ProductViewState.ErrorMessage->{
                     Log.d("MyTesting","error:-${it.errorMessage}")
+                    binding.progressbarAddress.visibility = View.INVISIBLE
+                    binding.addAppCompatButton.visibility = View.VISIBLE
                 }
                 else->{}
             }

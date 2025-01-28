@@ -1,6 +1,8 @@
 package com.example.productsadder.viewmodel
 
+
 import android.util.Log
+import android.view.View
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.productsadder.data.Category
@@ -11,6 +13,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.launch
 
 class CategoryViewModel(private val firestore: FirebaseFirestore, private val auth: FirebaseAuth) : ViewModel() {
@@ -105,7 +108,6 @@ class CategoryViewModel(private val firestore: FirebaseFirestore, private val au
                 }
             }
     }
-
     private fun validateInputs(category: Category): Boolean {
         return category.category.trim().isNotEmpty() && category.image.trim().isNotEmpty()
     }

@@ -127,7 +127,7 @@ class LoginViewModel(private val firebaseAuth: FirebaseAuth = FirebaseAuth.getIn
 
     fun checkUserStatus() {
         _userStatus.value = Resource.Loading()
-
+        loginStateSubject.onNext(LoginViewState.LoadingState(true))
         val currentUser = firebaseAuth.currentUser
         if (currentUser != null) {
             firestore.collection("user")
@@ -139,17 +139,21 @@ class LoginViewModel(private val firebaseAuth: FirebaseAuth = FirebaseAuth.getIn
                     }
                     if (isAdmin) {
                         _userStatus.value = Resource.Success(true) // Admin user
+                        loginStateSubject.onNext(LoginViewState.UserStatusSuccess(true))
                     } else {
 //                                _userStatus.value = Resource.Success(false) // Invalid user
                         _userStatus.value = Resource.Error("Invalid user please check email or password is incorrect")
+                        loginStateSubject.onNext(LoginViewState.ErrorMessage("Invalid user please check email or password is incorrect"))
                     }
                 }
                 .addOnFailureListener {
                     _userStatus.value = Resource.Error("Failed to fetch user data.")
+                    loginStateSubject.onNext(LoginViewState.ErrorMessage("Failed to fetch user data."))
                 }
         } else {
 
             _userStatus.value = Resource.Error("User not logged in.")
+            loginStateSubject.onNext(LoginViewState.ErrorMessage("User not logged in."))
         }
     }
 

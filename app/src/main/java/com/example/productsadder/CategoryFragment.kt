@@ -2,10 +2,10 @@ package com.example.productsadder
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -23,6 +23,7 @@ class CategoryFragment : Fragment(R.layout.fragment_category) {
     private lateinit var categoryAdapter: CategoryAdapter
     private lateinit var viewModel: CategoryViewModel
 
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -39,6 +40,7 @@ class CategoryFragment : Fragment(R.layout.fragment_category) {
 
         categoryAdapter = CategoryAdapter(mutableListOf())
         recyclerView.adapter = categoryAdapter
+
 
         lifecycleScope.launchWhenStarted {
             viewModel.categories.collect { categories ->

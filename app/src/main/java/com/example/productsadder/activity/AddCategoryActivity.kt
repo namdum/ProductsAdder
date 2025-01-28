@@ -12,7 +12,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.example.productsadder.data.Category
 import com.example.productsadder.databinding.ActivityAddCategoryBinding
-import com.example.productsadder.network.extension.subscribeAndObserveOnMainThread
 import com.example.productsadder.util.Resource
 import com.example.productsadder.viewmodel.CategoryViewModel
 import com.example.productsadder.viewmodel.CategoryViewModelFactory
@@ -84,22 +83,6 @@ class AddCategoryActivity : AppCompatActivity() {
     }
 
     private fun listenToViewModel() {
-//        viewModel.categoryState.subscribeAndObserveOnMainThread {
-//            when(it){
-//                is CategoryViewState.LoadingState->{}
-//                is CategoryViewState.SuccessMessage->{
-//                    binding.progressbarAddress.visibility = View.INVISIBLE
-//                    Toast.makeText(this@AddCategoryActivity, it.successMessage, Toast.LENGTH_LONG).show()
-//                    finish()
-//                }
-//                is CategoryViewState.FetchCategoriesSuccess->{}
-//                is CategoryViewState.ErrorMessage->{
-//                    Toast.makeText(this@AddCategoryActivity, it.errorMessage, Toast.LENGTH_SHORT).show()
-//
-//                }
-//                else->{}
-//            }
-//        }
         lifecycleScope.launch {
             viewModel.addNewCategory.collectLatest {
                 when (it) {
@@ -120,11 +103,6 @@ class AddCategoryActivity : AppCompatActivity() {
             }
         }
 
-        lifecycleScope.launch {
-            viewModel.error.collectLatest {
-                Toast.makeText(this@AddCategoryActivity, it, Toast.LENGTH_SHORT).show()
-            }
-        }
     }
 
     private fun chooseFromGallery() {

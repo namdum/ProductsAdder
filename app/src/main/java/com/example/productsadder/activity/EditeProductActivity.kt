@@ -148,9 +148,6 @@ class EditeProductActivity : AppCompatActivity() {
         colorsAdapter.updateColors(selectedColors)
 
         binding.saveAppCompatButton.setOnClickListener {
-            binding.progressbarAddress.visibility = View.VISIBLE
-            binding.saveAppCompatButton.visibility = View.GONE
-
             binding.apply {
                 val name = productNameEditText.text.toString().trim()
                 val description = productDescriptionEditText.text.toString().trim()

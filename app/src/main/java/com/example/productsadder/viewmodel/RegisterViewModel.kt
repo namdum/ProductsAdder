@@ -8,6 +8,7 @@ import com.example.productsadder.util.Resource
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.UserProfileChangeRequest
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.messaging.FirebaseMessaging
@@ -17,6 +18,33 @@ class RegisterViewModel(private val firebaseAuth: FirebaseAuth) : ViewModel() {
     val registerResult: LiveData<Resource<String>> = _registerResult
 
     val db= FirebaseFirestore.getInstance()
+//    fun registerUser(email: String, password: String, firstName: String, lastName: String) {
+//
+//        _registerResult.value = Resource.Loading()
+//        firebaseAuth.createUserWithEmailAndPassword(email, password)
+//            .addOnCompleteListener { task ->
+//                if (task.isSuccessful) {
+//                    val user = firebaseAuth.currentUser
+//                    if (user != null) {
+//                        val profileUpdates = UserProfileChangeRequest.Builder()
+//                            .setDisplayName(firstName)
+//                            .build()
+//
+//                        user.updateProfile(profileUpdates)
+//                            .addOnCompleteListener { profileTask ->
+//                                if (profileTask.isSuccessful) {
+//                                    getUserToken()
+//                                    _registerResult.value = Resource.Success("Registration successful")
+//                                } else {
+//                                    _registerResult.value = Resource.Error("Error updating profile: ${profileTask.exception?.message}")
+//                                }
+//                            }
+//                    }
+//                } else {
+//                    _registerResult.value = Resource.Error("Registration failed: ${task.exception?.message}")
+//                }
+//            }
+//    }
 fun registerUser(email: String, password: String, firstName: String, lastName: String) {
     _registerResult.value = Resource.Loading()
     firebaseAuth.createUserWithEmailAndPassword(email, password)
@@ -55,7 +83,7 @@ fun registerUser(email: String, password: String, firstName: String, lastName: S
                         }
                 }
             } else {
-                _registerResult.value = Resource.Error("${task.exception?.message}")
+                _registerResult.value = Resource.Error("Registration failed: ${task.exception?.message}")
             }
         }
 }
@@ -76,7 +104,7 @@ fun registerUser(email: String, password: String, firstName: String, lastName: S
     private fun getUserToken() {
         FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
             if (!task.isSuccessful) {
-                _registerResult.value = Resource.Error("${task.exception?.message}")
+                _registerResult.value = Resource.Error("Error fetching FCM token: ${task.exception?.message}")
                 return@OnCompleteListener
             }
 
@@ -88,11 +116,10 @@ fun registerUser(email: String, password: String, firstName: String, lastName: S
                 Log.w("TAG", "Fetching FCM registration token successFull :- $uid")
                 db.collection("user").document(uid).set(tokenData, SetOptions.mergeFields("fcm_token"))
                     .addOnSuccessListener {
-//                        _registerResult.value = Resource.Success("")
+                        _registerResult.value = Resource.Success("FCM token updated successfully")
                     }
                     .addOnFailureListener { exception ->
-//                        _registerResult.value = Resource.Error("Error updating FCM token: ${exception.message}")
-                        _registerResult.value = Resource.Error("${exception.message}")
+                        _registerResult.value = Resource.Error("Error updating FCM token: ${exception.message}")
                     }
             }
         })

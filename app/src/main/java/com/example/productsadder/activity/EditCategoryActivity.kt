@@ -1,10 +1,12 @@
 package com.example.productsadder.activity
 
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -26,16 +28,26 @@ import java.util.UUID
 
 class EditCategoryActivity : AppCompatActivity() {
     private lateinit var binding: ActivityEditCategoryBinding
-    private lateinit var categoryName: String
-    private lateinit var categoryImage: String
     private lateinit var viewModel: CategoryViewModel
+    private lateinit var category: Category
+
+    companion object {
+        const val CATEGORY = "CATEGORY"
+        fun getIntent(context: Context,category :Category): Intent {
+            val intent = Intent(context, EditCategoryActivity::class.java)
+            intent.putExtra(CATEGORY, category)
+            return intent
+        }
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityEditCategoryBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        categoryName = intent.getStringExtra("category_name")!!
-        categoryImage = intent.getStringExtra("category_image")!!
+
+        this.category = intent?.getParcelableExtra(CATEGORY) ?: return
+        
 
         val viewModelFactory = CategoryViewModelFactory(FirebaseFirestore.getInstance(), FirebaseAuth.getInstance())
         viewModel = ViewModelProvider(this, viewModelFactory)[CategoryViewModel::class.java]
@@ -46,24 +58,6 @@ class EditCategoryActivity : AppCompatActivity() {
     }
 
     private fun listenToViewModel() {
-//        viewModel.categoryState.subscribeAndObserveOnMainThread {
-//            when(it){
-//                is CategoryViewState.LoadingState->{}
-//                is CategoryViewState.SuccessMessage->{
-//                    binding.progressbarAddress.visibility = View.INVISIBLE
-//                    Toast.makeText(this@EditCategoryActivity, it.successMessage, Toast.LENGTH_LONG).show()
-//                    finish()
-//                }
-//                is CategoryViewState.FetchCategoriesSuccess->{
-//
-//                }
-//                is CategoryViewState.ErrorMessage->{
-//                    Toast.makeText(this@EditCategoryActivity, it.errorMessage, Toast.LENGTH_SHORT).show()
-//
-//                }
-//                else->{}
-//            }
-//        }
         lifecycleScope.launchWhenStarted {
             viewModel.editCategory.collectLatest {
                 when (it) {
@@ -101,8 +95,8 @@ class EditCategoryActivity : AppCompatActivity() {
             chooseFromGallery()
         }
 
-        binding.categoryEditText.setText(categoryName)
-        Glide.with(this).load(categoryImage).into(binding.imageAppCompatImageView)
+        binding.categoryEditText.setText(category.category)
+        Glide.with(this).load(category.image).into(binding.imageAppCompatImageView)
 
         binding.saveAppCompatButton.setOnClickListener {
             binding.progressbarAddress.visibility = View.VISIBLE
@@ -127,7 +121,7 @@ class EditCategoryActivity : AppCompatActivity() {
             }.addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     val newCategoryImage = task.result.toString()
-                    val oldCategory = Category(categoryImage, categoryName)
+                    val oldCategory = Category(category.image, category.category)
                     val newCategory = Category(newCategoryImage,newCategoryName)
                     editCategory(oldCategory, newCategory)
                 }

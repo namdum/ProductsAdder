@@ -1,6 +1,5 @@
 package com.example.productsadder.adapter
 
-import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -14,7 +13,6 @@ import com.example.productsadder.R
 import com.example.productsadder.activity.EditCategoryActivity
 import com.example.productsadder.data.Category
 import com.google.firebase.firestore.FirebaseFirestore
-
 
 
 class CategoryAdapter(val categories: MutableList<Category>) : RecyclerView.Adapter<CategoryAdapter.ViewHolder>() {
@@ -41,10 +39,7 @@ class CategoryAdapter(val categories: MutableList<Category>) : RecyclerView.Adap
             .into(holder.categoryAppCompatImageView)
 
         holder.editButton.setOnClickListener {
-            val intent = Intent(holder.itemView.context, EditCategoryActivity::class.java)
-            intent.putExtra("category_name", category.category)
-            intent.putExtra("category_image", category.image)
-            holder.itemView.context.startActivity(intent)
+            holder.itemView.context.startActivity(EditCategoryActivity.getIntent(holder.itemView.context, category))
         }
 
         holder.deleteButton.setOnClickListener {
@@ -82,6 +77,7 @@ class CategoryAdapter(val categories: MutableList<Category>) : RecyclerView.Adap
                 .addOnFailureListener { exception ->
                     Log.e("Error", "Error getting category: $exception")
                 }
+
         }
 
         alertDialog.setNegativeButton("No") { _, _ -> }
