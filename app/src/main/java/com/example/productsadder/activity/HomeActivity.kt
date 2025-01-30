@@ -4,41 +4,40 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.viewpager2.widget.ViewPager2
 import com.example.productsadder.CategoryFragment
 import com.example.productsadder.ProductsFragment
 import com.example.productsadder.R
 import com.example.productsadder.databinding.ActivityHomeBinding
 import com.example.productsadder.OrderFragment
+import com.example.productsadder.adapter.ViewPagerAdapter
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.auth.FirebaseAuth
+import io.reactivex.Observable
+import java.util.concurrent.TimeUnit
 
 class HomeActivity : AppCompatActivity() {
     private lateinit var binding: ActivityHomeBinding
+    private lateinit var mainHomeTabAdapter: ViewPagerAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        initUI()
         listenToViewEvent()
+    }
 
+    private fun initUI() {
+        mainHomeTabAdapter = ViewPagerAdapter(this)
+        setupViewPager()
+        setupBottomNavigation()
     }
 
     private fun listenToViewEvent() {
-        val categoryFragment=CategoryFragment()
-        val productsFragment=ProductsFragment()
-        val orderListFragment= OrderFragment()
-
-//        setCurrentFragment(categoryFragment)
-
-        binding.bottomNavigation.setOnNavigationItemSelectedListener  {
-            when(it.itemId){
-                R.id.categoryFragment->setCurrentFragment(categoryFragment)
-                R.id.productsFragment->setCurrentFragment(productsFragment)
-                R.id.orderFragment->setCurrentFragment(orderListFragment)
-
-            }
-            true
-        }
         binding.logoutButton.setOnClickListener {
             AlertDialog.Builder(this).apply {
                 setTitle(getString(R.string.sign_out))
@@ -59,16 +58,50 @@ class HomeActivity : AppCompatActivity() {
         }
     }
 
-//    private fun setCurrentFragment(fragment: Fragment)=
-//        supportFragmentManager.beginTransaction().apply {
-//            replace(R.id.categoryHostFragment,fragment)
-//            commit()
-//        }
-    // Function to replace the current fragment
-    private fun setCurrentFragment(fragment: Fragment) {
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.categoryHostFragment, fragment) // Replace the fragment in the container
-            .commit()
+    private fun setupViewPager() {
+        binding.viewPager.isUserInputEnabled = false
+        binding.viewPager.offscreenPageLimit = 3
+        binding.viewPager.adapter = mainHomeTabAdapter
+
+        handleTabSelection(0)
+
     }
 
+    private fun setupBottomNavigation() {
+        binding.bottomTab.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab) {
+                val position = tab.position
+                handleTabSelection(position)
+
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab) {
+                // Called when a tab exits the selected state
+
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab) {
+                // Called when a tab that is already selected is chosen again
+            }
+        })
+    }
+
+    private fun handleTabSelection(tabPosition: Int) {
+        when (tabPosition) {
+            0 -> {
+                binding.viewPager.setCurrentItem(0, false)
+                binding.headerAppLogo.setText(resources.getText(R.string.category))
+            }
+
+            1 -> {
+                binding.viewPager.setCurrentItem(1, false)
+                binding.headerAppLogo.setText(resources.getText(R.string.product))
+            }
+
+            2 -> {
+                binding.viewPager.setCurrentItem(2, false)
+                binding.headerAppLogo.setText(resources.getText(R.string.order_list))
+            }
+        }
+    }
 }

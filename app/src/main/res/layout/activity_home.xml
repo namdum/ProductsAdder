@@ -8,39 +8,106 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activity.HomeActivity">
+        <RelativeLayout
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-    <fragment
-        android:id="@+id/categoryHostFragment"
-        android:name="androidx.navigation.fragment.NavHostFragment"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:defaultNavHost="true"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:navGraph="@navigation/category_graph"
-        app:layout_constraintBottom_toTopOf="@id/bottomNavigation" />
+        <RelativeLayout
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:elevation="4dp"
+            android:orientation="horizontal"
+            app:layout_constraintTop_toTopOf="parent">
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_marginStart="@dimen/_15sdp"
+                android:layout_toStartOf="@id/logoutButton"
+                android:id="@+id/headerAppLogo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_thin"
+                android:layout_marginVertical="@dimen/_10sdp"
+                android:layout_centerInParent="true"
+                android:text="@string/category"
+                android:textColor="@color/g_black16"
+                android:textSize="@dimen/_16ssp"
+                android:textStyle="bold"
+                android:gravity="center"/>
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/logoutButton"
-        android:layout_width="@dimen/_20sdp"
-        android:layout_height="@dimen/_20sdp"
-        android:src="@drawable/ic_logout"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginEnd="@dimen/_15sdp"
-        android:layout_marginTop="@dimen/_15sdp"/>
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottomNavigation"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        app:menu="@menu/bottom_navigation_menu"
-        app:labelVisibilityMode="unlabeled"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:itemIconTint="@color/selection_color" />
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_marginEnd="@dimen/_15sdp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:id="@+id/logoutButton"
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/ic_logout"
+                    />
+
+
+        </RelativeLayout>
+
+                    <androidx.viewpager2.widget.ViewPager2
+                        android:layout_above="@+id/coordinatorLayout"
+                        android:layout_below="@+id/toolbar"
+                        android:id="@+id/viewPager"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"/>
+
+            <androidx.coordinatorlayout.widget.CoordinatorLayout
+                android:id="@+id/coordinatorLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:visibility="visible">
+
+                <com.google.android.material.bottomappbar.BottomAppBar
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:contentInsetStart="0dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent">
+
+                    <com.google.android.material.tabs.TabLayout
+                        android:id="@+id/bottomTab"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/white"
+                        android:paddingVertical="@dimen/_4sdp"
+                        app:tabIconTint="@color/selection_color"
+                        app:tabIndicator="@null">
+
+                        <com.google.android.material.tabs.TabItem
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:icon="@drawable/ic_category"/>
+
+                        <com.google.android.material.tabs.TabItem
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:icon="@drawable/ic_products"/>
+
+                        <com.google.android.material.tabs.TabItem
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:icon="@drawable/ic_order_list" />
+
+
+                    </com.google.android.material.tabs.TabLayout>
+
+
+
+                </com.google.android.material.bottomappbar.BottomAppBar>
+
+            </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+        </RelativeLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

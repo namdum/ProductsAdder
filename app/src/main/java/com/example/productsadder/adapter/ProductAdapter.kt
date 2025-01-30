@@ -1,6 +1,5 @@
 package com.example.productsadder.adapter
 
-import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -11,12 +10,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.productsadder.R
-import com.example.productsadder.activity.EditeProductActivity
 import com.example.productsadder.data.Product
+import com.example.productsadder.data.ProductState
 import com.google.firebase.firestore.FirebaseFirestore
+import io.reactivex.subjects.PublishSubject
 
 class ProductAdapter(val products: MutableList<Product>) : RecyclerView.Adapter<ProductAdapter.ViewHolder>() {
-
+    private val productItemClicksSubject: PublishSubject<ProductState> = PublishSubject.create()
+    val productClicks: io.reactivex.Observable<ProductState> = productItemClicksSubject.hide()
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val nameTextView: AppCompatTextView = itemView.findViewById(R.id.productName)
         val categoryNameTextView: AppCompatTextView = itemView.findViewById(R.id.category)
@@ -46,13 +47,13 @@ class ProductAdapter(val products: MutableList<Product>) : RecyclerView.Adapter<
             .into(holder.productAppCompatImageView)
 
         holder.editButton.setOnClickListener {
-            val intent = Intent(holder.itemView.context, EditeProductActivity::class.java)
-            intent.putExtra("product", product)
-            holder.itemView.context.startActivity(intent)
+            productItemClicksSubject.onNext(ProductState.EditProductClick(product))
         }
 
         holder.deleteButton.setOnClickListener {
             deleteProduct(product, position, holder.itemView)
+            productItemClicksSubject.onNext(ProductState.DeleteProductClick(product))
+
         }
     }
 

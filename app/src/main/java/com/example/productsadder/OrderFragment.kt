@@ -17,7 +17,6 @@ import com.example.productsadder.network.extension.subscribeAndObserveOnMainThre
 import com.example.productsadder.viewmodel.OrderListViewModelFactory
 import com.example.productsadder.viewmodel.OrderListViewModel
 import com.example.productsadder.viewmodel.OrderListViewState
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -26,12 +25,18 @@ import java.util.Date
 import java.util.Locale
 
 
-class OrderFragment : Fragment(R.layout.fragment_oredr) {
+class OrderFragment : Fragment() {
     private lateinit var binding: FragmentOredrBinding
     private lateinit var orderAdapter: OrderListAdapter
     private lateinit var viewModel: OrderListViewModel
     private var searchQuery: String = ""
     private lateinit var ordersList:List<Order>
+
+    companion object {
+        @JvmStatic
+        fun newInstance() = OrderFragment()
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -41,6 +46,13 @@ class OrderFragment : Fragment(R.layout.fragment_oredr) {
         val viewModelFactory = OrderListViewModelFactory(FirebaseFirestore.getInstance())
         viewModel = ViewModelProvider(this, viewModelFactory)[OrderListViewModel::class.java]
 
+        listenToViewEvent()
+        listenToViewModel()
+
+        return binding.root
+    }
+
+    private fun listenToViewEvent() {
         val recyclerView = binding.orderListRV
         recyclerView.layoutManager = LinearLayoutManager(context)
 
@@ -48,21 +60,21 @@ class OrderFragment : Fragment(R.layout.fragment_oredr) {
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = orderAdapter
 
-        binding.searchAppCompatEditText.setOnClickListener {
-            showDatePickerDialog()
-        }
-        binding.sortAppCompatImageView.setOnClickListener {
-            binding.searchAppCompatEditText.text=""
-            orderAdapter.toggleSorting(ordersList)
-            if (orderAdapter.isAscending) {
-                binding.sortAppCompatImageView.setBackgroundResource(R.drawable.ic_desc)
-            } else {
-                binding.sortAppCompatImageView.setBackgroundResource(R.drawable.ic_asce)
+
+        binding.apply {
+           searchAppCompatEditText.setOnClickListener {
+                showDatePickerDialog()
+            }
+           sortAppCompatImageView.setOnClickListener {
+               searchAppCompatEditText.text=""
+                orderAdapter.toggleSorting(ordersList)
+                if (orderAdapter.isAscending) {
+                   sortAppCompatImageView.setBackgroundResource(R.drawable.ic_desc)
+                } else {
+                   sortAppCompatImageView.setBackgroundResource(R.drawable.ic_asce)
+                }
             }
         }
-        listenToViewModel()
-
-        return binding.root
     }
 
     private fun listenToViewModel() {

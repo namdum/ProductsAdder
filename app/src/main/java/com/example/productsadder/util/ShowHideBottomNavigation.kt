@@ -8,11 +8,11 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 
 
 fun Fragment.hideBottomNavigationView(){
-    val bottomNavigationView = (activity as HomeActivity).findViewById<BottomNavigationView>(R.id.bottomNavigation)
-    bottomNavigationView.visibility = View.GONE
+//    val bottomNavigationView = (activity as HomeActivity).findViewById<BottomNavigationView>(R.id.bottomNavigation)
+//    bottomNavigationView.visibility = View.GONE
 }
 
 fun Fragment.showBottomNavigationView(){
-    val bottomNavigationView = (activity as HomeActivity).findViewById<BottomNavigationView>(R.id.bottomNavigation)
-    bottomNavigationView.visibility = View.VISIBLE
+//    val bottomNavigationView = (activity as HomeActivity).findViewById<BottomNavigationView>(R.id.bottomNavigation)
+//    bottomNavigationView.visibility = View.VISIBLE
 }

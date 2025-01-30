@@ -21,14 +21,16 @@ import com.example.productsadder.util.showBottomNavigationView
 import com.example.productsadder.viewmodel.CategoryViewModel
 import com.example.productsadder.viewmodel.CategoryViewModelFactory
 import com.example.productsadder.viewmodel.CategoryViewState
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
-class CategoryFragment : Fragment(R.layout.fragment_category) {
+class CategoryFragment : Fragment() {
     private lateinit var binding: FragmentCategoryBinding
     private lateinit var categoryAdapter: CategoryAdapter
     private lateinit var viewModel: CategoryViewModel
-
+    companion object {
+        @JvmStatic
+        fun newInstance() = CategoryFragment()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,

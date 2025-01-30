@@ -1,6 +1,7 @@
 package com.example.productsadder.activity
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -12,34 +13,45 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.productsadder.adapter.ColorsAdapter
 import com.example.productsadder.adapter.ImageAdapter
 import com.example.productsadder.data.Product
 import com.example.productsadder.databinding.ActivityEditeProductBinding
 import com.example.productsadder.network.extension.subscribeAndObserveOnMainThread
-import com.example.productsadder.util.Resource
+import com.example.productsadder.viewmodel.CategoryViewModel
+import com.example.productsadder.viewmodel.CategoryViewModelFactory
+import com.example.productsadder.viewmodel.CategoryViewState
 import com.example.productsadder.viewmodel.ProductViewModel
 import com.example.productsadder.viewmodel.ProductViewModelFactory
 import com.example.productsadder.viewmodel.ProductViewState
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.skydoves.colorpickerview.ColorEnvelope
 import com.skydoves.colorpickerview.ColorPickerDialog
 import com.skydoves.colorpickerview.listeners.ColorEnvelopeListener
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 
 class EditeProductActivity : AppCompatActivity() {
     private lateinit var binding: ActivityEditeProductBinding
     private lateinit var viewModel: ProductViewModel
+    private lateinit var categoryviewModel: CategoryViewModel
     private lateinit var colorsAdapter: ColorsAdapter
     private lateinit var imageAdapter: ImageAdapter
     private var selectedColors: MutableList<Int> = mutableListOf()
     private var selectedImages: MutableList<Uri> = mutableListOf()
     private var uploadedImageString: MutableList<String> = mutableListOf()
+    private lateinit var product: Product
+    var selectedCategory:String=""
+
+    companion object {
+        const val PRODUCT = "PRODUCT"
+        fun getIntent(context: Context, product : Product): Intent {
+            val intent = Intent(context, EditeProductActivity::class.java)
+            intent.putExtra(PRODUCT, product)
+            return intent
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityEditeProductBinding.inflate(layoutInflater)
@@ -47,7 +59,10 @@ class EditeProductActivity : AppCompatActivity() {
         val viewModelFactory = ProductViewModelFactory(FirebaseFirestore.getInstance())
         viewModel = ViewModelProvider(this, viewModelFactory)[ProductViewModel::class.java]
 
-        fetchCategories()
+        val categoryViewModelFactory = CategoryViewModelFactory(FirebaseFirestore.getInstance())
+        categoryviewModel = ViewModelProvider(this, categoryViewModelFactory)[CategoryViewModel::class.java]
+
+        categoryviewModel.fetchCategories()
         listenToViewEvent()
         listenToViewModel()
 
@@ -66,10 +81,8 @@ class EditeProductActivity : AppCompatActivity() {
 
                     Toast.makeText(this@EditeProductActivity, it.successMessage, Toast.LENGTH_LONG).show()
                     finish()
-                    Log.d("MyTesting","${it.successMessage}")
                 }
                 is ProductViewState.ErrorMessage->{
-                    Log.d("MyTesting","error:-${it.errorMessage}")
                     Toast.makeText(this@EditeProductActivity, it.errorMessage, Toast.LENGTH_LONG).show()
                     binding.progressbarAddress.visibility = View.INVISIBLE
                     binding.saveAppCompatButton.visibility = View.VISIBLE
@@ -79,97 +92,115 @@ class EditeProductActivity : AppCompatActivity() {
                 else->{}
             }
         }
+        categoryviewModel.categoryState.subscribeAndObserveOnMainThread {
+            when(it){
+                is CategoryViewState.LoadingState->{}
+                is CategoryViewState.SuccessMessage->{}
+                is CategoryViewState.FetchCategorySuccess->{
+                    val categories =it.fetchCategorys
+                    val categoryNames = categories.map { category -> category.category }
+                    populateSpinner(categoryNames)
+                }
+                is CategoryViewState.ErrorMessage->{
+                    Toast.makeText(this@EditeProductActivity, it.errorMessage, Toast.LENGTH_LONG).show()
+                }
+
+            }
+        }
     }
 
     private fun listenToViewEvent() {
-        val product: Product? = intent.getParcelableExtra("product")
+
+        this.product = intent?.getParcelableExtra(PRODUCT) ?: return
+
+
 
         uploadedImageString.addAll(product?.images ?: mutableListOf())
-        Log.i("test","$uploadedImageString")
-
         imageAdapter = ImageAdapter(uploadedImageString)
-        binding.rvImage.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-        binding.rvImage.adapter = imageAdapter
 
-        colorsAdapter = ColorsAdapter()
-        binding.rvColors.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-        binding.rvColors.adapter = colorsAdapter
+        binding.apply {
+            rvImage.layoutManager = LinearLayoutManager(this@EditeProductActivity, LinearLayoutManager.HORIZONTAL, false)
+            rvImage.adapter = imageAdapter
 
+            colorsAdapter = ColorsAdapter()
+            rvColors.layoutManager = LinearLayoutManager(this@EditeProductActivity, LinearLayoutManager.HORIZONTAL, false)
+            rvColors.adapter = colorsAdapter
 
-        binding.imageClose.setOnClickListener {
-            finish()
-        }
+            addImageImageView.setOnClickListener {
+                val intent = Intent()
+                intent.setType("image/*")
+                intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+                intent.action = Intent.ACTION_GET_CONTENT
+                imagePickerLauncher.launch(intent)
+            }
+           addColorImageView.setOnClickListener {
+                ColorPickerDialog
+                    .Builder(this@EditeProductActivity)
+                    .setTitle("Product color")
+                    .setPositiveButton("Select", object : ColorEnvelopeListener {
 
-        binding.addImageImageView.setOnClickListener {
-            val intent = Intent()
-            intent.setType("image/*")
-            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
-            intent.action = Intent.ACTION_GET_CONTENT
-            imagePickerLauncher.launch(intent)
-        }
+                        override fun onColorSelected(envelope: ColorEnvelope?, fromUser: Boolean) {
+                            envelope?.let {
+                                val color = it.color
 
-        binding.addColorImageView.setOnClickListener {
-            ColorPickerDialog
-                .Builder(this)
-                .setTitle("Product color")
-                .setPositiveButton("Select", object : ColorEnvelopeListener {
-
-                    override fun onColorSelected(envelope: ColorEnvelope?, fromUser: Boolean) {
-                        envelope?.let {
-                            val color = it.color
-
-                            selectedColors = colorsAdapter.getColor().toMutableList()
-                            if (selectedColors.contains(color)) {
-                                selectedColors.remove(color)
-                                Log.i("test","${selectedColors}")
-                            } else {
-                                selectedColors.add(color)
-                                Log.i("test","${selectedColors}")
+                                selectedColors = colorsAdapter.getColor().toMutableList()
+                                if (selectedColors.contains(color)) {
+                                    selectedColors.remove(color)
+                                } else {
+                                    selectedColors.add(color)
+                                }
+                                colorsAdapter.updateColors(selectedColors)
+                                colorsAdapter.notifyDataSetChanged()
                             }
-                            colorsAdapter.updateColors(selectedColors)
-                            colorsAdapter.notifyDataSetChanged()
                         }
-                    }
 
-                }).setNegativeButton("Cancel") { colorPicker, _ ->
-                    colorPicker.dismiss()
-                }.show()
+                    }).setNegativeButton("Cancel") { colorPicker, _ ->
+                        colorPicker.dismiss()
+                    }.show()
+            }
+
+           productNameEditText.setText(product?.name)
+           productDescriptionEditText.setText(product?.description)
+           priceEditText.setText(product?.price.toString())
+           offerPercentageEditText.setText(product?.offerPercentage.toString())
+           sizeEditText.setText(product?.sizes?.joinToString(", ").toString())
+           Log.d("MyTesting","product Category:-${product.category}")
+
+            saveAppCompatButton.setOnClickListener {
+                    val name = productNameEditText.text.toString().trim()
+                    val description = productDescriptionEditText.text.toString().trim()
+                    val price = priceEditText.text.toString().trim().toFloatOrNull() ?: 0f
+                    val offerpercentage = offerPercentageEditText.text.toString().trim().toFloatOrNull() ?: 0f
+                    val size = sizeEditText.text.toString().trim().split(",").map { it.trim() }
+                    selectedCategory = categoryEditText.selectedItem.toString()
+
+                    val oldProduct = Product(
+                        name=product?.name ?:"",
+                        category = product?.category ?: "",
+                        price = product?.price ?: 0f,
+                        offerPercentage = product?.offerPercentage,
+                        description = product?.description,
+                        sizes = product?.sizes,
+                        colors = product?.colors?.map { it.toInt() },
+                        images = product?.images ?: emptyList()
+                    )
+
+                    val newProduct = Product(name, selectedCategory, price, offerpercentage, description, size, selectedColors, uploadedImageString)
+                    viewModel.editProduct(oldProduct,newProduct)
+
+                }
+
+            imageClose.setOnClickListener {
+                finish()
+            }
         }
-
-        binding.productNameEditText.setText(product?.name)
-        binding.productDescriptionEditText.setText(product?.description)
-        binding.priceEditText.setText(product?.price.toString())
-        binding.offerPercentageEditText.setText(product?.offerPercentage.toString())
-        binding.sizeEditText.setText(product?.sizes?.joinToString(", ").toString())
 
         imageAdapter.notifyDataSetChanged()
 
         product?.colors?.let { selectedColors.addAll(it) }
         colorsAdapter.updateColors(selectedColors)
 
-        binding.saveAppCompatButton.setOnClickListener {
-            binding.apply {
-                val name = productNameEditText.text.toString().trim()
-                val description = productDescriptionEditText.text.toString().trim()
-                val price = priceEditText.text.toString().trim().toFloatOrNull() ?: 0f
-                val offerpercentage = offerPercentageEditText.text.toString().trim().toFloatOrNull() ?: 0f
-                val size = sizeEditText.text.toString().trim().split(",").map { it.trim() }
-                val selectedCategory = binding.categoryEditText.selectedItem.toString()
 
-                val oldProduct = Product(
-                    name = product?.name ?: "",
-                    category = product?.category ?: "",
-                    price = product?.price ?: 0f,
-                    offerPercentage = product?.offerPercentage,
-                    description = product?.description,
-                    sizes = product?.sizes,
-                    colors = product?.colors?.map { it.toInt() },
-                    images = product?.images ?: emptyList()
-                )
-                val newProduct = Product(name, selectedCategory, price, offerpercentage, description, size, selectedColors, uploadedImageString)
-                viewModel.editProduct(oldProduct,newProduct)
-            }
-        }
     }
 
     private val imagePickerLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -216,29 +247,12 @@ class EditeProductActivity : AppCompatActivity() {
         }
     }
 
-    private fun fetchCategories() {
-        val firestore = FirebaseFirestore.getInstance()
-
-        firestore.collection("Category")
-            .get()
-            .addOnSuccessListener { querySnapshot ->
-                val categories = querySnapshot.documents.map { document ->
-                    document.getString("category") ?: ""
-                }
-
-                populateSpinner(categories)
-            }
-            .addOnFailureListener { exception ->
-                Log.e("Error", "Error fetching categories: $exception")
-            }
-    }
 
     private fun populateSpinner(categories: List<String>) {
         val spinnerAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, categories)
         binding.categoryEditText.adapter = spinnerAdapter
 
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        val product: Product? = intent.getParcelableExtra("product")
         val categoryIndex = categories.indexOf(product?.category ?: "")
 
         binding.categoryEditText.setSelection(categoryIndex)

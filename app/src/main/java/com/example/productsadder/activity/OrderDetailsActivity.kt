@@ -1,5 +1,7 @@
 package com.example.productsadder.activity
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -26,6 +28,7 @@ import com.example.productsadder.adapter.OrderDetailAdapter
 import com.example.productsadder.adapter.OrderListAdapter
 import com.example.productsadder.adapter.ProductAdapter
 import com.example.productsadder.adapter.StatusSpinnerAdapter
+import com.example.productsadder.data.Category
 import com.example.productsadder.data.Order
 import com.example.productsadder.data.Product
 import com.example.productsadder.databinding.ActivityEditeProductBinding
@@ -53,17 +56,42 @@ class OrderDetailsActivity : AppCompatActivity() {
         NotificationViewModelFactory(NotificationRepository())
     }
     private val orderViewModel: OrderViewModel by viewModels()
-    var orderId=0L
-    var userId =  ""
+    var orderId = 0L
+    var userId = ""
+    companion object {
+        const val ORDER = "ORDER"
+        fun getIntent(context: Context, order: Order): Intent {
+            val intent = Intent(context, OrderDetailsActivity::class.java)
+            intent.putExtra(ORDER, order)
+            return intent
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         binding = ActivityOrderDetailsBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        initUI()
+        listenToViewEvent()
+        listenToViewModel()
+
+        orderViewModel.setupStatusSpinner(orderId, selectedOrderStatus)
+
+    }
+
+    private fun listenToViewEvent() {
+        binding.apply {
+            imageClose.setOnClickListener { finish() }
+            totalPrice.text = "Total:- " + "$${String.format("%.2f", order?.totalPrice)}"
+        }
+    }
+
+    private fun initUI() {
         auth = FirebaseAuth.getInstance()
         order = intent.getParcelableExtra("order")
         val products = order?.products ?: emptyList()
-        orderId = order?.orderId?:0L
+        orderId = order?.orderId ?: 0L
         userId = order?.address?.userId ?: ""
         selectedOrderStatus = order?.orderStatus.toString()
         binding.rvProducts.apply {
@@ -76,21 +104,16 @@ class OrderDetailsActivity : AppCompatActivity() {
 
         orderDetailAdapter.updateItems(products)
         orderDetailAdapter.notifyDataSetChanged()
-        binding.imageClose.setOnClickListener { finish() }
-        binding.totalPrice.text = "Total:- " + "$${String.format("%.2f", order?.totalPrice)}"
-        listenToViewModel()
-
-        orderViewModel.setupStatusSpinner(orderId, selectedOrderStatus)
-
     }
 
     private fun listenToViewModel() {
         orderViewModel.orderState.subscribeAndObserveOnMainThread {
-            when(it){
-                is OrderViewState.LoadingState->{
+            when (it) {
+                is OrderViewState.LoadingState -> {
                     showLoading()
                 }
-                is OrderViewState.SuccessMessage->{
+
+                is OrderViewState.SuccessMessage -> {
                     notificationViewModel.sendNotification(
                         NotificationInfo(
                             title = "Order updates",
@@ -102,18 +125,21 @@ class OrderDetailsActivity : AppCompatActivity() {
                     )
 
                     hideLoading()
-                    Log.d("MyTesting","SuccessMessage:--${it.successMessage}")
+                    Log.d("MyTesting", "SuccessMessage:--${it.successMessage}")
                     onBackPressedDispatcher
                 }
-                is OrderViewState.FetchStatusSpinnerSetup->{
+
+                is OrderViewState.FetchStatusSpinnerSetup -> {
                     it.fetchStatusSpinnerSetup?.let { setupSpinner(it) }
                     hideLoading()
                 }
-                is OrderViewState.ErrorMessage->{
+
+                is OrderViewState.ErrorMessage -> {
                     hideLoading()
-                    Log.d("MyTesting","SuccessMessage:--${it.errorMessage}")
+                    Log.d("MyTesting", "SuccessMessage:--${it.errorMessage}")
                 }
-                else->{}
+
+                else -> {}
             }
         }
 
@@ -122,13 +148,16 @@ class OrderDetailsActivity : AppCompatActivity() {
                 is Resource.Loading -> {
                     showLoading()
                 }
+
                 is Resource.Success -> {
                     hideLoading()
                 }
+
                 is Resource.Error -> {
                     hideLoading()
                 }
-                else->{}
+
+                else -> {}
             }
         })
     }
@@ -136,7 +165,7 @@ class OrderDetailsActivity : AppCompatActivity() {
     private fun setupSpinner(statusSpinnerSetup: StatusSpinnerSetup) {
         val statuses = statusSpinnerSetup.statuses
         val currentStatus = statusSpinnerSetup.currentStatus
-        selectedOrderStatus=currentStatus.status
+        selectedOrderStatus = currentStatus.status
 
         // Create the spinner adapter and pass the current status
         val adapter = StatusSpinnerAdapter(this, statuses, currentStatus)
@@ -154,7 +183,7 @@ class OrderDetailsActivity : AppCompatActivity() {
                     parent: AdapterView<*>?,
                     view: View?,
                     position: Int,
-                    id: Long
+                    id: Long,
                 ) {
                     val selectedStatus = statuses[position]
                     selectedOrderStatus = selectedStatus.status
