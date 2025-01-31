@@ -4,89 +4,65 @@
     android:id="@+id/mainRelativeLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-       >
-
-    <LinearLayout
-        android:id="@+id/orderLinearLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/_10sdp"
-        android:layout_marginTop="@dimen/_5sdp"
-        android:background="@drawable/rounded_corner_background"
-        android:backgroundTint="@color/_F4F8FB"
-        android:orientation="vertical"
-        android:padding="@dimen/_5sdp">
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/orderFullName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/poppins_light"
-            android:text="UserName"
-            android:textColor="@android:color/black"
-            android:textSize="16sp"
-            android:textStyle="bold" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:id="@+id/orderLinearLayout"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_marginHorizontal="@dimen/_10sdp"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:background="@drawable/rounded_corner_background"
+            android:backgroundTint="@color/_F4F8FB"
+            android:orientation="vertical"
+            android:padding="@dimen/_5sdp">
 
             <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/orderFullName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Status: "
-                android:textColor="@color/g_gray900"
-                android:textSize="16sp" />
+                android:fontFamily="@font/poppins_light"
+                android:text="UserName"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/orderStatus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Ordered"
+                android:text="Status: Ordered"
                 android:textColor="@color/g_gray900"
                 android:textSize="16sp"
                 android:textStyle="normal" />
-        </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_5sdp"
-            android:orientation="horizontal">
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/poppins_light"
-                android:text="#"
-                android:textColor="@color/gray"
-                android:textSize="16sp" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/orderNumber"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="1204587"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:fontFamily="@font/poppins_light"
+                android:text="#1204587"
                 android:textColor="@color/gray"
                 android:textSize="16sp" />
         </LinearLayout>
-    </LinearLayout>
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:layout_centerVertical="true"
-        android:layout_width="@dimen/_25sdp"
-        android:layout_height="@dimen/_25sdp"
-        android:layout_marginTop="@dimen/_10sdp"
-        android:layout_alignParentEnd="true"
-        android:src="@drawable/ic_right"
-        android:layout_marginEnd="@dimen/_15sdp"/>
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="@dimen/_25sdp"
+            android:layout_height="@dimen/_25sdp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginEnd="@dimen/_15sdp"
+            android:src="@drawable/ic_right" />
     </RelativeLayout>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

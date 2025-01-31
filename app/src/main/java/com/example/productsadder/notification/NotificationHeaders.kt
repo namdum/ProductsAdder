@@ -3,6 +3,7 @@ package com.example.productsadder.notification
 
 import okhttp3.Interceptor
 import okhttp3.Response
+import timber.log.Timber
 import java.io.IOException
 
 class NotificationHeaders(
@@ -17,7 +18,7 @@ class NotificationHeaders(
             response = chain.proceed(requestBuilder.build())
 
         } catch (t: Throwable) {
-//            Timber.e("error in InterceptorHeaders:\n${t.message}")
+            Timber.e("error in InterceptorHeaders:\n${t.message}")
             throw IOException(t.message)
         }
         return response

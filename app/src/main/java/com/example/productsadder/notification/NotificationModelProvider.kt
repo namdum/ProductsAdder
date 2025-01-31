@@ -9,8 +9,8 @@ class NotificationModelProvider {
     @Provides
     fun provideChatViewModel(
         chatRepository: NotificationRepository
-    ): CreateChatRoomViewModel {
-        return CreateChatRoomViewModel(
+    ): NotificationViewModel {
+        return NotificationViewModel(
             chatRepository
         )
     }

@@ -19,19 +19,6 @@ abstract class BasicActivity : AppCompatActivity() {
     }
 
 
-
-//    fun showLoading(show: Boolean?) {
-//        if (show!!) showLoading() else hideLoading()
-//    }
-
-//    protected fun showLoading() {
-//        CallProgressWheel.showLoadingDialog(this@BasicActivity)
-//    }
-//
-//    protected fun hideLoading() {
-//        CallProgressWheel.dismissLoadingDialog()
-//    }
-
     override fun onPostResume() {
         super.onPostResume()
         isTransactionSafe = true

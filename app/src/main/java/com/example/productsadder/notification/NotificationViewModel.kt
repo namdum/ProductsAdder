@@ -8,7 +8,7 @@ import com.example.meangene.notification.model.NotificationInfo
 import com.example.productsadder.ui.BasicViewModel
 import kotlinx.coroutines.launch
 
-class CreateChatRoomViewModel(
+class NotificationViewModel(
     private val chatRepository: NotificationRepository
 ) : BasicViewModel() {
 
