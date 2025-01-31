@@ -1,12 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:backgroundTint="@color/white"
-    android:layout_marginHorizontal="@dimen/_10sdp"
-    android:gravity="center"
-    android:layout_marginTop="@dimen/_10sdp"
-    android:layout_centerHorizontal="true">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <RelativeLayout
+        android:backgroundTint="@color/white"
+        android:layout_marginHorizontal="@dimen/_10sdp"
+        android:gravity="center"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_centerHorizontal="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        >
     <TextView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/headerTextView"
         android:layout_width="wrap_content"
@@ -22,4 +31,5 @@
         android:text="24-04-2024"
         android:justificationMode="none"
         android:layout_centerHorizontal="true"/>
-</RelativeLayout>
+    </RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

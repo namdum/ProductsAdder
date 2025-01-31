@@ -1,19 +1,11 @@
-package com.example.meangene.notification
+package com.example.productsadder.notification
 
 import com.example.meangene.notification.model.NotificationInfo
-import com.example.productsadder.network.RetrofitInstance
 
-class NotificationRepository {
-    suspend fun sendNotification(notification: NotificationInfo): Result<Unit> {
-        return try {
-            val response = RetrofitInstance.api.sendNotification(notification)
-            if (response.isSuccessful) {
-                Result.success(Unit)
-            } else {
-                Result.failure(Exception("Error: ${response.code()}"))
-            }
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
+class NotificationRepository (private val notificationRetrofitAPI: NotificationRetrofitAPI
+) {
+    suspend fun sendNotification(notificationInfo: NotificationInfo): NotificationInfo {
+        return notificationRetrofitAPI.sendNotification(notificationInfo)
     }
+
 }

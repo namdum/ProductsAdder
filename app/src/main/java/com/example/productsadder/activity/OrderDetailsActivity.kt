@@ -6,34 +6,24 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.meangene.notification.NotificationRepository
-import com.example.meangene.notification.NotificationViewModelFactory
 import com.example.meangene.notification.model.NotificationInfo
-import com.example.meangene.notification.model.NotificationViewModel
-import com.example.productsadder.OrderFragment
-import com.example.productsadder.R
+import com.example.productsadder.BasicActivity
 import com.example.productsadder.adapter.OrderDetailAdapter
-import com.example.productsadder.adapter.OrderListAdapter
-import com.example.productsadder.adapter.ProductAdapter
 import com.example.productsadder.adapter.StatusSpinnerAdapter
+import com.example.productsadder.application.FuelApplication
 import com.example.productsadder.data.Category
 import com.example.productsadder.data.Order
 import com.example.productsadder.data.Product
 import com.example.productsadder.databinding.ActivityEditeProductBinding
 import com.example.productsadder.databinding.ActivityOrderDetailsBinding
+import com.example.productsadder.network.extension.getViewModelFromFactory
 import com.example.productsadder.network.extension.subscribeAndObserveOnMainThread
+import com.example.productsadder.notification.CreateChatRoomViewModel
+import com.example.productsadder.notification.CreateChatRoomViewState
+import com.example.productsadder.notification.ViewModelFactory
 import com.example.productsadder.util.OrderStatus
 import com.example.productsadder.util.Resource
 import com.example.productsadder.util.VerticalItemDecoration
@@ -46,15 +36,18 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import javax.inject.Inject
 
-class OrderDetailsActivity : AppCompatActivity() {
+class OrderDetailsActivity : BasicActivity() {
     private lateinit var binding: ActivityOrderDetailsBinding
     private lateinit var orderDetailAdapter: OrderDetailAdapter
     private var selectedOrderStatus = ""
     private var order: Order? = null
     private lateinit var auth: FirebaseAuth
-    private val notificationViewModel: NotificationViewModel by viewModels {
-        NotificationViewModelFactory(NotificationRepository())
-    }
+
+    @Inject
+    internal lateinit var fuelViewModelFactory: ViewModelFactory<CreateChatRoomViewModel>
+    lateinit var fuelViewModel: CreateChatRoomViewModel
+
+
     private val orderViewModel: OrderViewModel by viewModels()
     var orderId = 0L
     var userId = ""
@@ -71,6 +64,9 @@ class OrderDetailsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityOrderDetailsBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        FuelApplication.component.inject(this)
+        fuelViewModel = getViewModelFromFactory(fuelViewModelFactory)
 
         initUI()
         listenToViewEvent()
@@ -89,7 +85,7 @@ class OrderDetailsActivity : AppCompatActivity() {
 
     private fun initUI() {
         auth = FirebaseAuth.getInstance()
-        order = intent.getParcelableExtra("order")
+        this.order = intent?.getParcelableExtra(ORDER) ?: return
         val products = order?.products ?: emptyList()
         orderId = order?.orderId ?: 0L
         userId = order?.address?.userId ?: ""
@@ -114,7 +110,7 @@ class OrderDetailsActivity : AppCompatActivity() {
                 }
 
                 is OrderViewState.SuccessMessage -> {
-                    notificationViewModel.sendNotification(
+                    fuelViewModel.sendNotification(
                         NotificationInfo(
                             title = "Order updates",
                             message = "Your order for ${order?.products?.firstOrNull()?.product?.name} is ${selectedOrderStatus}",
@@ -143,23 +139,28 @@ class OrderDetailsActivity : AppCompatActivity() {
             }
         }
 
-        notificationViewModel.notificationResult.observe(this, Observer { result ->
+        fuelViewModel.createChatRoomState.observe(this) { result ->
             when (result) {
-                is Resource.Loading -> {
+                is CreateChatRoomViewState.LoadingState -> {
                     showLoading()
                 }
 
-                is Resource.Success -> {
+                is CreateChatRoomViewState.CreateRoomSuccess -> {
                     hideLoading()
+                    Log.d("MyTesting","notifocation:--${result.chatRoomInfo}")
                 }
 
-                is Resource.Error -> {
+                is CreateChatRoomViewState.SuccessMessage -> {
                     hideLoading()
+                }
+                is CreateChatRoomViewState.ErrorMessage -> {
+                    hideLoading()
+                    Log.d("MyTesting","notifocation:--${result.errorMessage}")
                 }
 
                 else -> {}
             }
-        })
+        }
     }
 
     private fun setupSpinner(statusSpinnerSetup: StatusSpinnerSetup) {

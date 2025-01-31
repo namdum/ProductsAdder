@@ -1,10 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/mainRelativeLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
-
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+       >
 
     <LinearLayout
         android:id="@+id/orderLinearLayout"
@@ -81,4 +88,5 @@
         android:layout_alignParentEnd="true"
         android:src="@drawable/ic_right"
         android:layout_marginEnd="@dimen/_15sdp"/>
-</RelativeLayout>
+    </RelativeLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>

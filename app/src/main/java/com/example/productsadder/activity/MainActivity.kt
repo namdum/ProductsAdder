@@ -104,13 +104,6 @@ class MainActivity : AppCompatActivity() {
                     startActivity(intent)
                     finish()
                 }
-                is LoginViewState.UserStatusErrorMessage->{
-//                    Log.d("MyTesting","User not logged in....")
-                    Log.d("MyTesting","error...:-${it.errorMessage}")
-                    val intent = Intent(this, LoginActivity::class.java)
-                    startActivity(intent)
-                    finish()
-                }
 
                 else->{}
             }

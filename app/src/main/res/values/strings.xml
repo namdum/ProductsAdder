@@ -54,5 +54,6 @@
     <string name="delete_product">Delete Product</string>
     <string name="are_you_sure_you_want_to_delete_this_category">Are you sure you want to delete this category?</string>
     <string name="are_you_sure_you_want_to_delete_this_product">Are you sure you want to delete this product?</string>
+    <string name="order_not_found">Order not found...</string>
 
 </resources>

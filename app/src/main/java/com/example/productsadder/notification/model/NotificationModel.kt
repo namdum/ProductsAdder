@@ -10,7 +10,3 @@ data class NotificationInfo(
     val receiverId: String = "",
     val senderId: String = ""
 )
-data class NotificationResponse(
-    val success: Boolean,
-    val message: String
-)
