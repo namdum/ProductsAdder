@@ -8,7 +8,7 @@ import android.widget.AdapterView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.meangene.notification.model.NotificationInfo
-import com.example.productsadder.BasicActivity
+import com.example.productsadder.base.BasicActivity
 import com.example.productsadder.ui.order.view.OrderDetailAdapter
 import com.example.productsadder.ui.adapter.StatusSpinnerAdapter
 import com.example.productsadder.application.ProductAdderApplication
@@ -141,6 +141,7 @@ class OrderDetailsActivity : BasicActivity() {
                 is CreateChatRoomViewState.CreateRoomSuccess -> {
                     hideLoading()
                     Timber.d("notification:--${result.chatRoomInfo}")
+                    onBackPressedDispatcher.onBackPressed()
                 }
 
                 is CreateChatRoomViewState.SuccessMessage -> {

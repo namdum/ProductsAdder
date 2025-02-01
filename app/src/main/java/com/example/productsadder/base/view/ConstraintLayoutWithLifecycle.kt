@@ -1,4 +1,4 @@
-package com.example.productsadder.view
+package com.example.productsadder.base.view
 
 import android.content.Context
 import android.util.AttributeSet

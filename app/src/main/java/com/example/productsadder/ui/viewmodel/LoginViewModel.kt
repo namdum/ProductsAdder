@@ -1,10 +1,7 @@
 package com.example.productsadder.ui.viewmodel
 
-import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+
 import androidx.lifecycle.ViewModel
-import com.example.productsadder.util.Resource
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.UserProfileChangeRequest
@@ -127,16 +124,9 @@ class LoginViewModel(private val firebaseAuth: FirebaseAuth = FirebaseAuth.getIn
                 }
             }
     }
-    private val _userStatus = MutableLiveData<Resource<Boolean>>()
-    val userStatus: LiveData<Resource<Boolean>> = _userStatus
-
-    private val userStatusStateSubject: PublishSubject<LoginViewState> = PublishSubject.create()
-    val userStatuss: Observable<LoginViewState> = userStatusStateSubject.hide()
 
     fun checkUserStatus() {
-        Log.d("MyTesting","checkUserStatus...")
-        _userStatus.value = Resource.Loading()
-        userStatusStateSubject.onNext(LoginViewState.LoadingState(true))
+        loginStateSubject.onNext(LoginViewState.LoadingState(true))
         val currentUser = firebaseAuth.currentUser
         if (currentUser != null) {
             firestore.collection("user")
@@ -147,26 +137,17 @@ class LoginViewModel(private val firebaseAuth: FirebaseAuth = FirebaseAuth.getIn
                         document.getString("user_type") == "admin"
                     }
                     if (isAdmin) {
-                        _userStatus.value = Resource.Success(true) // Admin user
-                        userStatusStateSubject.onNext(LoginViewState.UserStatusSuccess(true))
-                        Log.d("MyTesting","checkUserStatus...true")
+                        loginStateSubject.onNext(LoginViewState.UserStatusSuccess(true))
                     } else {
 //                                _userStatus.value = Resource.Success(false) // Invalid user
-                        _userStatus.value = Resource.Error("Invalid user please check email or password is incorrect")
-                        userStatusStateSubject.onNext(LoginViewState.ErrorMessage("Invalid user please check email or password is incorrect"))
-                        Log.d("MyTesting","checkUserStatus...false")
+                        loginStateSubject.onNext(LoginViewState.ErrorMessage("Invalid user please check email or password is incorrect"))
                     }
                 }
                 .addOnFailureListener {
-                    _userStatus.value = Resource.Error("Failed to fetch user data.")
-                    userStatusStateSubject.onNext(LoginViewState.ErrorMessage("Failed to fetch user data."))
-                    Log.d("MyTesting","Failed to fetch user data.")
+                    loginStateSubject.onNext(LoginViewState.ErrorMessage("Failed to fetch user data."))
                 }
         } else {
-
-            _userStatus.value = Resource.Error("User not logged in.")
-            userStatusStateSubject.onNext(LoginViewState.ErrorMessage("User not logged in."))
-            Log.d("MyTesting","User not logged in.")
+            loginStateSubject.onNext(LoginViewState.ErrorMessage("User not logged in."))
         }
     }
 

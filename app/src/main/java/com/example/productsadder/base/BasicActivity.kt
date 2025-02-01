@@ -1,4 +1,4 @@
-package com.example.productsadder
+package com.example.productsadder.base
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity

@@ -1,21 +1,26 @@
 package com.example.productsadder.view
 
 import android.content.Context
+import android.util.Log
 import android.view.View
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.productsadder.R
-import com.example.productsadder.data.Category
+import com.example.productsadder.base.view.ConstraintLayoutWithLifecycle
 import com.example.productsadder.databinding.ItemCategoryBinding
+import com.example.productsadder.model.Category
+import com.example.productsadder.model.CategoryState
 import com.example.productsadder.network.extension.subscribeAndObserveOnMainThread
 import com.example.productsadder.network.extension.throttleClicks
+import io.reactivex.Observable
+import io.reactivex.subjects.PublishSubject
 
 class CategoryView(context: Context): ConstraintLayoutWithLifecycle(context) {
-//    val categoryItemClicksSubject: PublishSubject<CategoryState> = PublishSubject.create()
-//    val categoryItemClicks: Observable<CategoryState> = categoryItemClicksSubject.hide()
+    val categoryItemClicksSubject: PublishSubject<CategoryState> = PublishSubject.create()
+    val categoryItemClicks: Observable<CategoryState> = categoryItemClicksSubject.hide()
 
     private lateinit var binding: ItemCategoryBinding
-    private lateinit var mentionUserInfo: Category
+    private lateinit var categoryInfo: Category
 
     init {
         inflateUi()
@@ -28,16 +33,16 @@ class CategoryView(context: Context): ConstraintLayoutWithLifecycle(context) {
 
         binding.apply {
             deletebtn.throttleClicks().subscribeAndObserveOnMainThread {
-//                categoryItemClicksSubject.onNext(CategoryState.CategoryDeleteClick(mentionUserInfo))
+                categoryItemClicksSubject.onNext(CategoryState.DeleteCategoryClick(categoryInfo))
             }
             editbtn.throttleClicks().subscribeAndObserveOnMainThread {
-//                categoryItemClicksSubject.onNext(CategoryState.CategoryEditClick(mentionUserInfo))
+                categoryItemClicksSubject.onNext(CategoryState.EditCategoryClick(categoryInfo))
             }
         }
     }
 
     fun bind(category: Category) {
-        this.mentionUserInfo = category
+        this.categoryInfo = category
         binding.categoryAppCompatTextView.text = category.category
 
         Glide.with(context)
@@ -46,7 +51,7 @@ class CategoryView(context: Context): ConstraintLayoutWithLifecycle(context) {
             .diskCacheStrategy(DiskCacheStrategy.ALL)
             .into(binding.categoryAppCompatImageView)
 
-
+        Log.d("MyTesting","category bind:--${category.category}")
 //        binding.editbtn.setOnClickListener {
 //            val intent = Intent(context, EditCategoryActivity::class.java)
 //            intent.putExtra("category_name", category.category)

@@ -1,57 +1,76 @@
 package com.example.productsadder.ui.product.view
 
-import android.view.LayoutInflater
+import android.content.Context
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.AppCompatImageView
-import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.example.productsadder.R
 import com.example.productsadder.model.Product
 import com.example.productsadder.model.ProductState
+import com.example.productsadder.view.ProductView
+import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 
-class ProductAdapter(val products: MutableList<Product>) : RecyclerView.Adapter<ProductAdapter.ViewHolder>() {
-    private val productItemClicksSubject: PublishSubject<ProductState> = PublishSubject.create()
-    val productClicks: io.reactivex.Observable<ProductState> = productItemClicksSubject.hide()
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val nameTextView: AppCompatTextView = itemView.findViewById(R.id.productName)
-        val categoryNameTextView: AppCompatTextView = itemView.findViewById(R.id.category)
-        val priceTextView: AppCompatTextView = itemView.findViewById(R.id.price)
-        val sizeTextView: AppCompatTextView = itemView.findViewById(R.id.size)
-        val productAppCompatImageView: AppCompatImageView = itemView.findViewById(R.id.images)
-        val editButton: AppCompatImageView = itemView.findViewById(R.id.editImageView)
-        val deleteButton: AppCompatImageView = itemView.findViewById(R.id.deleteImageView)
-    }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_product, parent, false)
-        return ViewHolder(view)
-    }
-
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val product = products[position]
-        holder.nameTextView.text = product.name
-        holder.categoryNameTextView.text = product.category
-        holder.priceTextView.text = product.price.toString()
-        holder.sizeTextView.text = product.sizes?.joinToString(", ")
-
-        Glide.with(holder.itemView.context)
-            .load(product.images.firstOrNull())
-            .placeholder(R.drawable.chair)
-            .diskCacheStrategy(DiskCacheStrategy.ALL)
-            .into(holder.productAppCompatImageView)
-
-        holder.editButton.setOnClickListener {
-            productItemClicksSubject.onNext(ProductState.EditProductClick(product))
+class ProductAdapter(private val context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    private val productViewClicksSubject: PublishSubject<ProductState> =   PublishSubject.create()
+          val productItemClicks: Observable<ProductState> = productViewClicksSubject.hide()
+    private var adapterItems = listOf<AdapterItem>()
+    var products: List<Product>? = null
+        set(value) {
+            field = value
+            updateAdapterItems()
         }
 
-        holder.deleteButton.setOnClickListener {
-            productItemClicksSubject.onNext(ProductState.DeleteProductClick(product))
 
+    fun updateAdapterItems() {
+        val updatedItems = mutableListOf<AdapterItem>()
+
+        products?.forEach {
+            updatedItems.add(AdapterItem.ProductItemViewItem(it))
+        }
+        this.adapterItems = updatedItems
+        notifyDataSetChanged()
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return when (viewType) {
+           ViewType.ProductItemType.ordinal -> {
+                ProductAdapterViewHolder(
+                    ProductView(context).apply {
+                        productItemClicks.subscribe { productViewClicksSubject.onNext(it)}
+                    }
+                )
+            }
+
+            else -> throw IllegalArgumentException("Unsupported ViewType")
+        }
+
+    }
+
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+
+        val adapterItem = adapterItems.getOrNull(position) ?: return
+        when (adapterItem) {
+            is AdapterItem.ProductItemViewItem -> {
+                (holder.itemView as ProductView).bind(adapterItem.product)
+            }
         }
     }
-    override fun getItemCount(): Int = products.size
+    override fun getItemCount(): Int {
+        return adapterItems.size
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return adapterItems[position].type
+    }
+
+    private class ProductAdapterViewHolder(view: View) : RecyclerView.ViewHolder(view)
+
+    sealed class AdapterItem(val type: Int) {
+        data class ProductItemViewItem(val product: Product) :
+            AdapterItem(ViewType.ProductItemType.ordinal)
+    }
+
+    private enum class ViewType {
+        ProductItemType,
+    }
 }

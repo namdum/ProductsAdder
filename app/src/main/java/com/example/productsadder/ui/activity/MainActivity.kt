@@ -2,9 +2,6 @@ package com.example.productsadder.ui.activity
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.util.Log
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import com.example.productsadder.application.ProductAdderApplication
@@ -12,10 +9,8 @@ import com.example.productsadder.databinding.ActivityMainBinding
 import com.example.productsadder.network.extension.getViewModelFromFactory
 import com.example.productsadder.network.extension.subscribeAndObserveOnMainThread
 import com.example.productsadder.di.ViewModelFactory
-import com.example.productsadder.util.Resource
 import com.example.productsadder.ui.viewmodel.LoginViewModel
 import com.example.productsadder.ui.viewmodel.LoginViewState
-import retrofit2.http.Headers
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -38,16 +33,20 @@ internal lateinit var loginViewModelFactory: ViewModelFactory<LoginViewModel>
             WindowManager.LayoutParams.FLAG_FULLSCREEN,
             WindowManager.LayoutParams.FLAG_FULLSCREEN
         )
-
+        listenToViewModel()
         viewModel.checkUserStatus()
 
-        viewModel.userStatus.observe(this) { resource ->
-            when (resource) {
-                is Resource.Loading -> {
-                    // Show a loading indicator
+    }
+
+    private fun listenToViewModel() {
+
+        viewModel.loginState.subscribeAndObserveOnMainThread { state->
+            when(state){
+                is LoginViewState.LoadingState->{
+                    Timber.d("LoadingState...")
                 }
-                is Resource.Success -> {
-                    if (resource.data == true) {
+                is LoginViewState.UserStatusSuccess->{
+                    if (state.userStatus) {
                         // Admin user, navigate to HomeActivity
                         startActivity(Intent(this, HomeActivity::class.java))
                         finish()
@@ -58,40 +57,10 @@ internal lateinit var loginViewModelFactory: ViewModelFactory<LoginViewModel>
                         finish()
                     }
                 }
-                is Resource.Error -> {
-                    Timber.d("error:-${resource.message}")
+                is LoginViewState.ErrorMessage->{
                     val intent = Intent(this, LoginActivity::class.java)
                     startActivity(intent)
                     finish()
-                }
-                else->{}
-            }
-        }
-
-
-//        Handler(Looper.getMainLooper()).postDelayed({
-//            listenToViewModel()
-//        }, 1000)
-
-
-
-    }
-
-    private fun listenToViewModel() {
-
-        Timber.d("listenToViewModel..")
-
-        viewModel.userStatuss.subscribeAndObserveOnMainThread { state->
-            Log.d("MyTesting","listenToViewModel...")
-            when(state){
-                is LoginViewState.LoadingState->{
-                   Log.d("MyTesting","LoadingState...")
-                }
-                is LoginViewState.UserStatusSuccess->{
-                    Log.d("MyTesting","UserStatusSuccess:-${state.userStatus}")
-                }
-                is LoginViewState.ErrorMessage->{
-                    Log.d("MyTesting","ErrorMessage:-${state.errorMessage}")
                 }
 
                 else->{}

@@ -39,47 +39,50 @@ class AddCategoryActivity : AppCompatActivity() {
 
     }
     private fun listenToViewEvent() {
-        binding.imageClose.setOnClickListener {
-            finish()
-        }
+        binding.apply {
+            imageClose.setOnClickListener {
+                finish()
+            }
+            imageAppCompatImageView.setOnClickListener {
+                chooseFromGallery()
+            }
 
-        binding.imageAppCompatImageView.setOnClickListener {
-            chooseFromGallery()
-        }
+            addAppCompatButton.setOnClickListener {
+               progressbarAddress.visibility = View.VISIBLE
+               addAppCompatButton.visibility = View.GONE
+               apply {
+                    val category = categoryEditText.text.toString().trim()
 
-        binding.addAppCompatButton.setOnClickListener {
-            binding.progressbarAddress.visibility = View.VISIBLE
-            binding.addAppCompatButton.visibility = View.GONE
-            binding.apply {
-                val category = categoryEditText.text.toString().trim()
+                    if (imageAppCompatImageView.drawable != null) {
+                        val bitmap = (imageAppCompatImageView.drawable as BitmapDrawable).bitmap
+                        val storageRef = FirebaseStorage.getInstance().reference
+                        val imageRef = storageRef.child("images/${UUID.randomUUID()}.jpg")
+                        val baos = ByteArrayOutputStream()
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+                        val data = baos.toByteArray()
 
-                if (imageAppCompatImageView.drawable != null) {
-                    val bitmap = (imageAppCompatImageView.drawable as BitmapDrawable).bitmap
-                    val storageRef = FirebaseStorage.getInstance().reference
-                    val imageRef = storageRef.child("images/${UUID.randomUUID()}.jpg")
-                    val baos = ByteArrayOutputStream()
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
-                    val data = baos.toByteArray()
+                        val uploadTask = imageRef.putBytes(data)
 
-                    val uploadTask = imageRef.putBytes(data)
-
-                    uploadTask.continueWithTask { task ->
-                        if (!task.isSuccessful) {
-                            task.exception?.let {
-                                throw it
+                        uploadTask.continueWithTask { task ->
+                            if (!task.isSuccessful) {
+                                task.exception?.let {
+                                    throw it
+                                }
                             }
-                        }
-                        imageRef.downloadUrl
-                    }.addOnCompleteListener { task ->
-                        if (task.isSuccessful) {
-                            val downloadUrl = task.result
-                            val address = Category(downloadUrl.toString(), category)
-                            viewModel.addCategory(address)
+                            imageRef.downloadUrl
+                        }.addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                val downloadUrl = task.result
+                                val address = Category(downloadUrl.toString(), category)
+                                viewModel.addCategory(address)
+                            }
                         }
                     }
                 }
             }
         }
+
+
     }
 
     private fun listenToViewModel() {

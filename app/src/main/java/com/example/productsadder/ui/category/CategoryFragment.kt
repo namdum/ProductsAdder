@@ -55,11 +55,11 @@ class CategoryFragment : Fragment() {
         val recyclerView = binding.categoryRV
         recyclerView.layoutManager = LinearLayoutManager(context)
 
-        categoryAdapter = CategoryAdapter(mutableListOf())
+        categoryAdapter = CategoryAdapter(requireContext())
         recyclerView.adapter = categoryAdapter
 
         categoryAdapter.apply {
-            categoryClicks.subscribeAndObserveOnMainThread{ state ->
+            categoryItemClicks.subscribeAndObserveOnMainThread{ state ->
                 when(state){
                     is CategoryState.EditCategoryClick->{
                         requireContext().startActivity(EditCategoryActivity.getIntent(requireContext(), state.editCategory))
@@ -88,9 +88,7 @@ class CategoryFragment : Fragment() {
 
                 }
                 is CategoryViewState.FetchCategorySuccess->{
-                    categoryAdapter.categories.clear()
-                    categoryAdapter.categories.addAll(it.fetchCategorys)
-                    categoryAdapter.notifyDataSetChanged()
+                    categoryAdapter.categories=it.fetchCategorys
                     binding.progressbar.isVisible=false
 
                 }

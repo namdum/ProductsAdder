@@ -59,9 +59,7 @@ class ProductsFragment : Fragment() {
                 }
                 is ProductViewState.FetchProductSuccess->{
                     binding.progressbar.isVisible=false
-                    productAdapter.products.clear()
-                    productAdapter.products.addAll(it.fetchProducts)
-                    productAdapter.notifyDataSetChanged()
+                    productAdapter.products=it.fetchProducts
                 }
                 is ProductViewState.ErrorMessage->{
                     binding.progressbar.isVisible=false
@@ -75,11 +73,11 @@ class ProductsFragment : Fragment() {
         val recyclerView = binding.productRV
         recyclerView.layoutManager = LinearLayoutManager(context)
 
-        productAdapter = ProductAdapter(mutableListOf())
+        productAdapter = ProductAdapter(requireContext())
         recyclerView.adapter = productAdapter
 
         productAdapter.apply {
-            productClicks.subscribeAndObserveOnMainThread{ state ->
+            productItemClicks.subscribeAndObserveOnMainThread{ state ->
                 when(state){
                     is ProductState.EditProductClick->{
                         requireContext().startActivity(EditProductActivity.getIntent(requireContext(), state.editProduct))
