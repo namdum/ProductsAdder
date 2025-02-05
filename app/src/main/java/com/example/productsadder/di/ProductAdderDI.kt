@@ -12,7 +12,7 @@ import dagger.Provides
 import javax.inject.Singleton
 
 @Module
-class FuelAppModule(val app: Application) {
+class ProductAdderAppModule(val app: Application) {
     @Provides
     @Singleton
     fun provideApplication(): Application {
@@ -29,7 +29,7 @@ class FuelAppModule(val app: Application) {
 @Singleton
 @Component(
     modules = [
-        FuelAppModule::class,
+        ProductAdderAppModule::class,
         NotificationModule::class,
         NetworkModule::class,
         NotificationModelProvider::class,
@@ -37,6 +37,6 @@ class FuelAppModule(val app: Application) {
     ]
 )
 
-interface FuelAppComponent : BaseAppComponent {
+interface ProductAdderAppComponent : BaseAppComponent {
     fun inject(app: ProductAdder)
 }

@@ -13,8 +13,8 @@ import io.reactivex.subjects.PublishSubject
 
 class CategoryAdapter(private val context: Context) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    val categoryItemClicksSubject: PublishSubject<CategoryState> = PublishSubject.create()
-    val categoryItemClicks: Observable<CategoryState> = categoryItemClicksSubject.hide()
+    val categoryClicksSubject: PublishSubject<CategoryState> = PublishSubject.create()
+    val categoryItemClicks: Observable<CategoryState> = categoryClicksSubject.hide()
 
 
     private var adapterItems = listOf<AdapterItem>()
@@ -41,7 +41,7 @@ class CategoryAdapter(private val context: Context) :
             ViewType.CategoryItemType.ordinal -> {
                 CategoryAdapterViewHolder(
                     CategoryView(context).apply {
-                        categoryItemClicks.subscribe {categoryItemClicksSubject.onNext(it) }
+                        categoryItemClicks.subscribe {categoryClicksSubject.onNext(it) }
                     }
                 )
             }

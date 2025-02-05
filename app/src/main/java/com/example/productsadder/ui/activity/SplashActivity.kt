@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import com.example.productsadder.application.ProductAdderApplication
-import com.example.productsadder.databinding.ActivityMainBinding
+import com.example.productsadder.databinding.ActivitySplashBinding
 import com.example.productsadder.network.extension.getViewModelFromFactory
 import com.example.productsadder.network.extension.subscribeAndObserveOnMainThread
 import com.example.productsadder.di.ViewModelFactory
@@ -14,8 +14,8 @@ import com.example.productsadder.ui.viewmodel.LoginViewState
 import timber.log.Timber
 import javax.inject.Inject
 
-class MainActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityMainBinding
+class SplashActivity : AppCompatActivity() {
+    private lateinit var binding: ActivitySplashBinding
 @Inject
 internal lateinit var loginViewModelFactory: ViewModelFactory<LoginViewModel>
     lateinit var viewModel: LoginViewModel
@@ -23,7 +23,7 @@ internal lateinit var loginViewModelFactory: ViewModelFactory<LoginViewModel>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
+        binding = ActivitySplashBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         ProductAdderApplication.component.inject(this)

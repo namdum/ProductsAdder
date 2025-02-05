@@ -9,7 +9,7 @@ import com.example.productsadder.ui.product.AddProductActivity
 import com.example.productsadder.ui.category.EditCategoryActivity
 import com.example.productsadder.ui.product.EditProductActivity
 import com.example.productsadder.ui.activity.LoginActivity
-import com.example.productsadder.ui.activity.MainActivity
+import com.example.productsadder.ui.activity.SplashActivity
 import com.example.productsadder.ui.order.OrderDetailsActivity
 import com.example.productsadder.ui.activity.RegisterActivity
 
@@ -27,7 +27,7 @@ interface BaseAppComponent {
     fun inject(editCategoryActivity: EditCategoryActivity)
     fun inject(editProductActivity: EditProductActivity)
     fun inject(loginActivity: LoginActivity)
-    fun inject(mainActivity: MainActivity)
+    fun inject(splashActivity: SplashActivity)
     fun inject(registerActivity: RegisterActivity)
     fun inject(productsFragment: ProductsFragment)
     fun inject(addProductActivity: AddProductActivity)

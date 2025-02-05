@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -14,6 +15,7 @@ import com.example.productsadder.databinding.ActivityAddCategoryBinding
 import com.example.productsadder.network.extension.getViewModelFromFactory
 import com.example.productsadder.network.extension.subscribeAndObserveOnMainThread
 import com.example.productsadder.di.ViewModelFactory
+import com.example.productsadder.network.extension.hideKeyboard
 import com.example.productsadder.ui.viewmodel.CategoryViewModel
 import com.example.productsadder.ui.viewmodel.CategoryViewState
 import com.google.firebase.storage.FirebaseStorage
@@ -26,6 +28,7 @@ class AddCategoryActivity : AppCompatActivity() {
     @Inject
     internal lateinit var categoryViewModelFactory: ViewModelFactory<CategoryViewModel>
     lateinit var viewModel: CategoryViewModel
+    var isSelectedImage=false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAddCategoryBinding.inflate(layoutInflater)
@@ -48,36 +51,44 @@ class AddCategoryActivity : AppCompatActivity() {
             }
 
             addAppCompatButton.setOnClickListener {
-               progressbarAddress.visibility = View.VISIBLE
-               addAppCompatButton.visibility = View.GONE
                apply {
+                   hideKeyboard()
                     val category = categoryEditText.text.toString().trim()
+                   if(isSelectedImage==false || category.isNullOrBlank()){
+                        Toast.makeText(this@AddCategoryActivity,"Please fill in all fields",Toast.LENGTH_SHORT).show()
+                   }
+                   else{
+                       Log.d("MyTesting","isSelectedImage:--1-$isSelectedImage")
+                       progressbarAddress.visibility = View.VISIBLE
+                       addAppCompatButton.visibility = View.GONE
+                       if (imageAppCompatImageView.drawable != null) {
+                           val bitmap = (imageAppCompatImageView.drawable as BitmapDrawable).bitmap
+                           val storageRef = FirebaseStorage.getInstance().reference
+                           val imageRef = storageRef.child("images/${UUID.randomUUID()}.jpg")
+                           val baos = ByteArrayOutputStream()
+                           bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+                           val data = baos.toByteArray()
 
-                    if (imageAppCompatImageView.drawable != null) {
-                        val bitmap = (imageAppCompatImageView.drawable as BitmapDrawable).bitmap
-                        val storageRef = FirebaseStorage.getInstance().reference
-                        val imageRef = storageRef.child("images/${UUID.randomUUID()}.jpg")
-                        val baos = ByteArrayOutputStream()
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
-                        val data = baos.toByteArray()
+                           val uploadTask = imageRef.putBytes(data)
 
-                        val uploadTask = imageRef.putBytes(data)
+                           uploadTask.continueWithTask { task ->
+                               if (!task.isSuccessful) {
+                                   task.exception?.let {
+                                       throw it
+                                   }
+                               }
+                               imageRef.downloadUrl
+                           }.addOnCompleteListener { task ->
+                               if (task.isSuccessful) {
+                                   val downloadUrl = task.result
+                                   val address = Category(downloadUrl.toString(), category)
+                                   viewModel.addCategory(address)
+                               }
+                           }
+                       }
+                   }
 
-                        uploadTask.continueWithTask { task ->
-                            if (!task.isSuccessful) {
-                                task.exception?.let {
-                                    throw it
-                                }
-                            }
-                            imageRef.downloadUrl
-                        }.addOnCompleteListener { task ->
-                            if (task.isSuccessful) {
-                                val downloadUrl = task.result
-                                val address = Category(downloadUrl.toString(), category)
-                                viewModel.addCategory(address)
-                            }
-                        }
-                    }
+
                 }
             }
         }
@@ -123,10 +134,12 @@ class AddCategoryActivity : AppCompatActivity() {
                 100 -> {
                     val selectedImageUri = data?.data
                     binding.imageAppCompatImageView.setImageURI(selectedImageUri)
+                    isSelectedImage=true
                 }
                 101 -> {
                     val thumbnail = data?.extras?.get("data") as Bitmap
                     binding.imageAppCompatImageView.setImageBitmap(thumbnail)
+                    isSelectedImage=true
                 }
             }
         }

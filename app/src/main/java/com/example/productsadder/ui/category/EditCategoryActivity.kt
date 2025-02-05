@@ -17,6 +17,7 @@ import com.example.productsadder.databinding.ActivityEditCategoryBinding
 import com.example.productsadder.network.extension.getViewModelFromFactory
 import com.example.productsadder.network.extension.subscribeAndObserveOnMainThread
 import com.example.productsadder.di.ViewModelFactory
+import com.example.productsadder.network.extension.hideKeyboard
 import com.example.productsadder.ui.viewmodel.CategoryViewModel
 import com.example.productsadder.ui.viewmodel.CategoryViewState
 import com.google.firebase.storage.FirebaseStorage
@@ -85,56 +86,65 @@ class EditCategoryActivity : AppCompatActivity() {
     }
 
     private fun listenToViewEvent() {
-        binding.imageClose.setOnClickListener {
-            finish()
-        }
+        binding.apply {
+            imageClose.setOnClickListener {
+                finish()
+            }
+            imageAppCompatImageView.setOnClickListener{
+                chooseFromGallery()
+            }
+            categoryEditText.setText(category.category)
+            Glide.with(this@EditCategoryActivity)
+                .load(category.image)
+                .error(R.drawable.ic_photo)
+                .placeholder(R.drawable.ic_photo)
+                .into(imageAppCompatImageView)
 
-        binding.imageAppCompatImageView.setOnClickListener{
-            chooseFromGallery()
-        }
+            saveAppCompatButton.setOnClickListener {
 
-        binding.categoryEditText.setText(category.category)
-        Glide.with(this)
-            .load(category.image)
-            .error(R.drawable.ic_photo)
-            .placeholder(R.drawable.ic_photo)
-            .into(binding.imageAppCompatImageView)
+                val newCategoryName = categoryEditText.text.toString()
+                if (newCategoryName.isNullOrBlank()){
+                    Toast.makeText(this@EditCategoryActivity,"Fill Category",Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+                else{
+                    progressbarAddress.visibility = View.VISIBLE
+                    saveAppCompatButton.visibility = View.GONE
+                    hideKeyboard()
+                    val bitmap = (imageAppCompatImageView.drawable as BitmapDrawable).bitmap
+                    val storageRef = FirebaseStorage.getInstance().reference
+                    val imageRef = storageRef.child("images/${UUID.randomUUID()}.jpg")
+                    val baos = ByteArrayOutputStream()
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+                    val data = baos.toByteArray()
 
-        binding.saveAppCompatButton.setOnClickListener {
-            binding.progressbarAddress.visibility = View.VISIBLE
-            binding.saveAppCompatButton.visibility = View.GONE
-            val newCategoryName = binding.categoryEditText.text.toString()
-            val bitmap = (binding.imageAppCompatImageView.drawable as BitmapDrawable).bitmap
-            val storageRef = FirebaseStorage.getInstance().reference
-            val imageRef = storageRef.child("images/${UUID.randomUUID()}.jpg")
-            val baos = ByteArrayOutputStream()
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
-            val data = baos.toByteArray()
+                    val uploadTask = imageRef.putBytes(data)
 
-            val uploadTask = imageRef.putBytes(data)
+                    uploadTask.continueWithTask { task ->
+                        if (!task.isSuccessful) {
+                            task.exception?.let {
+                                throw it
+                            }
+                        }
+                        imageRef.downloadUrl
+                    }.addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            if(category.category.isNullOrEmpty()&&category.image.isNullOrEmpty()){
+                                val downloadUrl = task.result
+                                val address = Category(downloadUrl.toString(), newCategoryName)
+                                viewModel.addCategory(address)
+                            }
+                            else{
+                                val newCategoryImage = task.result.toString()
+                                val oldCategory = Category(category.image, category.category)
+                                val newCategory = Category(newCategoryImage,newCategoryName)
+                                editCategory(oldCategory, newCategory)
+                            }
 
-            uploadTask.continueWithTask { task ->
-                if (!task.isSuccessful) {
-                    task.exception?.let {
-                        throw it
+                        }
                     }
                 }
-                imageRef.downloadUrl
-            }.addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    if(category.category.isNullOrEmpty()&&category.image.isNullOrEmpty()){
-                        val downloadUrl = task.result
-                        val address = Category(downloadUrl.toString(), newCategoryName)
-                        viewModel.addCategory(address)
-                    }
-                    else{
-                        val newCategoryImage = task.result.toString()
-                        val oldCategory = Category(category.image, category.category)
-                        val newCategory = Category(newCategoryImage,newCategoryName)
-                        editCategory(oldCategory, newCategory)
-                    }
 
-                }
             }
         }
     }

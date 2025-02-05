@@ -21,6 +21,9 @@ import com.example.productsadder.databinding.ActivityAddProductBinding
 import com.example.productsadder.network.extension.getViewModelFromFactory
 import com.example.productsadder.network.extension.subscribeAndObserveOnMainThread
 import com.example.productsadder.di.ViewModelFactory
+import com.example.productsadder.model.CategoryState
+import com.example.productsadder.ui.viewmodel.CategoryViewModel
+import com.example.productsadder.ui.viewmodel.CategoryViewState
 import com.example.productsadder.ui.viewmodel.ProductViewModel
 import com.example.productsadder.ui.viewmodel.ProductViewState
 import com.google.firebase.firestore.FirebaseFirestore
@@ -42,6 +45,10 @@ class AddProductActivity : AppCompatActivity() {
     private var selectedImages: MutableList<Uri> = mutableListOf()
     private var uploadedImageString: MutableList<String> = mutableListOf()
 
+    @Inject
+    internal lateinit var categoryViewModelFactory: ViewModelFactory<CategoryViewModel>
+    lateinit var categoryViewModel: CategoryViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAddProductBinding.inflate(layoutInflater)
@@ -49,69 +56,75 @@ class AddProductActivity : AppCompatActivity() {
 
         ProductAdderApplication.component.inject(this)
         viewModel = getViewModelFromFactory(productViewModelFactory)
+        categoryViewModel = getViewModelFromFactory(categoryViewModelFactory)
 
-        fetchCategories()
+        categoryViewModel.fetchCategories()
         listenToViewEvent()
         listenToViewModel()
     }
 
     private fun listenToViewEvent() {
-        imageAdapter = ImageAdapter(uploadedImageString)
-        binding.rvImage.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-        binding.rvImage.adapter = imageAdapter
 
-        colorsAdapter = ColorsAdapter()
-        binding.rvColors.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-        binding.rvColors.adapter = colorsAdapter
-        binding.imageClose.setOnClickListener {
-            finish()
-        }
-        binding.addImageImageView.setOnClickListener {
-            val intent = Intent()
-            intent.setType("image/*")
-            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
-            intent.action = Intent.ACTION_GET_CONTENT
-            imagePickerLauncher.launch(intent)
-        }
-        binding.addColorImageView.setOnClickListener {
-            ColorPickerDialog
-                .Builder(this)
-                .setTitle("Product color")
-                .setPositiveButton("Select", object : ColorEnvelopeListener {
+        binding.apply {
+            imageAdapter = ImageAdapter(uploadedImageString)
+            rvImage.layoutManager = LinearLayoutManager(this@AddProductActivity, LinearLayoutManager.HORIZONTAL, false)
+            rvImage.adapter = imageAdapter
 
-                    override fun onColorSelected(envelope: ColorEnvelope?, fromUser: Boolean) {
-                        envelope?.let {
-                            val color = it.color
+            colorsAdapter = ColorsAdapter()
+            rvColors.layoutManager = LinearLayoutManager(this@AddProductActivity, LinearLayoutManager.HORIZONTAL, false)
+            rvColors.adapter = colorsAdapter
+            addAppCompatButton.setOnClickListener {
+                if (categoryEditText.selectedItem.equals("Select Category")){
+                    Toast.makeText(this@AddProductActivity,"Select Category",Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
 
-                            selectedColors = colorsAdapter.getColor().toMutableList()
-                            if (selectedColors.contains(color)) {
-                                selectedColors.remove(color)
-                                Log.i("test","${selectedColors}")
-                            } else {
-                                selectedColors.add(color)
-                                Log.i("test","${selectedColors}")
+                    val name = productNameEditText.text.toString().trim()
+                    val description = productDescriptionEditText.text.toString().trim()
+                    val price = priceEditText.text.toString().trim().toFloatOrNull() ?: 0f
+                    val offerpercentage = offerPercentageEditText.text.toString().trim().toFloatOrNull() ?: 0f
+                    val size = sizeEditText.text.toString().trim().split(",").map { it.trim() }
+                    val selectedCategory = categoryEditText.selectedItem.toString()
+
+                    val product = Product(name, selectedCategory, price, offerpercentage, description, size ?: mutableListOf(), selectedColors, uploadedImageString)
+                    viewModel.addProduct(product)
+            }
+            addColorImageView.setOnClickListener {
+                ColorPickerDialog
+                    .Builder(this@AddProductActivity)
+                    .setTitle("Product color")
+                    .setPositiveButton("Select", object : ColorEnvelopeListener {
+
+                        override fun onColorSelected(envelope: ColorEnvelope?, fromUser: Boolean) {
+                            envelope?.let {
+                                val color = it.color
+
+                                selectedColors = colorsAdapter.getColor().toMutableList()
+                                if (selectedColors.contains(color)) {
+                                    selectedColors.remove(color)
+                                    Log.i("test","${selectedColors}")
+                                } else {
+                                    selectedColors.add(color)
+                                    Log.i("test","${selectedColors}")
+                                }
+                                colorsAdapter.updateColors(selectedColors)
+                                colorsAdapter.notifyDataSetChanged()
                             }
-                            colorsAdapter.updateColors(selectedColors)
-                            colorsAdapter.notifyDataSetChanged()
                         }
-                    }
 
-                }).setNegativeButton("Cancel") { colorPicker, _ ->
-                    colorPicker.dismiss()
-                }.show()
-        }
-        binding.addAppCompatButton.setOnClickListener {
-
-            binding.apply {
-                val name = productNameEditText.text.toString().trim()
-                val description = productDescriptionEditText.text.toString().trim()
-                val price = priceEditText.text.toString().trim().toFloatOrNull() ?: 0f
-                val offerpercentage = offerPercentageEditText.text.toString().trim().toFloatOrNull() ?: 0f
-                val size = sizeEditText.text.toString().trim().split(",").map { it.trim() }
-                val selectedCategory = binding.categoryEditText.selectedItem.toString()
-
-                val product = Product(name, selectedCategory, price, offerpercentage, description, size ?: mutableListOf(), selectedColors, uploadedImageString)
-                viewModel.addProduct(product)
+                    }).setNegativeButton("Cancel") { colorPicker, _ ->
+                        colorPicker.dismiss()
+                    }.show()
+            }
+            addImageImageView.setOnClickListener {
+                val intent = Intent()
+                intent.setType("image/*")
+                intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+                intent.action = Intent.ACTION_GET_CONTENT
+                imagePickerLauncher.launch(intent)
+            }
+            imageClose.setOnClickListener {
+                finish()
             }
         }
     }
@@ -129,9 +142,23 @@ class AddProductActivity : AppCompatActivity() {
                     finish()
                 }
                 is ProductViewState.ErrorMessage->{
-                    Log.d("MyTesting","error:-${it.errorMessage}")
+                    Toast.makeText(this@AddProductActivity,it.errorMessage,Toast.LENGTH_SHORT).show()
                     binding.progressbarAddress.visibility = View.INVISIBLE
                     binding.addAppCompatButton.visibility = View.VISIBLE
+                }
+                else->{}
+            }
+        }
+        categoryViewModel.categoryState.subscribeAndObserveOnMainThread {
+            when(it){
+                is CategoryViewState.LoadingState->{}
+                is CategoryViewState.FetchCategorySuccess->{
+                    val categories =it.fetchCategorys
+                    val categoryNames = categories.map { category -> category.category }
+                    populateSpinner(categoryNames)
+                }
+                is CategoryViewState.ErrorMessage->{
+                    Toast.makeText(this@AddProductActivity, it.errorMessage, Toast.LENGTH_LONG).show()
                 }
                 else->{}
             }
@@ -182,35 +209,25 @@ class AddProductActivity : AppCompatActivity() {
         }
     }
 
-    private fun fetchCategories() {
-        val firestore = FirebaseFirestore.getInstance()
-
-        firestore.collection("Category")
-            .get()
-            .addOnSuccessListener { querySnapshot ->
-                val categories = querySnapshot.documents.map { document ->
-                    document.getString("category") ?: ""
-                }
-
-                populateSpinner(categories)
-            }
-            .addOnFailureListener { exception ->
-                Timber.e("Error fetching categories:${exception.message}")
-            }
-    }
 
     private fun populateSpinner(categories: List<String>) {
-        val spinnerAdapter = ArrayAdapter(this, R.layout.simple_spinner_item, categories)
+        val updatedCategories = mutableListOf("Select Category").apply { addAll(categories) }
+
+        val spinnerAdapter = ArrayAdapter(this, R.layout.simple_spinner_item, updatedCategories)
+        spinnerAdapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item)
+
         binding.categoryEditText.adapter = spinnerAdapter
-        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
         binding.categoryEditText.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-                val selectedCategory = categories[position]
-                Timber.d("$selectedCategory")
+                val selectedCategory = updatedCategories[position]
+                if (position != 0) { // Avoid logging "Select Category"
+                    Timber.d("$selectedCategory")
+                    val selectedCategory = categories[position]
+                }
             }
-            override fun onNothingSelected(parent: AdapterView<*>) {
-            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {}
         }
     }
 

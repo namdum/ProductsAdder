@@ -34,7 +34,7 @@ open class ProductAdderApplication : BaseUiApp() {
      */
     private fun initInstallTime() {
         try {
-            val context = createPackageContext("com.meetfriend.app", 0)
+            val context = createPackageContext("com.example.productsadder", 0)
             assetManager = context.assets
         } catch (e: PackageManager.NameNotFoundException) {
             Timber.e("AssetManager $e")

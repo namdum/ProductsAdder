@@ -7,11 +7,11 @@ import dagger.Provides
 @Module
 class NotificationModelProvider {
     @Provides
-    fun provideChatViewModel(
-        chatRepository: NotificationRepository
+    fun provideNotificationViewModel(
+        notificationRepository: NotificationRepository
     ): NotificationViewModel {
         return NotificationViewModel(
-            chatRepository
+            notificationRepository
         )
     }
 

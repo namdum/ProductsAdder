@@ -3,9 +3,9 @@ package com.example.productsadder.application
 import android.app.Activity
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
-import com.example.productsadder.di.DaggerFuelAppComponent
-import com.example.productsadder.di.FuelAppComponent
-import com.example.productsadder.di.FuelAppModule
+import com.example.productsadder.di.DaggerProductAdderAppComponent
+import com.example.productsadder.di.ProductAdderAppComponent
+import com.example.productsadder.di.ProductAdderAppModule
 
 class ProductAdder : ProductAdderApplication() {
     companion object {
@@ -17,7 +17,7 @@ class ProductAdder : ProductAdderApplication() {
             return activity.application as ProductAdder
         }
 
-        lateinit var component: FuelAppComponent
+        lateinit var component: ProductAdderAppComponent
             private set
 
     }
@@ -27,8 +27,8 @@ class ProductAdder : ProductAdderApplication() {
     override fun onCreate() {
         super.onCreate()
         try {
-            component = DaggerFuelAppComponent.builder()
-                .fuelAppModule(FuelAppModule(this))
+            component = DaggerProductAdderAppComponent.builder()
+                .productAdderAppModule(ProductAdderAppModule(this))
                 .build()
             component.inject(this)
             super.setAppComponent(component)

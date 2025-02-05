@@ -40,15 +40,18 @@
             android:background="@drawable/ic_asce"
             android:layout_alignParentEnd="true"/>
     </RelativeLayout>
-
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:layout_below="@id/searchRelativeLayout"
+        android:id="@+id/swipeRefreshLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/orderListRV"
         style="@style/Widget.AppCompat.ProgressBar.Horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/searchRelativeLayout"
         tools:listitem="@layout/order_list_item"/>
-
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/orderNotFoundTextview"
         android:layout_width="match_parent"

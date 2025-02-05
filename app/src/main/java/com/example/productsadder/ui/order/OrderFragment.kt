@@ -2,6 +2,7 @@ package com.example.productsadder.ui.order
 
 import android.app.DatePickerDialog
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -19,6 +20,8 @@ import com.example.productsadder.network.extension.subscribeAndObserveOnMainThre
 import com.example.productsadder.di.ViewModelFactory
 import com.example.productsadder.ui.viewmodel.OrderListViewModel
 import com.example.productsadder.ui.viewmodel.OrderListViewState
+import com.example.productsadder.util.parseDate
+import com.jakewharton.rxbinding3.swiperefreshlayout.refreshes
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -80,7 +83,14 @@ class OrderFragment : Fragment() {
                    sortAppCompatImageView.setBackgroundResource(R.drawable.ic_asce)
                 }
             }
+            swipeRefreshLayout.refreshes().subscribeAndObserveOnMainThread {
+                swipeRefreshLayout.isRefreshing = false
+                viewModel.fetchOrders()
+                searchAppCompatEditText.setText("")
+                orderNotFoundTextview.isVisible=false
+            }
         }
+
     }
 
     private fun listenToViewModel() {
@@ -153,19 +163,13 @@ class OrderFragment : Fragment() {
 
                 // Group orders by date and update the adapter
                 val groupedOrders = orderAdapter.groupOrdersByDate(filteredOrders)
+                binding.orderNotFoundTextview.isVisible=groupedOrders.isNullOrEmpty()
                 orderAdapter.updateItems(groupedOrders)
                 orderAdapter.notifyDataSetChanged()
+
         }
     }
 
-    fun parseDate(dateString: String?, pattern: String = "yyyy-MM-dd"): Date? {
-        return try {
-            val dateFormat = SimpleDateFormat(pattern, Locale.getDefault())
-            dateString?.let { dateFormat.parse(it) }
-        } catch (e: Exception) {
-            null
-        }
-    }
 
     override fun onResume() {
         super.onResume()

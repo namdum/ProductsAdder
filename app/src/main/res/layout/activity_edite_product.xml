@@ -83,7 +83,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/poppins_light"
-                    android:imeOptions="actionDone"
+                    android:imeOptions="actionNext"
                     android:inputType="text"
                     android:padding="@dimen/_10sdp"
                     android:textColor="@color/black"
@@ -103,8 +103,9 @@
                 android:prompt="@string/category_hint"
                 android:textColor="@color/black"
                 android:textSize="@dimen/_12ssp"
-                android:layout_margin="@dimen/_3sdp"
+                android:layout_margin="@dimen/_2sdp"
                 android:textStyle="bold"
+                android:tooltipText="Select Category"
                 android:layout_below="@id/textInputLayoutName" />
 
             <com.google.android.material.textfield.TextInputLayout
@@ -152,7 +153,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/poppins_light"
-                    android:imeOptions="actionDone"
+                    android:imeOptions="actionNext"
                     android:inputType="numberDecimal"
                     android:padding="@dimen/_10sdp"
                     android:textColor="@color/black"
@@ -178,7 +179,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/poppins_light"
-                    android:imeOptions="actionDone"
+                    android:imeOptions="actionNext"
                     android:inputType="numberDecimal"
                     android:padding="@dimen/_10sdp"
                     android:textColor="@color/black"

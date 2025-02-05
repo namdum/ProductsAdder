@@ -17,7 +17,7 @@ import com.example.productsadder.databinding.ActivityOrderDetailsBinding
 import com.example.productsadder.network.extension.getViewModelFromFactory
 import com.example.productsadder.network.extension.subscribeAndObserveOnMainThread
 import com.example.productsadder.notification.NotificationViewModel
-import com.example.productsadder.notification.CreateChatRoomViewState
+import com.example.productsadder.notification.CreateNotificationViewState
 import com.example.productsadder.di.ViewModelFactory
 import com.example.productsadder.util.VerticalItemDecoration
 import com.example.productsadder.ui.viewmodel.OrderViewModel
@@ -134,20 +134,20 @@ class OrderDetailsActivity : BasicActivity() {
 
         notificationViewModel.createChatRoomState.observe(this) { result ->
             when (result) {
-                is CreateChatRoomViewState.LoadingState -> {
+                is CreateNotificationViewState.LoadingState -> {
                     showLoading()
                 }
 
-                is CreateChatRoomViewState.CreateRoomSuccess -> {
+                is CreateNotificationViewState.CreateRoomSuccess -> {
                     hideLoading()
                     Timber.d("notification:--${result.chatRoomInfo}")
                     onBackPressedDispatcher.onBackPressed()
                 }
 
-                is CreateChatRoomViewState.SuccessMessage -> {
+                is CreateNotificationViewState.SuccessMessage -> {
                     hideLoading()
                 }
-                is CreateChatRoomViewState.ErrorMessage -> {
+                is CreateNotificationViewState.ErrorMessage -> {
                     hideLoading()
                     Timber.e("notification:--${result.errorMessage}")
                 }

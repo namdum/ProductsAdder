@@ -46,7 +46,7 @@ class EditProductActivity : AppCompatActivity() {
     private var selectedImages: MutableList<Uri> = mutableListOf()
     private var uploadedImageString: MutableList<String> = mutableListOf()
     private lateinit var product: Product
-    var selectedCategory:String=""
+    private var selectedCategory:String=""
 
     companion object {
         const val PRODUCT = "PRODUCT"
@@ -170,6 +170,10 @@ class EditProductActivity : AppCompatActivity() {
            sizeEditText.setText(product?.sizes?.joinToString(", ").toString())
 
             saveAppCompatButton.setOnClickListener {
+                if (categoryEditText.selectedItem.equals("Select Category")){
+                    Toast.makeText(this@EditProductActivity,"Select Category",Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
                     val name = productNameEditText.text.toString().trim()
                     val description = productDescriptionEditText.text.toString().trim()
                     val price = priceEditText.text.toString().trim().toFloatOrNull() ?: 0f
@@ -178,14 +182,14 @@ class EditProductActivity : AppCompatActivity() {
                     selectedCategory = categoryEditText.selectedItem.toString()
 
                     val oldProduct = Product(
-                        name=product?.name ?:"",
-                        category = product?.category ?: "",
-                        price = product?.price ?: 0f,
+                        name=product.name ,
+                        category = product.category,
+                        price = product.price ,
                         offerPercentage = product?.offerPercentage,
                         description = product?.description,
                         sizes = product?.sizes,
-                        colors = product?.colors?.map { it.toInt() },
-                        images = product?.images ?: emptyList()
+                        colors = product?.colors?.map { it },
+                        images = product.images
                     )
 
                     val newProduct = Product(name, selectedCategory, price, offerpercentage, description, size, selectedColors, uploadedImageString)

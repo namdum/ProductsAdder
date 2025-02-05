@@ -12,20 +12,20 @@ class NotificationViewModel(
     private val chatRepository: NotificationRepository
 ) : BasicViewModel() {
 
-    private val _createChatRoomState = MutableLiveData<CreateChatRoomViewState>()
-    val createChatRoomState: LiveData<CreateChatRoomViewState> get() = _createChatRoomState
+    private val _createChatRoomState = MutableLiveData<CreateNotificationViewState>()
+    val createChatRoomState: LiveData<CreateNotificationViewState> get() = _createChatRoomState
 
     fun sendNotification(notificationInfo: NotificationInfo) {
         viewModelScope.launch {
-            _createChatRoomState.postValue(CreateChatRoomViewState.LoadingState(true))
+            _createChatRoomState.postValue(CreateNotificationViewState.LoadingState(true))
             val response = chatRepository.sendNotification(notificationInfo)
-            _createChatRoomState.postValue(CreateChatRoomViewState.LoadingState(false))
+            _createChatRoomState.postValue(CreateNotificationViewState.LoadingState(false))
 
             if (response != null ) {
 
-                _createChatRoomState.postValue(CreateChatRoomViewState.CreateRoomSuccess(response))
+                _createChatRoomState.postValue(CreateNotificationViewState.CreateRoomSuccess(response))
             } else {
-                _createChatRoomState.postValue(CreateChatRoomViewState.ErrorMessage("No data available or error occurred"))
+                _createChatRoomState.postValue(CreateNotificationViewState.ErrorMessage("No data available or error occurred"))
             }
         }
     }
@@ -33,9 +33,9 @@ class NotificationViewModel(
 
 }
 
-sealed class CreateChatRoomViewState {
-    data class ErrorMessage(val errorMessage: String) : CreateChatRoomViewState()
-    data class SuccessMessage(val successMessage: String) : CreateChatRoomViewState()
-    data class LoadingState(val isLoading: Boolean) : CreateChatRoomViewState()
-    data class CreateRoomSuccess(val chatRoomInfo: NotificationInfo) : CreateChatRoomViewState()
+sealed class CreateNotificationViewState {
+    data class ErrorMessage(val errorMessage: String) : CreateNotificationViewState()
+    data class SuccessMessage(val successMessage: String) : CreateNotificationViewState()
+    data class LoadingState(val isLoading: Boolean) : CreateNotificationViewState()
+    data class CreateRoomSuccess(val chatRoomInfo: NotificationInfo) : CreateNotificationViewState()
 }

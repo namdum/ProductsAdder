@@ -10,6 +10,7 @@ import com.example.productsadder.databinding.ActivityLoginBinding
 import com.example.productsadder.network.extension.getViewModelFromFactory
 import com.example.productsadder.network.extension.subscribeAndObserveOnMainThread
 import com.example.productsadder.di.ViewModelFactory
+import com.example.productsadder.network.extension.hideKeyboard
 import com.example.productsadder.ui.viewmodel.LoginViewModel
 import com.example.productsadder.ui.viewmodel.LoginViewState
 import javax.inject.Inject
@@ -45,6 +46,7 @@ class LoginActivity : AppCompatActivity() {
             }
             else {
                 viewModel.login(email, password)
+                hideKeyboard()
             }
         }
 

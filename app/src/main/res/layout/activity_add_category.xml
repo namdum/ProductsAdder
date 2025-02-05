@@ -69,7 +69,8 @@
             app:endIconMode="clear_text"
             android:layout_below="@id/imageAppCompatImageView"
             app:endIconTint="@color/g_gray500"
-            app:shapeAppearance="@style/Rounded">
+            app:shapeAppearance="@style/Rounded"
+            >
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/categoryEditText"

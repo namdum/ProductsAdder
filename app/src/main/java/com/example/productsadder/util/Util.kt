@@ -2,6 +2,7 @@ package com.example.productsadder.util
 
 import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
 import java.util.Locale
 
  fun extractDatePart(datetime: String): String {
@@ -38,5 +39,14 @@ import java.util.Locale
         date?.let { outputFormat.format(it) } ?: dateString
     } catch (e: Exception) {
         dateString // Return original dateString if parsing fails
+    }
+}
+
+fun parseDate(dateString: String?, pattern: String = "yyyy-MM-dd"): Date? {
+    return try {
+        val dateFormat = SimpleDateFormat(pattern, Locale.getDefault())
+        dateString?.let { dateFormat.parse(it) }
+    } catch (e: Exception) {
+        null
     }
 }
