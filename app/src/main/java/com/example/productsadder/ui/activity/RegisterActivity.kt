@@ -56,6 +56,7 @@ class RegisterActivity : AppCompatActivity() {
                 is LoginViewState.SuccessMessage->{
                     Toast.makeText(this, it.successMessage, Toast.LENGTH_SHORT).show()
                     startActivity(Intent(this, HomeActivity::class.java))
+                    finish()
                     binding.progressbar.isVisible=false
                     binding.registerRegisterBtn.isVisible=true
                 }

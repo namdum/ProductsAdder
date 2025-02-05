@@ -3,8 +3,10 @@ package com.example.productsadder.ui.order
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.AdapterView
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.meangene.notification.model.NotificationInfo
@@ -115,7 +117,7 @@ class OrderDetailsActivity : BasicActivity() {
 
                     hideLoading()
                     Timber.d("SuccessMessage:--${it.successMessage}")
-                    onBackPressedDispatcher
+                    Toast.makeText(this,it.successMessage,Toast.LENGTH_SHORT).show()
                 }
 
                 is OrderViewState.FetchStatusSpinnerSetup -> {
@@ -141,7 +143,7 @@ class OrderDetailsActivity : BasicActivity() {
                 is CreateNotificationViewState.CreateRoomSuccess -> {
                     hideLoading()
                     Timber.d("notification:--${result.chatRoomInfo}")
-                    onBackPressedDispatcher.onBackPressed()
+                    Toast.makeText(this,"${result.chatRoomInfo.message}",Toast.LENGTH_SHORT).show()
                 }
 
                 is CreateNotificationViewState.SuccessMessage -> {
@@ -150,6 +152,8 @@ class OrderDetailsActivity : BasicActivity() {
                 is CreateNotificationViewState.ErrorMessage -> {
                     hideLoading()
                     Timber.e("notification:--${result.errorMessage}")
+                    onBackPressedDispatcher.onBackPressed()
+
                 }
 
                 else -> {}

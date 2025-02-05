@@ -169,6 +169,7 @@ class EditProductActivity : AppCompatActivity() {
            offerPercentageEditText.setText(product?.offerPercentage.toString())
            sizeEditText.setText(product?.sizes?.joinToString(", ").toString())
 
+
             saveAppCompatButton.setOnClickListener {
                 if (categoryEditText.selectedItem.equals("Select Category")){
                     Toast.makeText(this@EditProductActivity,"Select Category",Toast.LENGTH_SHORT).show()
@@ -254,22 +255,24 @@ class EditProductActivity : AppCompatActivity() {
     }
 
 
-    private fun populateSpinner(categories: List<String>) {
-        val spinnerAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, categories)
-        binding.categoryEditText.adapter = spinnerAdapter
+    private fun populateSpinner(categorie: List<String>) {
 
-        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        val categoryIndex = categories.indexOf(product?.category ?: "")
+        val categories = mutableListOf("Select Category") // Ensure "Select Category" is first
+        categories.addAll(categorie) // Add other categories
 
-        binding.categoryEditText.setSelection(categoryIndex)
-        binding.categoryEditText.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-                val selectedCategory = categories[position]
-                Timber.e("selectedCategory:${selectedCategory}")
-            }
-            override fun onNothingSelected(parent: AdapterView<*>) {
+        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, categories)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        binding.categoryEditText.adapter = adapter
+
+        if (product.category.isNullOrEmpty()) {
+            binding.categoryEditText.setSelection(0) // Set to "Select Category"
+        } else {
+            // Find the category in the list and set selection accordingly
+            val categoryIndex = categories.indexOf(product.category)
+            if (categoryIndex != -1) {
+                binding.categoryEditText.setSelection(categoryIndex)
             }
         }
-    }
+        }
 
 }

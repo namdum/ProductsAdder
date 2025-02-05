@@ -67,6 +67,7 @@ class LoginActivity : AppCompatActivity() {
                     binding.loginLoginBtn.isVisible=true
                     Toast.makeText(this, it.successMessage, Toast.LENGTH_SHORT).show()
                     startActivity(Intent(this, HomeActivity::class.java))
+                    finish()
                 }
                 is LoginViewState.ErrorMessage->{
 

@@ -51,12 +51,5 @@ class CategoryView(context: Context): ConstraintLayoutWithLifecycle(context) {
             .diskCacheStrategy(DiskCacheStrategy.ALL)
             .into(binding.categoryAppCompatImageView)
 
-        Log.d("MyTesting","category bind:--${category.category}")
-//        binding.editbtn.setOnClickListener {
-//            val intent = Intent(context, EditCategoryActivity::class.java)
-//            intent.putExtra("category_name", category.category)
-//            intent.putExtra("category_image", category.image)
-//            context.startActivity(intent)
-//        }
     }
 }
